@@ -22,7 +22,7 @@ interface KnowledgeResult {
 export async function POST(request: NextRequest) {
   try {
     const body: SearchRequest = await request.json()
-    const { query, source, limit = 5, threshold = 0.7 } = body
+    const { query, source, limit = 5, threshold = 0.5 } = body
 
     if (!query || query.trim().length === 0) {
       return NextResponse.json(
