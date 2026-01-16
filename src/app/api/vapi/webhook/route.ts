@@ -36,12 +36,14 @@ interface ToolCallResult {
   result: string
 }
 
+const isDev = process.env.NODE_ENV === 'development'
+
 export async function POST(request: NextRequest) {
   try {
     const payload: VapiWebhookPayload = await request.json()
     const { message } = payload
 
-    console.log('VAPI Webhook:', message.type, message.call?.id)
+    if (isDev) console.log('VAPI Webhook:', message.type, message.call?.id)
 
     switch (message.type) {
       case 'tool-calls':
@@ -53,7 +55,7 @@ export async function POST(request: NextRequest) {
         break
 
       case 'call-started':
-        console.log('Call started:', message.call?.id)
+        if (isDev) console.log('Call started:', message.call?.id)
         break
 
       case 'call-ended':
@@ -65,20 +67,19 @@ export async function POST(request: NextRequest) {
 
       case 'transcript':
         // Real-time transcript update
-        // Could stream to client via WebSocket/SSE
         break
 
       case 'status-update':
-        console.log('Status update:', message.call?.status)
+        if (isDev) console.log('Status update:', message.call?.status)
         break
 
       default:
-        console.log('Unknown webhook type:', message.type)
+        if (isDev) console.log('Unknown webhook type:', message.type)
     }
 
     return NextResponse.json({ success: true })
   } catch (error) {
-    console.error('VAPI Webhook error:', error)
+    if (isDev) console.error('VAPI Webhook error:', error)
     return NextResponse.json(
       { error: 'Webhook processing failed' },
       { status: 500 }
@@ -86,72 +87,68 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// Handle tool calls from VAPI
-async function handleToolCalls(toolCalls: VapiToolCall[]): Promise<ToolCallResult[]> {
-  const results: ToolCallResult[] = []
+// Process a single tool call
+async function processToolCall(toolCall: VapiToolCall): Promise<ToolCallResult> {
+  const { id, function: fn } = toolCall
 
-  for (const toolCall of toolCalls) {
-    const { id, function: fn } = toolCall
+  try {
+    const args = JSON.parse(fn.arguments || '{}')
 
-    try {
-      const args = JSON.parse(fn.arguments || '{}')
-
-      switch (fn.name) {
-        case 'search_knowledge': {
-          const result = await searchKnowledge(
-            args.query as string,
-            args.source as string | undefined
-          )
-          results.push({ toolCallId: id, result })
-          break
-        }
-
-        case 'end_roleplay': {
-          results.push({
-            toolCallId: id,
-            result: JSON.stringify({
-              success: true,
-              reason: args.reason,
-              meeting_booked: args.meeting_booked || false,
-            }),
-          })
-          break
-        }
-
-        case 'log_objection': {
-          console.log('Objection logged:', args)
-          results.push({
-            toolCallId: id,
-            result: JSON.stringify({ logged: true, ...args }),
-          })
-          break
-        }
-
-        case 'log_milestone': {
-          console.log('Milestone logged:', args)
-          results.push({
-            toolCallId: id,
-            result: JSON.stringify({ logged: true, ...args }),
-          })
-          break
-        }
-
-        default:
-          console.warn('Unknown function:', fn.name)
-          results.push({
-            toolCallId: id,
-            result: JSON.stringify({ error: `Unknown function: ${fn.name}` }),
-          })
+    switch (fn.name) {
+      case 'search_knowledge': {
+        const result = await searchKnowledge(
+          args.query as string,
+          args.source as string | undefined
+        )
+        return { toolCallId: id, result }
       }
-    } catch (error) {
+
+      case 'end_roleplay': {
+        return {
+          toolCallId: id,
+          result: JSON.stringify({
+            success: true,
+            reason: args.reason,
+            meeting_booked: args.meeting_booked || false,
+          }),
+        }
+      }
+
+      case 'log_objection': {
+        return {
+          toolCallId: id,
+          result: JSON.stringify({ logged: true, ...args }),
+        }
+      }
+
+      case 'log_milestone': {
+        return {
+          toolCallId: id,
+          result: JSON.stringify({ logged: true, ...args }),
+        }
+      }
+
+      default:
+        return {
+          toolCallId: id,
+          result: JSON.stringify({ error: `Unknown function: ${fn.name}` }),
+        }
+    }
+  } catch (error) {
+    if (process.env.NODE_ENV === 'development') {
       console.error(`Error handling tool call ${fn.name}:`, error)
-      results.push({
-        toolCallId: id,
-        result: JSON.stringify({ error: 'Function execution failed' }),
-      })
+    }
+    return {
+      toolCallId: id,
+      result: JSON.stringify({ error: 'Function execution failed' }),
     }
   }
+}
 
+// Handle tool calls from VAPI - parallelized for performance
+async function handleToolCalls(toolCalls: VapiToolCall[]): Promise<ToolCallResult[]> {
+  // Process all tool calls in parallel for better latency
+  const results = await Promise.all(toolCalls.map(processToolCall))
   return results
 }
 
@@ -190,7 +187,7 @@ async function searchKnowledge(
     })
 
     if (error) {
-      console.error('Knowledge search error:', error)
+      if (isDev) console.error('Knowledge search error:', error)
       return 'I encountered an error searching the knowledge base.'
     }
 
@@ -216,7 +213,7 @@ async function searchKnowledge(
 
     return `Here's relevant information from the Underdog methodology:\n\n${formattedResults}`
   } catch (error) {
-    console.error('Knowledge search error:', error)
+    if (isDev) console.error('Knowledge search error:', error)
     return 'I encountered an error searching the knowledge base.'
   }
 }
@@ -227,18 +224,18 @@ async function saveSession(
   analysis: { summary?: string; structuredData?: Record<string, unknown> }
 ) {
   try {
-    console.log('Saving session:', vapiCallId)
-    console.log('Analysis summary:', analysis.summary)
+    if (isDev) {
+      console.log('Saving session:', vapiCallId)
+      console.log('Analysis summary:', analysis.summary)
+      if (analysis.structuredData) {
+        console.log('Structured data:', JSON.stringify(analysis.structuredData, null, 2))
+      }
+    }
 
     // TODO: Extract user_id from call metadata and save to database
     // This requires the call to include user context in the assistant config
-
-    // Log structured data for debugging
-    if (analysis.structuredData) {
-      console.log('Structured data:', JSON.stringify(analysis.structuredData, null, 2))
-    }
   } catch (error) {
-    console.error('Failed to save session:', error)
+    if (isDev) console.error('Failed to save session:', error)
   }
 }
 

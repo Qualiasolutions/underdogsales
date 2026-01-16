@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback, useEffect, useRef } from 'react'
+import { useState, useCallback, useEffect, useRef, memo } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
 import {
   Mic,
@@ -38,6 +38,42 @@ const scenarios: { id: ScenarioType; label: string; description: string }[] = [
   { id: 'gatekeeper', label: 'Gatekeeper', description: 'Navigate past barriers' },
 ]
 
+// Memoized transcript message component for performance
+const TranscriptMessage = memo(({
+  entry,
+  personaInitial
+}: {
+  entry: TranscriptEntry
+  personaInitial: string
+}) => (
+  <motion.div
+    initial={{ opacity: 0, y: 5 }}
+    animate={{ opacity: 1, y: 0 }}
+    className={cn(
+      'flex gap-3',
+      entry.role === 'user' ? 'flex-row-reverse' : ''
+    )}
+  >
+    <div className={cn(
+      'w-7 h-7 flex-shrink-0 flex items-center justify-center text-xs font-semibold',
+      entry.role === 'user'
+        ? 'bg-neutral-900 text-white'
+        : 'bg-neutral-100 text-neutral-600'
+    )}>
+      {entry.role === 'user' ? 'Y' : personaInitial}
+    </div>
+    <div className={cn(
+      'flex-1 py-3 px-4 text-sm',
+      entry.role === 'user'
+        ? 'bg-neutral-900 text-white'
+        : 'bg-neutral-50 text-neutral-700'
+    )}>
+      {entry.content}
+    </div>
+  </motion.div>
+))
+TranscriptMessage.displayName = 'TranscriptMessage'
+
 export function VoicePractice({ onSessionEnd }: VoicePracticeProps) {
   const [connectionStatus, setConnectionStatus] = useState<ConnectionStatus>('idle')
   const [isMuted, setIsMuted] = useState(false)
@@ -48,12 +84,19 @@ export function VoicePractice({ onSessionEnd }: VoicePracticeProps) {
   const [error, setError] = useState<string | null>(null)
   const [callDuration, setCallDuration] = useState(0)
   const transcriptRef = useRef<HTMLDivElement>(null)
+  const transcriptDataRef = useRef<TranscriptEntry[]>([])
   const timerRef = useRef<NodeJS.Timeout | null>(null)
 
   const personas = getAllPersonas()
   const selectedPersona = getPersonaById(selectedPersonaId)
   const isActive = connectionStatus === 'connected'
 
+  // Sync transcript data to ref for use in callbacks
+  useEffect(() => {
+    transcriptDataRef.current = transcript
+  }, [transcript])
+
+  // Auto-scroll transcript
   useEffect(() => {
     if (transcriptRef.current) {
       transcriptRef.current.scrollTop = transcriptRef.current.scrollHeight
@@ -129,7 +172,8 @@ export function VoicePractice({ onSessionEnd }: VoicePracticeProps) {
         onCallEnd: () => {
           setConnectionStatus('idle')
           setCallId(null)
-          onSessionEnd?.(transcript)
+          // Use ref to get current transcript without causing re-renders
+          onSessionEnd?.(transcriptDataRef.current)
         },
         onError: (err) => {
           setError(err.message || 'Connection failed')
@@ -141,14 +185,15 @@ export function VoicePractice({ onSessionEnd }: VoicePracticeProps) {
       setError(err instanceof Error ? err.message : 'Connection failed')
       setConnectionStatus('error')
     }
-  }, [selectedPersona, selectedScenario, transcript, onSessionEnd])
+  }, [selectedPersona, selectedScenario, onSessionEnd])
 
   const handleStop = useCallback(() => {
     stopRoleplaySession()
     setConnectionStatus('idle')
     setCallId(null)
-    onSessionEnd?.(transcript)
-  }, [transcript, onSessionEnd])
+    // Use ref to get current transcript without causing re-renders
+    onSessionEnd?.(transcriptDataRef.current)
+  }, [onSessionEnd])
 
   const handleMuteToggle = useCallback(() => {
     const newMuted = !isMuted
@@ -537,32 +582,11 @@ export function VoicePractice({ onSessionEnd }: VoicePracticeProps) {
                         </div>
                       ) : (
                         transcript.map((entry, i) => (
-                          <motion.div
+                          <TranscriptMessage
                             key={i}
-                            initial={{ opacity: 0, y: 5 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            className={cn(
-                              'flex gap-3',
-                              entry.role === 'user' ? 'flex-row-reverse' : ''
-                            )}
-                          >
-                            <div className={cn(
-                              'w-7 h-7 flex-shrink-0 flex items-center justify-center text-xs font-semibold',
-                              entry.role === 'user'
-                                ? 'bg-neutral-900 text-white'
-                                : 'bg-neutral-100 text-neutral-600'
-                            )}>
-                              {entry.role === 'user' ? 'Y' : selectedPersona?.name[0]}
-                            </div>
-                            <div className={cn(
-                              'flex-1 py-3 px-4 text-sm',
-                              entry.role === 'user'
-                                ? 'bg-neutral-900 text-white'
-                                : 'bg-neutral-50 text-neutral-700'
-                            )}>
-                              {entry.content}
-                            </div>
-                          </motion.div>
+                            entry={entry}
+                            personaInitial={selectedPersona?.name[0] || 'A'}
+                          />
                         ))
                       )}
                     </div>

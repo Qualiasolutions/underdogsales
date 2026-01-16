@@ -52,7 +52,7 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
-  ],
+  // Only run middleware on routes that need auth checks
+  // Excludes: API routes, static assets, and public pages
+  matcher: ['/practice', '/dashboard', '/settings', '/profile', '/login', '/signup'],
 }
