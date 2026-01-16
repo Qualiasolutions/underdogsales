@@ -1,26 +1,317 @@
 @import "tailwindcss";
 
+/* Underdog Sales Brand Design System */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Brand Colors - Underdog Sales */
+  --underdog-gold: #E7B221;
+  --underdog-gold-light: #F5D56A;
+  --underdog-gold-dark: #C99A1A;
+  --underdog-navy: #021945;
+  --underdog-navy-light: #0A2D6B;
+  --underdog-navy-dark: #010F2A;
+
+  /* Semantic Colors */
+  --background: #FFFFFF;
+  --foreground: #021945;
+  --muted: #F8F9FC;
+  --muted-foreground: #64748B;
+  --border: #E2E8F0;
+  --ring: #E7B221;
+
+  /* Accent Colors */
+  --primary: #E7B221;
+  --primary-foreground: #021945;
+  --secondary: #021945;
+  --secondary-foreground: #FFFFFF;
+  --accent: #F8F9FC;
+  --accent-foreground: #021945;
+
+  /* Status Colors */
+  --success: #10B981;
+  --success-light: #D1FAE5;
+  --warning: #F59E0B;
+  --warning-light: #FEF3C7;
+  --error: #EF4444;
+  --error-light: #FEE2E2;
+
+  /* Typography */
+  --font-display: 'Maven Pro', var(--font-geist-sans), system-ui, sans-serif;
+  --font-body: var(--font-geist-sans), system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+
+  /* Spacing & Sizing */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgb(2 25 69 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(2 25 69 / 0.07), 0 2px 4px -2px rgb(2 25 69 / 0.05);
+  --shadow-lg: 0 10px 15px -3px rgb(2 25 69 / 0.08), 0 4px 6px -4px rgb(2 25 69 / 0.05);
+  --shadow-xl: 0 20px 25px -5px rgb(2 25 69 / 0.1), 0 8px 10px -6px rgb(2 25 69 / 0.05);
+  --shadow-gold: 0 10px 40px -10px rgb(231 178 33 / 0.3);
+  --shadow-navy: 0 10px 40px -10px rgb(2 25 69 / 0.2);
+
+  /* Transitions */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-spring: 400ms cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-ring: var(--ring);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+
+  /* Underdog Brand */
+  --color-gold: var(--underdog-gold);
+  --color-gold-light: var(--underdog-gold-light);
+  --color-gold-dark: var(--underdog-gold-dark);
+  --color-navy: var(--underdog-navy);
+  --color-navy-light: var(--underdog-navy-light);
+  --color-navy-dark: var(--underdog-navy-dark);
+
+  /* Status */
+  --color-success: var(--success);
+  --color-success-light: var(--success-light);
+  --color-warning: var(--warning);
+  --color-warning-light: var(--warning-light);
+  --color-error: var(--error);
+  --color-error-light: var(--error-light);
+
+  /* Fonts */
+  --font-sans: var(--font-body);
+  --font-mono: var(--font-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Base Styles */
+* {
+  border-color: var(--border);
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-body);
+  font-feature-settings: 'rlig' 1, 'calt' 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Selection */
+::selection {
+  background-color: var(--underdog-gold);
+  color: var(--underdog-navy);
+}
+
+/* Focus Ring */
+:focus-visible {
+  outline: 2px solid var(--underdog-gold);
+  outline-offset: 2px;
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--muted);
+  border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--underdog-navy);
+  border-radius: var(--radius-full);
+  opacity: 0.3;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--underdog-navy-light);
+}
+
+/* Premium Typography */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--underdog-navy);
+}
+
+/* Gradient Text Utility */
+.text-gradient-gold {
+  background: linear-gradient(135deg, var(--underdog-gold) 0%, var(--underdog-gold-light) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-navy {
+  background: linear-gradient(135deg, var(--underdog-navy) 0%, var(--underdog-navy-light) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Premium Background Patterns */
+.bg-grid-pattern {
+  background-image:
+    linear-gradient(to right, rgb(2 25 69 / 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(2 25 69 / 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+.bg-dot-pattern {
+  background-image: radial-gradient(rgb(2 25 69 / 0.08) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+/* Glow Effects */
+.glow-gold {
+  box-shadow:
+    0 0 20px rgb(231 178 33 / 0.15),
+    0 0 40px rgb(231 178 33 / 0.1),
+    0 0 60px rgb(231 178 33 / 0.05);
+}
+
+.glow-gold-intense {
+  box-shadow:
+    0 0 20px rgb(231 178 33 / 0.3),
+    0 0 40px rgb(231 178 33 / 0.2),
+    0 0 80px rgb(231 178 33 / 0.1);
+}
+
+/* Glass Effect */
+.glass {
+  background: rgb(255 255 255 / 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgb(255 255 255 / 0.3);
+}
+
+.glass-navy {
+  background: rgb(2 25 69 / 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgb(255 255 255 / 0.1);
+}
+
+/* Animated Border */
+@keyframes border-rotate {
+  from { --angle: 0deg; }
+  to { --angle: 360deg; }
+}
+
+@property --angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+.animated-border {
+  position: relative;
+  background: var(--background);
+}
+
+.animated-border::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: conic-gradient(
+    from var(--angle),
+    var(--underdog-gold),
+    var(--underdog-navy),
+    var(--underdog-gold)
+  );
+  animation: border-rotate 4s linear infinite;
+  z-index: -1;
+}
+
+/* Pulse Ring Animation */
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.95);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(0.95);
+    opacity: 1;
+  }
+}
+
+.pulse-ring {
+  animation: pulse-ring 2s ease-in-out infinite;
+}
+
+/* Voice Wave Animation */
+@keyframes voice-wave {
+  0%, 100% { height: 20%; }
+  50% { height: 100%; }
+}
+
+.voice-wave-bar {
+  animation: voice-wave 1s ease-in-out infinite;
+}
+
+/* Shine Effect */
+@keyframes shine {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(100%); }
+}
+
+.shine {
+  position: relative;
+  overflow: hidden;
+}
+
+.shine::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgb(255 255 255 / 0.2),
+    transparent
+  );
+  transform: translateX(-100%);
+}
+
+.shine:hover::after {
+  animation: shine 0.6s ease-in-out;
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
 }
