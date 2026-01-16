@@ -6,9 +6,5 @@ export const metadata = {
 }
 
 export default function PracticePage() {
-  return (
-    <main className="min-h-screen bg-gray-50 py-8">
-      <VoicePractice />
-    </main>
-  )
+  return <VoicePractice />
 }
