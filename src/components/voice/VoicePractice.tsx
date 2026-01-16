@@ -15,6 +15,11 @@ import {
   Wifi,
   WifiOff,
   Zap,
+  PhoneCall,
+  Shield,
+  Target,
+  DoorOpen,
+  type LucideIcon,
 } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -36,11 +41,11 @@ interface VoicePracticeProps {
   onSessionEnd?: (transcript: TranscriptEntry[]) => void
 }
 
-const scenarios: { id: ScenarioType; label: string; description: string; icon: string }[] = [
-  { id: 'cold_call', label: 'Cold Call', description: 'Full conversation flow', icon: '📞' },
-  { id: 'objection', label: 'Objections', description: 'Overcome resistance', icon: '🛡️' },
-  { id: 'closing', label: 'Closing', description: 'Secure the next step', icon: '🎯' },
-  { id: 'gatekeeper', label: 'Gatekeeper', description: 'Navigate barriers', icon: '🚪' },
+const scenarios: { id: ScenarioType; label: string; description: string; icon: LucideIcon }[] = [
+  { id: 'cold_call', label: 'Cold Call', description: 'Full conversation flow', icon: PhoneCall },
+  { id: 'objection', label: 'Objections', description: 'Overcome resistance', icon: Shield },
+  { id: 'closing', label: 'Closing', description: 'Secure the next step', icon: Target },
+  { id: 'gatekeeper', label: 'Gatekeeper', description: 'Navigate barriers', icon: DoorOpen },
 ]
 
 // Voice visualizer component with gold gradient
@@ -496,29 +501,39 @@ export function VoicePractice({ onSessionEnd }: VoicePracticeProps) {
                   </h2>
 
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                    {scenarios.map((scenario, index) => (
-                      <motion.button
-                        key={scenario.id}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.2 + index * 0.05 }}
-                        onClick={() => setSelectedScenario(scenario.id)}
-                        className={cn(
-                          'p-4 rounded-xl text-left transition-all duration-200 border-2',
-                          selectedScenario === scenario.id
-                            ? 'border-navy bg-navy/5 shadow-md'
-                            : 'border-transparent bg-white hover:border-border hover:shadow-sm'
-                        )}
-                      >
-                        <span className="text-2xl mb-2 block">{scenario.icon}</span>
-                        <h3 className="text-sm font-bold text-navy mb-0.5">
-                          {scenario.label}
-                        </h3>
-                        <p className="text-xs text-muted-foreground">
-                          {scenario.description}
-                        </p>
-                      </motion.button>
-                    ))}
+                    {scenarios.map((scenario, index) => {
+                      const Icon = scenario.icon
+                      return (
+                        <motion.button
+                          key={scenario.id}
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: 0.2 + index * 0.05 }}
+                          onClick={() => setSelectedScenario(scenario.id)}
+                          className={cn(
+                            'p-4 rounded-xl text-left transition-all duration-200 border-2',
+                            selectedScenario === scenario.id
+                              ? 'border-navy bg-navy/5 shadow-md'
+                              : 'border-transparent bg-white hover:border-border hover:shadow-sm'
+                          )}
+                        >
+                          <div className={cn(
+                            'w-10 h-10 rounded-lg flex items-center justify-center mb-3 transition-colors',
+                            selectedScenario === scenario.id
+                              ? 'bg-gradient-to-br from-gold to-gold-light text-navy'
+                              : 'bg-navy/5 text-navy/70'
+                          )}>
+                            <Icon className="w-5 h-5" />
+                          </div>
+                          <h3 className="text-sm font-bold text-navy mb-0.5">
+                            {scenario.label}
+                          </h3>
+                          <p className="text-xs text-muted-foreground">
+                            {scenario.description}
+                          </p>
+                        </motion.button>
+                      )
+                    })}
                   </div>
                 </section>
 
