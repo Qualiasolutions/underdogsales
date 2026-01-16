@@ -25,7 +25,7 @@ import { getAllPersonas, getPersonaById } from '@/config/personas'
 import type { TranscriptEntry } from '@/types'
 
 type ScenarioType = 'cold_call' | 'objection' | 'closing' | 'gatekeeper'
-type ConnectionStatus = 'idle' | 'checking_mic' | 'connecting' | 'connected' | 'error'
+type ConnectionStatus = 'idle' | 'connecting' | 'connected' | 'error'
 
 interface VoicePracticeProps {
   onSessionEnd?: (transcript: TranscriptEntry[]) => void
@@ -125,16 +125,6 @@ export function VoicePractice({ onSessionEnd }: VoicePracticeProps) {
     return `${mins}:${secs.toString().padStart(2, '0')}`
   }
 
-  const checkMicrophonePermission = async (): Promise<boolean> => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
-      stream.getTracks().forEach(track => track.stop())
-      return true
-    } catch {
-      return false
-    }
-  }
-
   const handleStart = useCallback(async () => {
     if (!selectedPersona) return
 
@@ -143,15 +133,6 @@ export function VoicePractice({ onSessionEnd }: VoicePracticeProps) {
 
     if (!process.env.NEXT_PUBLIC_VAPI_PUBLIC_KEY) {
       setError('Voice service not configured')
-      setConnectionStatus('error')
-      return
-    }
-
-    setConnectionStatus('checking_mic')
-    const hasMic = await checkMicrophonePermission()
-
-    if (!hasMic) {
-      setError('Microphone access required')
       setConnectionStatus('error')
       return
     }
@@ -249,7 +230,7 @@ export function VoicePractice({ onSessionEnd }: VoicePracticeProps) {
         <div className="max-w-4xl mx-auto">
           <AnimatePresence mode="wait">
             {/* Setup View */}
-            {!isActive && connectionStatus !== 'checking_mic' && connectionStatus !== 'connecting' && (
+            {!isActive && connectionStatus !== 'connecting' && (
               <motion.div
                 key="setup"
                 initial={{ opacity: 0 }}
@@ -416,7 +397,7 @@ export function VoicePractice({ onSessionEnd }: VoicePracticeProps) {
             )}
 
             {/* Connecting View */}
-            {(connectionStatus === 'checking_mic' || connectionStatus === 'connecting') && (
+            {connectionStatus === 'connecting' && (
               <motion.div
                 key="connecting"
                 initial={{ opacity: 0 }}
@@ -438,12 +419,13 @@ export function VoicePractice({ onSessionEnd }: VoicePracticeProps) {
                   </div>
 
                   <h2 className="text-lg font-semibold text-neutral-900 mb-2">
-                    {connectionStatus === 'checking_mic' ? 'Checking Microphone' : 'Connecting'}
+                    Connecting
                   </h2>
                   <p className="text-sm text-neutral-500">
-                    {connectionStatus === 'checking_mic'
-                      ? 'Allow microphone access if prompted'
-                      : `Preparing session with ${selectedPersona?.name}`}
+                    Preparing session with {selectedPersona?.name}
+                  </p>
+                  <p className="text-xs text-neutral-400 mt-2">
+                    Allow microphone access if prompted
                   </p>
 
                   {/* Progress Indicator */}
@@ -453,9 +435,7 @@ export function VoicePractice({ onSessionEnd }: VoicePracticeProps) {
                         key={i}
                         className="w-8 h-0.5 bg-neutral-200"
                         animate={{
-                          backgroundColor: i <= (connectionStatus === 'connecting' ? 1 : 0)
-                            ? '#171717'
-                            : '#e5e5e5'
+                          backgroundColor: i <= 1 ? '#171717' : '#e5e5e5'
                         }}
                         transition={{ duration: 0.3 }}
                       />
