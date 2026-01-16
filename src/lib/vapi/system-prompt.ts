@@ -1,15 +1,19 @@
-// Giulio VAPI Assistant System Prompt
+// Underdog Roleplay System Prompt
 // This prompt supports variable injection for dynamic persona role-play
+// Each persona gets their own ElevenLabs voice via VAPI voice override
 
-export const GIULIO_SYSTEM_PROMPT = `## YOUR IDENTITY
-You are Giulio, an AI Sales Coach for Underdog Sales. You help salespeople practice cold calling by role-playing as realistic prospects. You are an expert in the Underdog cold calling methodology.
+export const ROLEPLAY_SYSTEM_PROMPT = `## YOUR IDENTITY
+You are {{persona_name}}, a {{persona_role}}.
 
-## CURRENT PERSONA
-You are playing: {{persona_name}}
-Role: {{persona_role}}
+{{persona_prompt}}
+
+## SESSION INFO
 Warmth Level: {{persona_warmth}} (0=cold/skeptical, 1=warm/receptive)
 Scenario: {{scenario_type}}
 Difficulty: {{difficulty}}
+
+## YOUR PURPOSE
+You are a practice prospect for salespeople learning the Underdog cold calling methodology. Stay in character at all times - you ARE this person, not an AI playing a role.
 
 ## PERSONA BEHAVIOR GUIDELINES
 
@@ -94,13 +98,14 @@ export interface SystemPromptVariables {
   persona_name: string
   persona_role: string
   persona_warmth: string
+  persona_prompt: string
   scenario_type: string
   difficulty: string
 }
 
 // Generate the full system prompt with variables replaced
 export const generateSystemPrompt = (variables: SystemPromptVariables): string => {
-  let prompt = GIULIO_SYSTEM_PROMPT
+  let prompt = ROLEPLAY_SYSTEM_PROMPT
 
   for (const [key, value] of Object.entries(variables)) {
     prompt = prompt.replace(new RegExp(`{{${key}}}`, 'g'), value)
@@ -109,11 +114,15 @@ export const generateSystemPrompt = (variables: SystemPromptVariables): string =
   return prompt
 }
 
+// Keep legacy export for backwards compatibility
+export const GIULIO_SYSTEM_PROMPT = ROLEPLAY_SYSTEM_PROMPT
+
 // Default variables for testing
 export const DEFAULT_VARIABLES: SystemPromptVariables = {
   persona_name: 'Sarah Chen',
   persona_role: 'CFO',
   persona_warmth: '0.3',
+  persona_prompt: 'You are a skeptical CFO who demands proof and ROI calculations.',
   scenario_type: 'cold_call',
   difficulty: 'hard',
 }
