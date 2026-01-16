@@ -203,6 +203,44 @@ export interface Database {
           created_at?: string
         }
       }
+      knowledge_base: {
+        Row: {
+          id: string
+          source: 'wiki' | 'persona' | 'rubric' | 'curriculum'
+          source_file: string
+          section_title: string
+          content: string
+          topics: string[]
+          metadata: Record<string, unknown>
+          embedding: number[] | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          source: 'wiki' | 'persona' | 'rubric' | 'curriculum'
+          source_file: string
+          section_title: string
+          content: string
+          topics?: string[]
+          metadata?: Record<string, unknown>
+          embedding?: number[] | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          source?: 'wiki' | 'persona' | 'rubric' | 'curriculum'
+          source_file?: string
+          section_title?: string
+          content?: string
+          topics?: string[]
+          metadata?: Record<string, unknown>
+          embedding?: number[] | null
+          created_at?: string
+          updated_at?: string
+        }
+      }
     }
     Views: {
       [_ in never]: never
@@ -220,6 +258,24 @@ export interface Database {
           objection_text: string
           response_template: string
           psychology_principle: string | null
+          similarity: number
+        }[]
+      }
+      match_knowledge: {
+        Args: {
+          query_embedding: number[]
+          match_threshold?: number
+          match_count?: number
+          filter_source?: string | null
+        }
+        Returns: {
+          id: string
+          source: string
+          source_file: string
+          section_title: string
+          content: string
+          topics: string[]
+          metadata: Record<string, unknown>
           similarity: number
         }[]
       }
