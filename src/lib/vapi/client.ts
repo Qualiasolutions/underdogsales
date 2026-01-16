@@ -89,8 +89,16 @@ export async function startRoleplaySession(options: RoleplaySessionOptions): Pro
   vapi.on('message', currentHandlers.message)
   vapi.on('error', currentHandlers.error)
 
+  // Also listen for camera errors (VAPI sometimes tries to access camera)
+  const cameraErrorHandler = () => {
+    // Ignore camera errors - we only need audio
+    console.log('Camera not available - continuing with audio only')
+  }
+  vapi.on('camera-error', cameraErrorHandler)
+
   try {
     // Use pre-configured Giulio assistant with variable overrides
+    // Note: Camera errors are handled by the camera-error event listener above
     await vapi.start(GIULIO_ASSISTANT_ID, {
       variableValues: {
         persona_name: persona.name,
