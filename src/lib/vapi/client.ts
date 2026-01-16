@@ -6,6 +6,14 @@ const GIULIO_ASSISTANT_ID = '45223924-49cd-43ab-8e6c-eea4c77d67c5'
 
 let vapiInstance: Vapi | null = null
 
+// Store current event handlers to remove them before adding new ones
+let currentHandlers: {
+  callStart?: () => void
+  callEnd?: () => void
+  message?: (message: VapiCallEvent) => void
+  error?: (error: Error) => void
+} = {}
+
 export function getVapiClient(): Vapi {
   if (!vapiInstance) {
     const publicKey = process.env.NEXT_PUBLIC_VAPI_PUBLIC_KEY
@@ -15,6 +23,23 @@ export function getVapiClient(): Vapi {
     vapiInstance = new Vapi(publicKey)
   }
   return vapiInstance
+}
+
+// Clean up previous event listeners to prevent duplicates
+function cleanupEventListeners(vapi: Vapi): void {
+  if (currentHandlers.callStart) {
+    vapi.off('call-start', currentHandlers.callStart)
+  }
+  if (currentHandlers.callEnd) {
+    vapi.off('call-end', currentHandlers.callEnd)
+  }
+  if (currentHandlers.message) {
+    vapi.off('message', currentHandlers.message)
+  }
+  if (currentHandlers.error) {
+    vapi.off('error', currentHandlers.error)
+  }
+  currentHandlers = {}
 }
 
 export interface RoleplaySessionOptions {
@@ -31,17 +56,20 @@ export async function startRoleplaySession(options: RoleplaySessionOptions): Pro
   const vapi = getVapiClient()
   const { persona, scenarioType, onTranscript, onCallStart, onCallEnd, onError } = options
 
-  // Set up event handlers
-  vapi.on('call-start', () => {
+  // Clean up any previous event listeners to prevent duplicates
+  cleanupEventListeners(vapi)
+
+  // Create and store new event handlers
+  currentHandlers.callStart = () => {
     const callId = (vapi as unknown as { call?: { id: string } }).call?.id || 'unknown'
     onCallStart?.(callId)
-  })
+  }
 
-  vapi.on('call-end', () => {
+  currentHandlers.callEnd = () => {
     onCallEnd?.(null)
-  })
+  }
 
-  vapi.on('message', (message: VapiCallEvent) => {
+  currentHandlers.message = (message: VapiCallEvent) => {
     if (message.type === 'transcript' && message.transcript && message.transcriptType === 'final') {
       onTranscript?.({
         role: message.role || 'assistant',
@@ -49,11 +77,17 @@ export async function startRoleplaySession(options: RoleplaySessionOptions): Pro
         timestamp: Date.now(),
       })
     }
-  })
+  }
 
-  vapi.on('error', (error: Error) => {
+  currentHandlers.error = (error: Error) => {
     onError?.(error)
-  })
+  }
+
+  // Register event handlers
+  vapi.on('call-start', currentHandlers.callStart)
+  vapi.on('call-end', currentHandlers.callEnd)
+  vapi.on('message', currentHandlers.message)
+  vapi.on('error', currentHandlers.error)
 
   try {
     // Use pre-configured Giulio assistant with variable overrides
