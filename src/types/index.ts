@@ -146,7 +146,9 @@ export interface VapiCallEvent {
     id: string
     status: string
   }
+  role?: 'user' | 'assistant'
   transcript?: string
+  transcriptType?: 'partial' | 'final'
   functionCall?: {
     name: string
     parameters: Record<string, unknown>

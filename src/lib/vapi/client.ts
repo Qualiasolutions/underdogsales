@@ -42,9 +42,9 @@ export async function startRoleplaySession(options: RoleplaySessionOptions): Pro
   })
 
   vapi.on('message', (message: VapiCallEvent) => {
-    if (message.type === 'transcript' && message.transcript) {
+    if (message.type === 'transcript' && message.transcript && message.transcriptType === 'final') {
       onTranscript?.({
-        role: message.role === 'user' ? 'user' : 'assistant',
+        role: message.role || 'assistant',
         content: message.transcript,
         timestamp: Date.now(),
       })
