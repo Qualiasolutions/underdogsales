@@ -58,8 +58,8 @@ export async function startRoleplaySession(options: RoleplaySessionOptions): Pro
   try {
     await vapi.start({
       model: {
-        provider: 'openrouter',
-        model: 'google/gemini-2.5-pro-preview',
+        provider: 'openai',
+        model: 'gpt-4o',
         temperature: 0.8,
         messages: [
           {
@@ -73,6 +73,11 @@ export async function startRoleplaySession(options: RoleplaySessionOptions): Pro
         voiceId: persona.voiceId,
         stability: 0.5,
         similarityBoost: 0.8,
+      },
+      transcriber: {
+        provider: 'deepgram',
+        model: 'nova-3',
+        language: 'en',
       },
       name: `${persona.name} - ${scenarioType}`,
       firstMessage: getFirstMessage(persona, scenarioType),
