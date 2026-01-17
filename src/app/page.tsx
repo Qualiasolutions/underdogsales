@@ -16,8 +16,12 @@ import {
   Award,
   Menu,
   X,
+  LogIn,
+  LogOut,
+  User,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { useAuth } from '@/components/providers/auth-provider'
 import { Card, FeatureCard, StatCard } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import {
@@ -34,6 +38,7 @@ import {
 
 export default function Home() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const { user, loading, signOut } = useAuth()
 
   return (
     <div className="min-h-screen bg-white">
@@ -68,11 +73,32 @@ export default function Home() {
             </div>
 
             <div className="flex items-center gap-3">
-              <Link href="/practice" className="hidden sm:block">
-                <Button variant="primary" size="sm">
-                  Try Demo
-                </Button>
-              </Link>
+              {/* Auth buttons */}
+              {!loading && (
+                <>
+                  {user ? (
+                    <div className="hidden sm:flex items-center gap-3">
+                      <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-muted">
+                        <User className="w-4 h-4 text-navy" />
+                        <span className="text-sm font-medium text-navy truncate max-w-[120px]">
+                          {user.email?.split('@')[0]}
+                        </span>
+                      </div>
+                      <Button variant="ghost" size="sm" onClick={signOut}>
+                        <LogOut className="w-4 h-4" />
+                        Sign Out
+                      </Button>
+                    </div>
+                  ) : (
+                    <Link href="/login" className="hidden sm:block">
+                      <Button variant="primary" size="sm">
+                        <LogIn className="w-4 h-4" />
+                        Sign In
+                      </Button>
+                    </Link>
+                  )}
+                </>
+              )}
 
               {/* Mobile menu button */}
               <button
@@ -129,11 +155,45 @@ export default function Home() {
                 >
                   Features
                 </Link>
-                <Link href="/practice" className="block pt-2">
-                  <Button variant="primary" size="sm" className="w-full">
-                    Try Demo
-                  </Button>
-                </Link>
+
+                {/* Mobile auth */}
+                {!loading && (
+                  <div className="pt-3 border-t border-border">
+                    {user ? (
+                      <div className="space-y-3">
+                        <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-muted">
+                          <User className="w-4 h-4 text-navy" />
+                          <span className="text-sm font-medium text-navy">
+                            {user.email}
+                          </span>
+                        </div>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="w-full"
+                          onClick={() => {
+                            signOut()
+                            setMobileMenuOpen(false)
+                          }}
+                        >
+                          <LogOut className="w-4 h-4" />
+                          Sign Out
+                        </Button>
+                      </div>
+                    ) : (
+                      <Link
+                        href="/login"
+                        className="block"
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        <Button variant="primary" size="sm" className="w-full">
+                          <LogIn className="w-4 h-4" />
+                          Sign In
+                        </Button>
+                      </Link>
+                    )}
+                  </div>
+                )}
               </div>
             </motion.div>
           )}
