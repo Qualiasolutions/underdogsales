@@ -3,7 +3,7 @@
 import { useState, useTransition } from 'react'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
-import { Mic, Mail, Lock, User, ArrowRight } from 'lucide-react'
+import { Mic, Mail, Lock, User, ArrowRight, CheckCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { FadeIn } from '@/components/ui/motion'
@@ -11,16 +11,20 @@ import { signup } from './actions'
 
 export const SignupForm = () => {
   const [error, setError] = useState<string | null>(null)
+  const [success, setSuccess] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
   const searchParams = useSearchParams()
   const redirectTo = searchParams.get('redirect') || '/practice'
 
   const handleSubmit = (formData: FormData) => {
     setError(null)
+    setSuccess(null)
     startTransition(async () => {
       const result = await signup(formData)
       if (result?.error) {
         setError(result.error)
+      } else if (result?.success && result?.message) {
+        setSuccess(result.message)
       }
     })
   }
@@ -60,8 +64,23 @@ export const SignupForm = () => {
               </div>
             )}
 
-            {/* Form */}
-            <form action={handleSubmit} className="space-y-5">
+            {/* Success Message - Email Confirmation */}
+            {success && (
+              <div className="mb-6 p-6 bg-success-light border border-success/20 rounded-xl text-center">
+                <CheckCircle className="w-12 h-12 text-success mx-auto mb-3" />
+                <h3 className="font-semibold text-navy mb-2">Almost there!</h3>
+                <p className="text-sm text-muted-foreground">{success}</p>
+                <Link
+                  href="/login"
+                  className="inline-block mt-4 text-sm text-gold-dark hover:text-gold font-semibold transition-colors"
+                >
+                  Go to Sign In
+                </Link>
+              </div>
+            )}
+
+            {/* Form - hide when success */}
+            {!success && <form action={handleSubmit} className="space-y-5">
               {/* Name */}
               <div>
                 <label htmlFor="name" className="block text-sm font-medium text-navy mb-2">
@@ -151,18 +170,20 @@ export const SignupForm = () => {
                 Create Account
                 <ArrowRight className="w-5 h-5" />
               </Button>
-            </form>
+            </form>}
 
             {/* Login Link */}
-            <p className="text-center text-sm text-muted-foreground mt-6">
-              Already have an account?{' '}
-              <Link
-                href={`/login${redirectTo !== '/practice' ? `?redirect=${redirectTo}` : ''}`}
-                className="text-gold-dark hover:text-gold font-semibold transition-colors"
-              >
-                Sign in
-              </Link>
-            </p>
+            {!success && (
+              <p className="text-center text-sm text-muted-foreground mt-6">
+                Already have an account?{' '}
+                <Link
+                  href={`/login${redirectTo !== '/practice' ? `?redirect=${redirectTo}` : ''}`}
+                  className="text-gold-dark hover:text-gold font-semibold transition-colors"
+                >
+                  Sign in
+                </Link>
+              </p>
+            )}
           </Card>
         </FadeIn>
       </main>

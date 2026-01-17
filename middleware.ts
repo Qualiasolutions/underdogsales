@@ -28,17 +28,17 @@ export async function middleware(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
-  // Protected routes - disabled for now
-  // const protectedRoutes = ['/practice', '/dashboard', '/settings']
-  // const isProtectedRoute = protectedRoutes.some((route) =>
-  //   request.nextUrl.pathname.startsWith(route)
-  // )
+  // Protected routes - require authentication
+  const protectedRoutes = ['/practice', '/dashboard', '/settings', '/profile', '/curriculum']
+  const isProtectedRoute = protectedRoutes.some((route) =>
+    request.nextUrl.pathname.startsWith(route)
+  )
 
-  // if (isProtectedRoute && !user) {
-  //   const redirectUrl = new URL('/login', request.url)
-  //   redirectUrl.searchParams.set('redirect', request.nextUrl.pathname)
-  //   return NextResponse.redirect(redirectUrl)
-  // }
+  if (isProtectedRoute && !user) {
+    const redirectUrl = new URL('/login', request.url)
+    redirectUrl.searchParams.set('redirect', request.nextUrl.pathname)
+    return NextResponse.redirect(redirectUrl)
+  }
 
   // Auth routes - redirect logged-in users away
   const authRoutes = ['/login', '/signup']
@@ -54,5 +54,5 @@ export async function middleware(request: NextRequest) {
 export const config = {
   // Only run middleware on routes that need auth checks
   // Excludes: API routes, static assets, and public pages
-  matcher: ['/practice', '/dashboard', '/settings', '/profile', '/login', '/signup'],
+  matcher: ['/practice/:path*', '/dashboard/:path*', '/settings/:path*', '/profile/:path*', '/curriculum/:path*', '/login', '/signup'],
 }

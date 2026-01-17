@@ -6,6 +6,8 @@ import { createServerSupabaseClient } from '@/lib/supabase/server'
 
 export interface AuthResult {
   error?: string
+  success?: boolean
+  message?: string
 }
 
 export const signup = async (formData: FormData): Promise<AuthResult> => {
@@ -35,11 +37,18 @@ export const signup = async (formData: FormData): Promise<AuthResult> => {
     password,
     options: {
       data: { name },
+      emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/auth/callback`,
     },
   })
 
   if (error) {
     return { error: error.message }
+  }
+
+  // Check if email confirmation is required
+  if (data.user && !data.user.email_confirmed_at && data.user.identities?.length === 0) {
+    // User already exists but hasn't confirmed email
+    return { error: 'An account with this email already exists. Please check your email for a confirmation link.' }
   }
 
   // Create user record in public.users table
@@ -51,12 +60,22 @@ export const signup = async (formData: FormData): Promise<AuthResult> => {
       name,
     })
 
-    if (insertError) {
+    if (insertError && !insertError.message?.includes('duplicate')) {
       // Log but don't fail - user is already created in auth
       console.error('Failed to create user record:', insertError)
     }
   }
 
+  // Check if email confirmation is pending
+  if (data.user && !data.session) {
+    // Email confirmation required - don't redirect, show success message
+    return {
+      success: true,
+      message: 'Check your email! We sent you a confirmation link to complete your signup.',
+    }
+  }
+
+  // User is auto-confirmed and logged in
   revalidatePath('/', 'layout')
   redirect('/practice')
 }

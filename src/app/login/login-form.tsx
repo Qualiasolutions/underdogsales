@@ -10,9 +10,12 @@ import { FadeIn } from '@/components/ui/motion'
 import { login } from './actions'
 
 export const LoginForm = () => {
-  const [error, setError] = useState<string | null>(null)
-  const [isPending, startTransition] = useTransition()
   const searchParams = useSearchParams()
+  const authError = searchParams.get('error')
+  const [error, setError] = useState<string | null>(
+    authError === 'auth_failed' ? 'Authentication failed. Please try again.' : null
+  )
+  const [isPending, startTransition] = useTransition()
   const redirectTo = searchParams.get('redirect') || '/practice'
 
   const handleSubmit = (formData: FormData) => {
