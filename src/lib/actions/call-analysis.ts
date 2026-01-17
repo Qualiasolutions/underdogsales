@@ -118,49 +118,11 @@ export async function deleteCallUpload(
 }
 
 /**
- * Process a call upload (transcribe and score)
+ * NOTE: Call processing (transcribe + score) is handled client-side in CallAnalyzer.tsx
+ * by calling API routes directly. This works because the browser sends auth cookies.
+ *
+ * Server actions cannot call authenticated API routes without forwarding cookies,
+ * so the client-side approach is the correct pattern for this use case.
+ *
+ * Flow: Client -> /api/analyze/upload -> /api/analyze/transcribe -> /api/analyze/score
  */
-export async function processCallUpload(
-  callId: string
-): Promise<{ success: boolean; error?: string }> {
-  const user = await getUser()
-  if (!user) {
-    return { success: false, error: 'Not authenticated' }
-  }
-
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
-
-  try {
-    // Step 1: Transcribe
-    const transcribeRes = await fetch(`${baseUrl}/api/analyze/transcribe`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ callId }),
-    })
-
-    if (!transcribeRes.ok) {
-      const data = await transcribeRes.json()
-      return { success: false, error: data.error || 'Transcription failed' }
-    }
-
-    // Step 2: Score
-    const scoreRes = await fetch(`${baseUrl}/api/analyze/score`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ callId }),
-    })
-
-    if (!scoreRes.ok) {
-      const data = await scoreRes.json()
-      return { success: false, error: data.error || 'Scoring failed' }
-    }
-
-    return { success: true }
-  } catch (error) {
-    console.error('Process call upload error:', error)
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : 'Processing failed',
-    }
-  }
-}
