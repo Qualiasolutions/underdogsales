@@ -53,14 +53,17 @@ export default function Home() {
             </Link>
 
             <div className="hidden md:flex items-center gap-8">
-              <Link href="#features" className="text-sm font-medium text-navy/70 hover:text-navy transition-colors">
-                Features
+              <Link href="/coach" className="text-sm font-medium text-navy/70 hover:text-navy transition-colors">
+                Coach
               </Link>
-              <Link href="#methodology" className="text-sm font-medium text-navy/70 hover:text-navy transition-colors">
-                Methodology
+              <Link href="/chat" className="text-sm font-medium text-navy/70 hover:text-navy transition-colors">
+                Chat
               </Link>
               <Link href="/curriculum" className="text-sm font-medium text-navy/70 hover:text-navy transition-colors">
                 Curriculum
+              </Link>
+              <Link href="#features" className="text-sm font-medium text-navy/70 hover:text-navy transition-colors">
+                Features
               </Link>
             </div>
 
@@ -99,18 +102,18 @@ export default function Home() {
             >
               <div className="px-6 py-4 space-y-3">
                 <Link
-                  href="#features"
+                  href="/coach"
                   className="block py-2 text-sm font-medium text-navy/70 hover:text-navy transition-colors"
                   onClick={() => setMobileMenuOpen(false)}
                 >
-                  Features
+                  Coach
                 </Link>
                 <Link
-                  href="#methodology"
+                  href="/chat"
                   className="block py-2 text-sm font-medium text-navy/70 hover:text-navy transition-colors"
                   onClick={() => setMobileMenuOpen(false)}
                 >
-                  Methodology
+                  Chat
                 </Link>
                 <Link
                   href="/curriculum"
@@ -118,6 +121,13 @@ export default function Home() {
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   Curriculum
+                </Link>
+                <Link
+                  href="#features"
+                  className="block py-2 text-sm font-medium text-navy/70 hover:text-navy transition-colors"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Features
                 </Link>
                 <Link href="/practice" className="block pt-2">
                   <Button variant="primary" size="sm" className="w-full">
