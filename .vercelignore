@@ -1,1 +1,22 @@
-app/
+# Build artifacts
+.next/
+node_modules/
+
+# Local files
+.env.local
+.env*.local
+
+# Test files
+tests/
+*.test.ts
+*.test.tsx
+*.spec.ts
+*.spec.tsx
+
+# Documentation (keep README)
+PRODUCTION_PLAN.md
+plans/
+
+# Development files
+.claude/
+scripts/
