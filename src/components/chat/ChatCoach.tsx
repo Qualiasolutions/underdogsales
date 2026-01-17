@@ -49,16 +49,26 @@ export function ChatCoach() {
     scrollToBottom()
   }, [messages])
 
+  const getModeGreeting = (mode: CoachingMode): string => {
+    const greetings: Record<CoachingMode, string> = {
+      curriculum: `Hey! This is Giulio. You've chosen to learn the curriculum - smart move. We've got 12 modules covering everything from mindset to closing. Let's start from the beginning: Module 1 is all about MINDSET. Before we talk tactics, we need to get your head right. Most people fail at cold calling because they're scared of rejection. Here's the truth - rejection is just part of the game. So tell me, what's your biggest mental block when it comes to cold calling?`,
+      objections: `Hey! This is Giulio. Alright, you want to practice objection handling - this is where the money is made. I've got 17 objections we're going to master together. Here's how we'll do this: I'll throw an objection at you like I'm a prospect, you respond, and I'll coach you on what worked and what didn't. Remember the 4-step framework: Pause, Acknowledge, Ask Permission, Ask a Question. Ready? Let's start with the classic... "I'm not interested." Go ahead, how do you respond?`,
+      techniques: `Hey! This is Giulio. You want to learn specific techniques - I like it. We've got openers, pitches, discovery questions, and closing frameworks to cover. What's your biggest gap right now? Is it the opener where you're getting hung up on? The pitch that's not landing? Discovery where you're not uncovering real pain? Or closing where you can't get the commitment? Pick one and let's drill into it.`,
+      free: `Hey! This is Giulio. You might be wondering why I type a bit weird - that's just my style, I promise I'm not a robot. I'm here to help you master cold calling. Ask me anything - whether it's about handling a specific objection, improving your opener, understanding the psychology behind a technique, or just venting about a tough call. What's on your mind?`,
+    }
+    return greetings[mode]
+  }
+
   const handleStart = useCallback(() => {
     setHasStarted(true)
-    // Add Giulio's greeting
+    // Add Giulio's greeting based on selected mode
     setMessages([{
       role: 'assistant',
-      content: `Hey! This is Giulio. You might be wondering why I type a bit weird - that's just my style, I promise I'm not a robot. I'm here to help you master cold calling. What would you like to work on today?`,
+      content: getModeGreeting(selectedMode),
       timestamp: Date.now(),
     }])
     setTimeout(() => inputRef.current?.focus(), 100)
-  }, [])
+  }, [selectedMode])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
