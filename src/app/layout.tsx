@@ -40,6 +40,10 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: 'Qualia Solutions' }],
   creator: 'Qualia Solutions',
+  icons: {
+    icon: '/underdog-logo.png',
+    apple: '/underdog-logo.png',
+  },
   openGraph: {
     type: 'website',
     locale: 'en_US',
@@ -47,12 +51,14 @@ export const metadata: Metadata = {
     description:
       'Master cold calling with AI-powered role-play practice and real-time coaching.',
     siteName: 'Underdog AI',
+    images: ['/underdog-logo.png'],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Underdog AI Sales Coach',
     description:
       'Master cold calling with AI-powered role-play practice and real-time coaching.',
+    images: ['/underdog-logo.png'],
   },
   robots: {
     index: true,
