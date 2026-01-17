@@ -4,6 +4,9 @@ import { getUserCurriculumProgress } from '@/lib/actions/curriculum'
 import { getAllModules } from '@/config/curriculum'
 import { CurriculumHub } from './curriculum-hub'
 
+// Force dynamic rendering to ensure fresh auth check
+export const dynamic = 'force-dynamic'
+
 export const metadata = {
   title: 'Curriculum | Underdog AI Sales Coach',
   description: 'Master cold calling with the 12-module Underdog methodology curriculum',

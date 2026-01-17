@@ -22,10 +22,10 @@ import {
   type LucideIcon,
 } from 'lucide-react'
 import Link from 'next/link'
-import Image from 'next/image'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
+import { Header } from '@/components/ui/header'
 import {
   startRoleplaySession,
   stopRoleplaySession,

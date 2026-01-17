@@ -4,6 +4,9 @@ import { getModuleProgress } from '@/lib/actions/curriculum'
 import { getModuleById, getAllModules } from '@/config/curriculum'
 import { ModuleDetail } from './module-detail'
 
+// Force dynamic rendering to ensure fresh auth check
+export const dynamic = 'force-dynamic'
+
 interface PageProps {
   params: Promise<{ moduleId: string }>
 }

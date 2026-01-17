@@ -15,11 +15,11 @@ Building an AI-powered sales training platform for Giulio Segantini's Underdog S
 
 | # | Deliverable | Status | Priority |
 |---|-------------|--------|----------|
-| 1 | AI Sales Coach Agent with voice | 🟡 Partial | P0 |
-| 2 | Role-play feature for cold calling | 🟡 Partial | P0 |
+| 1 | AI Sales Coach Agent with voice | 🟢 Done | P0 |
+| 2 | Role-play feature for cold calling | 🟢 Done | P0 |
 | 3 | Call analysis for uploaded recordings | 🔴 Not Started | P1 |
 | 4 | Custom objection handling library | 🟢 Done | - |
-| 5 | 12-module curriculum integration | 🔴 Not Started | P1 |
+| 5 | 12-module curriculum integration | 🟢 Done | P1 |
 | 6 | Admin dashboard for monitoring | 🔴 Not Started | P2 |
 | 7 | Complete source code + docs | 🟡 Partial | P2 |
 | 8 | AI model configs + prompts | 🟢 Done | - |
@@ -32,29 +32,29 @@ Building an AI-powered sales training platform for Giulio Segantini's Underdog S
 ## Current State Analysis
 
 ### What's Built
-- Next.js 15 + React 19 + TypeScript (strict mode)
+- Next.js 16 + React 19 + TypeScript (strict mode)
 - Supabase PostgreSQL with pgvector for RAG
-- 6 AI personas with distinct personalities
-- VAPI integration (web calling)
+- 6 AI personas with distinct ElevenLabs voices (via VAPI assistants)
+- VAPI integration (web calling) - each persona has dedicated assistant
 - Scoring rubric (6 dimensions, 19 criteria)
 - Knowledge base with embedding search
-- Basic VoicePractice component
-- Auth system (disabled)
+- Full VoicePractice component with premium UI
+- 12-module curriculum with progress tracking (sequential unlock)
+- Text chat coaching (Giulio sales coach)
+- Auth system enabled (protected routes)
 
-### Critical Bug: Voice Not Changing Per Persona
-**Problem**: All 6 personas sound like Giulio's voice instead of having distinct voices.
+### ~~Critical Bug: Voice Not Changing Per Persona~~ ✅ FIXED
+~~**Problem**: All 6 personas sound like Giulio's voice instead of having distinct voices.~~
 
-**Root Cause**: VAPI Web SDK's `start()` doesn't support dynamic voice override. The assistant (`45223924-49cd-43ab-8e6c-eea4c77d67c5`) has a hardcoded voice ID.
+**Solution Applied**: Created 6 separate VAPI assistants, one per persona, each with their own ElevenLabs voice. Assistant IDs stored in `src/config/personas.ts`.
 
-**Solution**: Create 6 separate VAPI assistants, one per persona, each with their own ElevenLabs voice.
-
-### Missing Features
-1. Curriculum module system (12 modules)
-2. Call upload + analysis
+### Remaining Features
+1. ~~Curriculum module system (12 modules)~~ ✅ Done
+2. Call upload + analysis ← **Next Priority (P1)**
 3. User dashboard with progress tracking
 4. Admin dashboard with analytics
 5. Session history and scoring
-6. Protected routes (auth gates disabled)
+6. ~~Protected routes (auth gates disabled)~~ ✅ Auth enabled
 
 ---
 
@@ -97,7 +97,7 @@ Building an AI-powered sales training platform for Giulio Segantini's Underdog S
 
 ## Sprint Plan
 
-### Sprint 1: Fix Voice + Core Practice (P0)
+### Sprint 1: Fix Voice + Core Practice (P0) ✅ COMPLETE
 **Goal**: Working role-play with distinct voices per persona
 
 #### Task 1.1: Create 6 VAPI Assistants
@@ -150,7 +150,7 @@ Each assistant needs the full roleplay prompt with their specific persona baked 
 
 ---
 
-### Sprint 2: Frontend Polish (P0)
+### Sprint 2: Frontend Polish (P0) ✅ COMPLETE
 **Goal**: Production-ready UI for practice flow
 
 #### Task 2.1: Redesign Practice Page
@@ -218,7 +218,7 @@ Current `VoicePractice.tsx` needs:
 
 ---
 
-### Sprint 3: Curriculum System (P1)
+### Sprint 3: Curriculum System (P1) ✅ COMPLETE
 **Goal**: 12-module training curriculum with progress tracking
 
 #### Task 3.1: Create Curriculum Config
@@ -265,7 +265,7 @@ export const CURRICULUM_MODULES = [
 
 ---
 
-### Sprint 4: Call Analysis (P1)
+### Sprint 4: Call Analysis (P1) ⏳ NEXT
 **Goal**: Upload real call recordings for AI analysis
 
 #### Task 4.1: Upload Infrastructure
