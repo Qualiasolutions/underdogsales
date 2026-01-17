@@ -13,7 +13,6 @@ import {
   ArrowRight,
   Target,
   TrendingUp,
-  Shield,
   Award,
   Menu,
   X,
@@ -166,9 +165,12 @@ export default function Home() {
                       <ArrowRight className="w-5 h-5" />
                     </Button>
                   </Link>
-                  <Button variant="outline" size="xl">
-                    Watch Demo
-                  </Button>
+                  <Link href="/curriculum">
+                    <Button variant="outline" size="xl" className="w-full sm:w-auto">
+                      <BookOpen className="w-5 h-5" />
+                      View Curriculum
+                    </Button>
+                  </Link>
                 </div>
               </FadeIn>
 
@@ -451,10 +453,12 @@ export default function Home() {
                   Start Free Practice
                 </Button>
               </Link>
-              <Button variant="outline" size="xl">
-                <Shield className="w-5 h-5" />
-                View Pricing
-              </Button>
+              <Link href="/curriculum">
+                <Button variant="outline" size="xl">
+                  <BookOpen className="w-5 h-5" />
+                  View Curriculum
+                </Button>
+              </Link>
             </div>
           </ScrollReveal>
         </div>
