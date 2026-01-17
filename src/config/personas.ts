@@ -8,7 +8,8 @@ export const PERSONAS: Record<string, Persona> = {
     personality: 'Analytical, time-conscious, ROI-focused. Challenges every claim with data requests. Values efficiency and dislikes vague promises.',
     objections: ['budget', 'prove_value', 'timing'],
     warmth: 0.3,
-    voiceId: 'pNInz6obpgDQGcFmaJgB', // ElevenLabs Rachel
+    voiceId: '21m00Tcm4TlvDq8ikWAM', // ElevenLabs Rachel
+    assistantId: '147122df-1f2c-4482-95e9-90a95711d813',
   },
   busy_vp_sales: {
     id: 'busy_vp_sales',
@@ -17,7 +18,8 @@ export const PERSONAS: Record<string, Persona> = {
     personality: 'Direct, impatient, results-oriented. Interrupts frequently. Only engages if you immediately show relevance to revenue.',
     objections: ['already_have_solution', 'not_interested', 'send_email'],
     warmth: 0.4,
-    voiceId: 'yoZ06aMxZJJ28mfd3POQ', // ElevenLabs Sam
+    voiceId: 'pNInz6obpgDQGcFmaJgB', // ElevenLabs Adam
+    assistantId: 'ea77c65d-b6cc-4ec6-beee-24e841549862',
   },
   friendly_gatekeeper: {
     id: 'friendly_gatekeeper',
@@ -26,7 +28,8 @@ export const PERSONAS: Record<string, Persona> = {
     personality: 'Helpful but protective. Follows protocols but can be won over with respect and genuine connection.',
     objections: ['who_is_calling', 'what_is_this_regarding', 'send_email'],
     warmth: 0.7,
-    voiceId: '21m00Tcm4TlvDq8ikWAM', // ElevenLabs Rachel
+    voiceId: 'EXAVITQu4vr4xnSDxMaL', // ElevenLabs Bella
+    assistantId: '34955843-45f0-4eef-9685-548fbb4c33bf',
   },
   defensive_manager: {
     id: 'defensive_manager',
@@ -35,7 +38,8 @@ export const PERSONAS: Record<string, Persona> = {
     personality: 'Protective of his team and process. Sees salespeople as threats to his authority. Needs to feel in control.',
     objections: ['we_handle_internally', 'my_team_is_fine', 'not_my_decision'],
     warmth: 0.35,
-    voiceId: 'ErXwobaYiN019PkySvjV', // ElevenLabs Antoni
+    voiceId: 'TxGEqnHWrfWFTfGW9XjX', // ElevenLabs Josh
+    assistantId: 'fdf94f58-6959-4b0c-87f0-03ec390c1f42',
   },
   interested_but_stuck: {
     id: 'interested_but_stuck',
@@ -44,7 +48,8 @@ export const PERSONAS: Record<string, Persona> = {
     personality: 'Genuinely interested but constrained by bureaucracy. Wants help but fears internal politics.',
     objections: ['need_approval', 'bad_timing', 'had_bad_experience'],
     warmth: 0.6,
-    voiceId: 'EXAVITQu4vr4xnSDxMaL', // ElevenLabs Bella
+    voiceId: 'MF3mGyEYCl7XYWbV9V6O', // ElevenLabs Elli
+    assistantId: '290a693d-3d8c-4600-a21b-885e565b0452',
   },
   aggressive_closer: {
     id: 'aggressive_closer',
@@ -53,7 +58,8 @@ export const PERSONAS: Record<string, Persona> = {
     personality: 'Old-school sales mentality. Tries to control the conversation. Tests your confidence and resolve.',
     objections: ['prove_yourself', 'why_should_i_care', 'competitive_offer'],
     warmth: 0.25,
-    voiceId: 'VR6AewLTigWG4xSOukaG', // ElevenLabs Arnold
+    voiceId: 'yoZ06aMxZJJ28mfd3POQ', // ElevenLabs Sam
+    assistantId: 'd6d0e091-c244-401a-a0d7-96c5b3531c2b',
   },
 }
 

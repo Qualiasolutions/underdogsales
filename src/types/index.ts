@@ -24,6 +24,7 @@ export interface Persona {
   objections: string[]
   warmth: number // 0-1 scale
   voiceId: string
+  assistantId: string // VAPI assistant with pre-configured voice
 }
 
 export interface RoleplaySession {

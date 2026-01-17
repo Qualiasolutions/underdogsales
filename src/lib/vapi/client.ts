@@ -1,10 +1,5 @@
 import Vapi from '@vapi-ai/web'
 import type { Persona, VapiCallEvent, TranscriptEntry } from '@/types'
-import { getPersonaPrompt } from '@/config/personas'
-
-// Underdog Roleplay Coach Assistant ID
-// This assistant uses dynamic voice override per persona
-const ROLEPLAY_ASSISTANT_ID = '45223924-49cd-43ab-8e6c-eea4c77d67c5'
 
 let vapiInstance: Vapi | null = null
 
@@ -99,19 +94,9 @@ export async function startRoleplaySession(options: RoleplaySessionOptions): Pro
   vapi.on('camera-error', cameraErrorHandler)
 
   try {
-    // Use roleplay assistant with dynamic voice override per persona
-    // Each persona gets their distinct ElevenLabs voice
-    await vapi.start(ROLEPLAY_ASSISTANT_ID, {
-      voice: {
-        provider: '11labs',
-        voiceId: persona.voiceId,
-        model: 'eleven_turbo_v2_5',
-      },
+    // Use persona-specific assistant (voice is pre-configured in VAPI)
+    await vapi.start(persona.assistantId, {
       variableValues: {
-        persona_name: persona.name,
-        persona_role: persona.role,
-        persona_warmth: String(persona.warmth),
-        persona_prompt: getPersonaPrompt(persona.id),
         scenario_type: scenarioType,
         difficulty: getDifficultyFromWarmth(persona.warmth),
       },
