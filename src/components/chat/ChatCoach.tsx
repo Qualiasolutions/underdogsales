@@ -4,7 +4,6 @@ import { useState, useRef, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
 import {
   Send,
-  ArrowLeft,
   Loader2,
   GraduationCap,
   Shield,
@@ -12,11 +11,10 @@ import {
   MessageCircle,
   type LucideIcon,
 } from 'lucide-react'
-import Link from 'next/link'
-import Image from 'next/image'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
+import { Header } from '@/components/ui/header'
 import { GIULIO_COACH, COACHING_MODES, type CoachingMode } from '@/config/coach'
 
 interface Message {
@@ -126,38 +124,8 @@ export function ChatCoach() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-muted/30 via-background to-muted/50 flex flex-col">
-      {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 glass border-b border-white/20">
-        <div className="max-w-4xl mx-auto px-6 h-16 flex items-center justify-between">
-          <Link
-            href="/"
-            className="flex items-center gap-2 text-muted-foreground hover:text-navy transition-colors group"
-          >
-            <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-            <span className="text-sm font-medium">Back</span>
-          </Link>
-
-          <div className="flex items-center gap-3">
-            <Image
-              src="/underdog-logo.png"
-              alt="Underdog Sales"
-              width={32}
-              height={32}
-              className="drop-shadow-sm"
-            />
-            <div className="hidden sm:block">
-              <h1 className="text-sm font-bold text-navy">Chat with Giulio</h1>
-              <p className="text-[10px] text-muted-foreground">Text Coaching</p>
-            </div>
-          </div>
-
-          <Link href="/coach">
-            <Button variant="outline" size="sm">
-              Voice Call
-            </Button>
-          </Link>
-        </div>
-      </header>
+      {/* Shared Header with auth */}
+      <Header variant="transparent" />
 
       <main className="flex-1 pt-24 pb-4 px-4 sm:px-6 flex flex-col">
         <div className="max-w-4xl mx-auto w-full flex-1 flex flex-col">

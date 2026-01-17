@@ -1,5 +1,8 @@
 // Core types for Underdog AI Sales Coach
 
+// Call Upload Status Types
+export type CallUploadStatus = 'pending' | 'transcribing' | 'scoring' | 'completed' | 'failed'
+
 export interface Organization {
   id: string
   name: string
@@ -65,12 +68,37 @@ export interface CallUpload {
   id: string
   user_id: string
   file_path: string
+  original_filename: string
   file_size_bytes: number
   duration_seconds: number
+  status: CallUploadStatus
+  error_message?: string
   transcript: TranscriptEntry[]
-  analysis: CallAnalysis
-  overall_score: number
+  analysis: CallAnalysis | null
+  overall_score: number | null
   created_at: string
+}
+
+// Whisper API Response Types
+export interface WhisperTranscriptSegment {
+  id: number
+  seek: number
+  start: number
+  end: number
+  text: string
+  tokens: number[]
+  temperature: number
+  avg_logprob: number
+  compression_ratio: number
+  no_speech_prob: number
+}
+
+export interface WhisperResponse {
+  task: string
+  language: string
+  duration: number
+  text: string
+  segments: WhisperTranscriptSegment[]
 }
 
 export interface CallAnalysis {

@@ -118,8 +118,11 @@ export interface Database {
           id: string
           user_id: string
           file_path: string
+          original_filename: string | null
           file_size_bytes: number | null
           duration_seconds: number | null
+          status: 'pending' | 'transcribing' | 'scoring' | 'completed' | 'failed'
+          error_message: string | null
           transcript: Json | null
           analysis: Json | null
           overall_score: number | null
@@ -129,8 +132,11 @@ export interface Database {
           id?: string
           user_id: string
           file_path: string
+          original_filename?: string | null
           file_size_bytes?: number | null
           duration_seconds?: number | null
+          status?: 'pending' | 'transcribing' | 'scoring' | 'completed' | 'failed'
+          error_message?: string | null
           transcript?: Json | null
           analysis?: Json | null
           overall_score?: number | null
@@ -140,8 +146,11 @@ export interface Database {
           id?: string
           user_id?: string
           file_path?: string
+          original_filename?: string | null
           file_size_bytes?: number | null
           duration_seconds?: number | null
+          status?: 'pending' | 'transcribing' | 'scoring' | 'completed' | 'failed'
+          error_message?: string | null
           transcript?: Json | null
           analysis?: Json | null
           overall_score?: number | null
