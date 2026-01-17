@@ -10,7 +10,6 @@ import {
   X,
   LogIn,
   LogOut,
-  User,
   ChevronDown,
   BookOpen,
   Mic,

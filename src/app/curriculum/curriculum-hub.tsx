@@ -6,7 +6,7 @@ import { motion } from 'motion/react'
 import { ModuleCard } from '@/components/curriculum/ModuleCard'
 import { OverallProgressBar, CurriculumStats } from '@/components/curriculum/CurriculumProgress'
 import type { CurriculumModule, CurriculumProgress } from '@/types'
-import { BookOpen, ArrowLeft } from 'lucide-react'
+import { Header } from '@/components/ui/header'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 
@@ -42,37 +42,11 @@ export function CurriculumHub({ modules, progress }: CurriculumHubProps) {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b border-border bg-white/80 backdrop-blur-sm sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Link href="/practice">
-                <Button variant="ghost" size="icon-sm">
-                  <ArrowLeft className="w-5 h-5" />
-                </Button>
-              </Link>
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-gold to-gold-light flex items-center justify-center">
-                  <BookOpen className="w-5 h-5 text-navy" />
-                </div>
-                <div>
-                  <h1 className="text-xl font-bold text-navy">Underdog Methodology</h1>
-                  <p className="text-sm text-muted-foreground">12 modules to master cold calling</p>
-                </div>
-              </div>
-            </div>
-            <Link href="/practice">
-              <Button variant="secondary" size="sm">
-                Practice Now
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </header>
+      {/* Shared Header with auth */}
+      <Header />
 
       {/* Main content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-12 space-y-8">
         {/* Progress section */}
         <motion.section
           initial={{ opacity: 0, y: 20 }}

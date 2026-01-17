@@ -5,11 +5,11 @@ import Link from 'next/link'
 import { motion } from 'motion/react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { Header } from '@/components/ui/header'
 import { CompletionBadge } from '@/components/curriculum/CurriculumProgress'
 import { markModuleComplete, markModuleStarted } from '@/lib/actions/curriculum'
 import type { CurriculumModule, CurriculumProgress } from '@/types'
 import {
-  ArrowLeft,
   CheckCircle,
   BookOpen,
   Mic,
@@ -59,32 +59,22 @@ export function ModuleDetail({
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b border-border bg-white/80 backdrop-blur-sm sticky top-0 z-10">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Link href="/curriculum">
-                <Button variant="ghost" size="icon-sm">
-                  <ArrowLeft className="w-5 h-5" />
-                </Button>
-              </Link>
-              <div>
-                <p className="text-xs text-muted-foreground">
-                  Module {module.id} of {totalModules}
-                </p>
-                <h1 className="text-lg font-bold text-navy">{module.name}</h1>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              {isCompleted && <CompletionBadge />}
-            </div>
-          </div>
-        </div>
-      </header>
+      {/* Shared Header with auth */}
+      <Header />
 
       {/* Main content */}
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-12">
+        {/* Module info header */}
+        <div className="mb-6 flex items-center justify-between">
+          <div>
+            <p className="text-sm text-muted-foreground mb-1">
+              Module {module.id} of {totalModules}
+            </p>
+            <h1 className="text-2xl font-bold text-navy">{module.name}</h1>
+          </div>
+          {isCompleted && <CompletionBadge />}
+        </div>
+
         <div className="space-y-8">
           {/* Module header */}
           <motion.section
