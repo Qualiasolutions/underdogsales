@@ -1,8 +1,9 @@
 'use client'
 
+import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { motion } from 'motion/react'
+import { motion, AnimatePresence } from 'motion/react'
 import {
   Phone,
   Upload,
@@ -14,6 +15,8 @@ import {
   TrendingUp,
   Shield,
   Award,
+  Menu,
+  X,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, FeatureCard, StatCard } from '@/components/ui/card'
@@ -31,6 +34,8 @@ import {
 } from '@/components/ui/motion'
 
 export default function Home() {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+
   return (
     <div className="min-h-screen bg-white">
       {/* Navigation */}
@@ -55,20 +60,75 @@ export default function Home() {
               <Link href="#methodology" className="text-sm font-medium text-navy/70 hover:text-navy transition-colors">
                 Methodology
               </Link>
-              <Link href="#pricing" className="text-sm font-medium text-navy/70 hover:text-navy transition-colors">
-                Pricing
+              <Link href="/curriculum" className="text-sm font-medium text-navy/70 hover:text-navy transition-colors">
+                Curriculum
               </Link>
             </div>
 
             <div className="flex items-center gap-3">
-              <Link href="/practice">
+              <Link href="/practice" className="hidden sm:block">
                 <Button variant="primary" size="sm">
                   Try Demo
                 </Button>
               </Link>
+
+              {/* Mobile menu button */}
+              <button
+                className="md:hidden p-2 rounded-lg hover:bg-muted transition-colors"
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                aria-label="Toggle menu"
+              >
+                {mobileMenuOpen ? (
+                  <X className="w-6 h-6 text-navy" />
+                ) : (
+                  <Menu className="w-6 h-6 text-navy" />
+                )}
+              </button>
             </div>
           </div>
         </div>
+
+        {/* Mobile menu */}
+        <AnimatePresence>
+          {mobileMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.2 }}
+              className="md:hidden border-t border-border/50 bg-white"
+            >
+              <div className="px-6 py-4 space-y-3">
+                <Link
+                  href="#features"
+                  className="block py-2 text-sm font-medium text-navy/70 hover:text-navy transition-colors"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Features
+                </Link>
+                <Link
+                  href="#methodology"
+                  className="block py-2 text-sm font-medium text-navy/70 hover:text-navy transition-colors"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Methodology
+                </Link>
+                <Link
+                  href="/curriculum"
+                  className="block py-2 text-sm font-medium text-navy/70 hover:text-navy transition-colors"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Curriculum
+                </Link>
+                <Link href="/practice" className="block pt-2">
+                  <Button variant="primary" size="sm" className="w-full">
+                    Try Demo
+                  </Button>
+                </Link>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </nav>
 
       {/* Hero Section */}
@@ -278,12 +338,13 @@ export default function Home() {
             </ScrollReveal>
 
             <ScrollReveal delay={0.2}>
-              <FeatureCard
-                icon={<BookOpen className="w-7 h-7" />}
-                title="12-Module Curriculum"
-                description="Learn the complete Underdog cold calling methodology from openers to closing."
-                badge="Coming Soon"
-              />
+              <Link href="/curriculum">
+                <FeatureCard
+                  icon={<BookOpen className="w-7 h-7" />}
+                  title="12-Module Curriculum"
+                  description="Learn the complete Underdog cold calling methodology from openers to closing."
+                />
+              </Link>
             </ScrollReveal>
 
             <ScrollReveal delay={0.3}>
@@ -419,13 +480,13 @@ export default function Home() {
             </p>
 
             <div className="flex items-center gap-6">
-              <Link href="#" className="text-sm text-muted-foreground hover:text-navy transition-colors">
+              <Link href="/privacy" className="text-sm text-muted-foreground hover:text-navy transition-colors">
                 Privacy
               </Link>
-              <Link href="#" className="text-sm text-muted-foreground hover:text-navy transition-colors">
+              <Link href="/terms" className="text-sm text-muted-foreground hover:text-navy transition-colors">
                 Terms
               </Link>
-              <Link href="#" className="text-sm text-muted-foreground hover:text-navy transition-colors">
+              <Link href="mailto:support@underdogsales.com" className="text-sm text-muted-foreground hover:text-navy transition-colors">
                 Support
               </Link>
             </div>
