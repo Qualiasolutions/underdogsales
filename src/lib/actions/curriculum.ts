@@ -74,7 +74,8 @@ export async function markModuleComplete(moduleId: number): Promise<{ success: b
     return { success: false, error: 'Not authenticated' }
   }
 
-  const supabase = await createServerSupabaseClient()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const supabase = await createServerSupabaseClient() as any
 
   // Check if progress record exists
   const { data: existing } = await supabase
@@ -86,15 +87,13 @@ export async function markModuleComplete(moduleId: number): Promise<{ success: b
 
   if (existing) {
     // Update existing record
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const existingRow = existing as any as { id: string }
     const { error } = await supabase
       .from('curriculum_progress')
       .update({
         completed: true,
         completed_at: new Date().toISOString(),
-      } as Record<string, unknown>)
-      .eq('id', existingRow.id)
+      })
+      .eq('id', existing.id)
 
     if (error) {
       console.error('Error updating curriculum progress:', error)
@@ -107,7 +106,7 @@ export async function markModuleComplete(moduleId: number): Promise<{ success: b
       module_id: moduleId,
       completed: true,
       completed_at: new Date().toISOString(),
-    } as Record<string, unknown>)
+    })
 
     if (error) {
       console.error('Error inserting curriculum progress:', error)
@@ -124,7 +123,8 @@ export async function markModuleStarted(moduleId: number): Promise<{ success: bo
     return { success: false, error: 'Not authenticated' }
   }
 
-  const supabase = await createServerSupabaseClient()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const supabase = await createServerSupabaseClient() as any
 
   // Check if progress record exists
   const { data: existing } = await supabase
@@ -140,7 +140,7 @@ export async function markModuleStarted(moduleId: number): Promise<{ success: bo
       user_id: user.id,
       module_id: moduleId,
       completed: false,
-    } as Record<string, unknown>)
+    })
 
     if (error) {
       console.error('Error inserting curriculum progress:', error)

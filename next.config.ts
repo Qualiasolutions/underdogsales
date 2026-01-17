@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { resolve } from 'path';
 
 const nextConfig: NextConfig = {
   // Image optimization
@@ -11,6 +12,14 @@ const nextConfig: NextConfig = {
 
   // Disable source maps in production for smaller bundles
   productionBrowserSourceMaps: false,
+
+  // Exclude test-only packages from server bundle
+  serverExternalPackages: ['@playwright/test', 'playwright-core', 'playwright'],
+
+  // Turbopack configuration
+  turbopack: {
+    root: resolve(__dirname),
+  },
 
   // Experimental optimizations
   experimental: {

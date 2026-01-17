@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { motion } from 'motion/react'
 import { Button } from '@/components/ui/button'
@@ -11,7 +10,6 @@ import { markModuleComplete, markModuleStarted } from '@/lib/actions/curriculum'
 import type { CurriculumModule, CurriculumProgress } from '@/types'
 import {
   ArrowLeft,
-  ArrowRight,
   CheckCircle,
   BookOpen,
   Mic,
@@ -34,7 +32,6 @@ export function ModuleDetail({
   nextModule,
   totalModules,
 }: ModuleDetailProps) {
-  const router = useRouter()
   const [isPending, startTransition] = useTransition()
   const [isCompleted, setIsCompleted] = useState(progress?.completed ?? false)
   const [showConfetti, setShowConfetti] = useState(false)

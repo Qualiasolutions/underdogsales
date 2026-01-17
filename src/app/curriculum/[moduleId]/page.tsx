@@ -46,8 +46,8 @@ export default async function ModuleDetailPage({ params }: PageProps) {
   const progress = await getModuleProgress(moduleId)
 
   // Get prev/next module info
-  const prevModule = moduleId > 1 ? getModuleById(moduleId - 1) : null
-  const nextModule = moduleId < 12 ? getModuleById(moduleId + 1) : null
+  const prevModule = moduleId > 1 ? getModuleById(moduleId - 1) ?? null : null
+  const nextModule = moduleId < 12 ? getModuleById(moduleId + 1) ?? null : null
 
   return (
     <ModuleDetail
