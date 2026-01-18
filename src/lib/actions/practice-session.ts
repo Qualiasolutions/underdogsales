@@ -1,0 +1,310 @@
+'use server'
+
+import { createClient } from '@supabase/supabase-js'
+import { getUser } from '@/lib/supabase/server'
+import { analyzeTranscript } from '@/lib/scoring/engine'
+import type { TranscriptEntry, ScoreDimension, CallAnalysis } from '@/types'
+
+interface SaveSessionInput {
+  personaId: string
+  scenarioType: string
+  transcript: TranscriptEntry[]
+  durationSeconds: number
+  vapiCallId?: string
+}
+
+interface SaveSessionResult {
+  success: boolean
+  sessionId?: string
+  error?: string
+}
+
+interface SessionWithScores {
+  id: string
+  user_id: string
+  persona_id: string
+  scenario_type: string
+  duration_seconds: number
+  vapi_call_id: string | null
+  transcript: TranscriptEntry[]
+  created_at: string
+  overall_score: number
+  analysis: CallAnalysis
+}
+
+function getServiceSupabase() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
+}
+
+// DB row types for type safety
+interface RoleplaySessionRow {
+  id: string
+  user_id: string
+  persona_id: string
+  scenario_type: string
+  duration_seconds: number | null
+  vapi_call_id: string | null
+  transcript: unknown
+  created_at: string
+}
+
+interface SessionScoreRow {
+  id: string
+  session_id: string
+  dimension: string
+  score: number
+  feedback: string | null
+  created_at: string
+}
+
+/**
+ * Save a practice session with transcript and run scoring analysis
+ */
+export async function savePracticeSession(
+  input: SaveSessionInput
+): Promise<SaveSessionResult> {
+  try {
+    const user = await getUser()
+    if (!user) {
+      return { success: false, error: 'Not authenticated' }
+    }
+
+    // Validate input
+    if (!input.transcript || input.transcript.length === 0) {
+      return { success: false, error: 'No transcript to save' }
+    }
+
+    // Run scoring analysis
+    const scoringResult = analyzeTranscript({
+      transcript: input.transcript,
+      durationSeconds: input.durationSeconds,
+      scenarioType: input.scenarioType,
+    })
+
+    const supabase = getServiceSupabase()
+
+    // Save the session
+    const { data: sessionData, error: sessionError } = await supabase
+      .from('roleplay_sessions')
+      .insert({
+        user_id: user.id,
+        persona_id: input.personaId,
+        scenario_type: input.scenarioType,
+        duration_seconds: input.durationSeconds,
+        vapi_call_id: input.vapiCallId || null,
+        transcript: input.transcript,
+      })
+      .select('id')
+      .single()
+
+    const session = sessionData as { id: string } | null
+
+    if (sessionError || !session) {
+      console.error('Error saving session:', sessionError)
+      return { success: false, error: 'Failed to save session' }
+    }
+
+    // Save dimension scores
+    const scoreInserts = Object.entries(scoringResult.dimensionScores).map(
+      ([dimension, score]) => ({
+        session_id: session.id,
+        dimension,
+        score: score.score,
+        feedback: score.feedback,
+      })
+    )
+
+    const { error: scoresError } = await supabase
+      .from('session_scores')
+      .insert(scoreInserts)
+
+    if (scoresError) {
+      console.error('Error saving scores:', scoresError)
+      // Don't fail the whole operation, session is saved
+    }
+
+    return { success: true, sessionId: session.id }
+  } catch (error) {
+    console.error('Error in savePracticeSession:', error)
+    return { success: false, error: 'An unexpected error occurred' }
+  }
+}
+
+/**
+ * Get a practice session with its scores
+ */
+export async function getPracticeSession(
+  sessionId: string
+): Promise<SessionWithScores | null> {
+  try {
+    const user = await getUser()
+    if (!user) return null
+
+    const supabase = getServiceSupabase()
+
+    // Get session
+    const { data: sessionData, error: sessionError } = await supabase
+      .from('roleplay_sessions')
+      .select('*')
+      .eq('id', sessionId)
+      .eq('user_id', user.id)
+      .single()
+
+    const session = sessionData as RoleplaySessionRow | null
+
+    if (sessionError || !session) return null
+
+    // Get scores
+    const { data: scoresData, error: scoresError } = await supabase
+      .from('session_scores')
+      .select('*')
+      .eq('session_id', sessionId)
+
+    const scores = (scoresData || []) as SessionScoreRow[]
+
+    if (scoresError) {
+      console.error('Error fetching scores:', scoresError)
+    }
+
+    // Reconstruct the analysis from scores
+    const dimensionScores: CallAnalysis['scores'] = {} as CallAnalysis['scores']
+    let totalScore = 0
+    let scoreCount = 0
+
+    const dimensions: ScoreDimension[] = [
+      'opener',
+      'pitch',
+      'discovery',
+      'objection_handling',
+      'closing',
+      'communication',
+    ]
+
+    for (const dim of dimensions) {
+      const scoreData = scores.find((s) => s.dimension === dim)
+      dimensionScores[dim] = {
+        score: scoreData?.score || 0,
+        feedback: scoreData?.feedback || '',
+        criteria: [], // Criteria details not stored in DB, would need to re-analyze
+      }
+      if (scoreData) {
+        totalScore += scoreData.score
+        scoreCount++
+      }
+    }
+
+    const overallScore = scoreCount > 0 ? totalScore / scoreCount : 0
+
+    // Generate summary based on scores
+    const sortedDimensions = Object.entries(dimensionScores).sort(
+      ([, a], [, b]) => b.score - a.score
+    )
+    const bestDimension = sortedDimensions[0]?.[0] || 'opener'
+    const worstDimension = sortedDimensions[sortedDimensions.length - 1]?.[0] || 'closing'
+
+    let summary: string
+    if (overallScore >= 8) {
+      summary = `Excellent call! Your strongest area was ${bestDimension.replace('_', ' ')}. Keep up the great work.`
+    } else if (overallScore >= 6) {
+      summary = `Solid performance. Your ${bestDimension.replace('_', ' ')} was strong. Focus on improving your ${worstDimension.replace('_', ' ')} next time.`
+    } else {
+      summary = `Keep practicing! Focus on ${worstDimension.replace('_', ' ')} as your priority area for improvement.`
+    }
+
+    // Extract strengths and improvements from feedback
+    const strengths: string[] = []
+    const improvements: string[] = []
+
+    for (const [, score] of Object.entries(dimensionScores)) {
+      if (score.score >= 7 && score.feedback) {
+        strengths.push(score.feedback)
+      } else if (score.score < 7 && score.feedback) {
+        improvements.push(score.feedback)
+      }
+    }
+
+    const analysis: CallAnalysis = {
+      summary,
+      strengths: strengths.slice(0, 5),
+      improvements: improvements.slice(0, 5),
+      scores: dimensionScores,
+    }
+
+    return {
+      id: session.id,
+      user_id: session.user_id,
+      persona_id: session.persona_id,
+      scenario_type: session.scenario_type,
+      duration_seconds: session.duration_seconds || 0,
+      vapi_call_id: session.vapi_call_id,
+      transcript: (session.transcript as unknown as TranscriptEntry[]) || [],
+      created_at: session.created_at,
+      overall_score: Math.round(overallScore * 10) / 10,
+      analysis,
+    }
+  } catch (error) {
+    console.error('Error in getPracticeSession:', error)
+    return null
+  }
+}
+
+/**
+ * Get all practice sessions for the current user
+ */
+export async function getUserPracticeSessions(): Promise<
+  Array<{
+    id: string
+    persona_id: string
+    scenario_type: string
+    duration_seconds: number
+    created_at: string
+    overall_score: number
+  }>
+> {
+  try {
+    const user = await getUser()
+    if (!user) return []
+
+    const supabase = getServiceSupabase()
+
+    // Get sessions with their scores
+    const { data: sessions, error } = await supabase
+      .from('roleplay_sessions')
+      .select(`
+        id,
+        persona_id,
+        scenario_type,
+        duration_seconds,
+        created_at,
+        session_scores (score)
+      `)
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: false })
+      .limit(20)
+
+    if (error || !sessions) return []
+
+    return sessions.map((session) => {
+      const scores = (session.session_scores as Array<{ score: number }>) || []
+      const avgScore =
+        scores.length > 0
+          ? scores.reduce((sum, s) => sum + s.score, 0) / scores.length
+          : 0
+
+      return {
+        id: session.id,
+        persona_id: session.persona_id,
+        scenario_type: session.scenario_type,
+        duration_seconds: session.duration_seconds || 0,
+        created_at: session.created_at,
+        overall_score: Math.round(avgScore * 10) / 10,
+      }
+    })
+  } catch (error) {
+    console.error('Error in getUserPracticeSessions:', error)
+    return []
+  }
+}

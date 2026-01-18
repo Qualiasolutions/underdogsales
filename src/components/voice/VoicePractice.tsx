@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useCallback, useEffect, useRef, memo } from 'react'
+import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'motion/react'
 import {
   Mic,
@@ -18,6 +19,7 @@ import {
   Shield,
   Target,
   DoorOpen,
+  Loader2,
   type LucideIcon,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -30,6 +32,7 @@ import {
   muteRoleplaySession,
 } from '@/lib/vapi/client'
 import { getAllPersonas, getPersonaById } from '@/config/personas'
+import { savePracticeSession } from '@/lib/actions/practice-session'
 import type { TranscriptEntry } from '@/types'
 
 type ScenarioType = 'cold_call' | 'objection' | 'closing' | 'gatekeeper'
@@ -225,6 +228,7 @@ const ErrorMessage = memo(({ error, onDismiss, onRetry }: {
 ErrorMessage.displayName = 'ErrorMessage'
 
 export function VoicePractice({ onSessionEnd }: VoicePracticeProps) {
+  const router = useRouter()
   const [connectionStatus, setConnectionStatus] = useState<ConnectionStatus>('idle')
   const [isMuted, setIsMuted] = useState(false)
   const [selectedPersonaId, setSelectedPersonaId] = useState<string>('skeptical_cfo')
@@ -233,9 +237,11 @@ export function VoicePractice({ onSessionEnd }: VoicePracticeProps) {
   const [callId, setCallId] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [callDuration, setCallDuration] = useState(0)
+  const [isSaving, setIsSaving] = useState(false)
   const transcriptRef = useRef<HTMLDivElement>(null)
   const transcriptDataRef = useRef<TranscriptEntry[]>([])
   const timerRef = useRef<NodeJS.Timeout | null>(null)
+  const callDurationRef = useRef(0)
 
   const personas = getAllPersonas()
   const selectedPersona = getPersonaById(selectedPersonaId)
@@ -259,13 +265,18 @@ export function VoicePractice({ onSessionEnd }: VoicePracticeProps) {
   useEffect(() => {
     if (isActive) {
       timerRef.current = setInterval(() => {
-        setCallDuration(d => d + 1)
+        setCallDuration(d => {
+          const newDuration = d + 1
+          callDurationRef.current = newDuration
+          return newDuration
+        })
       }, 1000)
     } else {
       if (timerRef.current) {
         clearInterval(timerRef.current)
       }
       setCallDuration(0)
+      callDurationRef.current = 0
     }
     return () => {
       if (timerRef.current) clearInterval(timerRef.current)
@@ -277,6 +288,40 @@ export function VoicePractice({ onSessionEnd }: VoicePracticeProps) {
     const secs = seconds % 60
     return `${mins}:${secs.toString().padStart(2, '0')}`
   }
+
+  // Save session and redirect to results
+  const handleSessionComplete = useCallback(async (transcriptData: TranscriptEntry[], duration: number, vapiId?: string) => {
+    // Skip if no meaningful transcript
+    if (transcriptData.length < 2) {
+      onSessionEnd?.(transcriptData)
+      return
+    }
+
+    setIsSaving(true)
+    try {
+      const result = await savePracticeSession({
+        personaId: selectedPersonaId,
+        scenarioType: selectedScenario,
+        transcript: transcriptData,
+        durationSeconds: duration,
+        vapiCallId: vapiId || undefined,
+      })
+
+      if (result.success && result.sessionId) {
+        router.push(`/practice/results/${result.sessionId}`)
+      } else {
+        console.error('Failed to save session:', result.error)
+        setError(result.error || 'Failed to save session')
+        setIsSaving(false)
+      }
+    } catch (err) {
+      console.error('Error saving session:', err)
+      setError('Failed to save your practice session')
+      setIsSaving(false)
+    }
+
+    onSessionEnd?.(transcriptData)
+  }, [selectedPersonaId, selectedScenario, router, onSessionEnd])
 
   const handleStart = useCallback(async () => {
     if (!selectedPersona) return
@@ -305,8 +350,9 @@ export function VoicePractice({ onSessionEnd }: VoicePracticeProps) {
         },
         onCallEnd: () => {
           setConnectionStatus('idle')
+          const currentCallId = callId
           setCallId(null)
-          onSessionEnd?.(transcriptDataRef.current)
+          handleSessionComplete(transcriptDataRef.current, callDurationRef.current, currentCallId || undefined)
         },
         onError: (err) => {
           setError(err.message || 'Connection failed')
@@ -318,14 +364,16 @@ export function VoicePractice({ onSessionEnd }: VoicePracticeProps) {
       setError(err instanceof Error ? err.message : 'Connection failed')
       setConnectionStatus('error')
     }
-  }, [selectedPersona, selectedScenario, onSessionEnd])
+  }, [selectedPersona, selectedScenario, onSessionEnd, callId, handleSessionComplete])
 
   const handleStop = useCallback(() => {
     stopRoleplaySession()
     setConnectionStatus('idle')
+    const currentCallId = callId
+    const currentDuration = callDurationRef.current
     setCallId(null)
-    onSessionEnd?.(transcriptDataRef.current)
-  }, [onSessionEnd])
+    handleSessionComplete(transcriptDataRef.current, currentDuration, currentCallId || undefined)
+  }, [callId, handleSessionComplete])
 
   const handleMuteToggle = useCallback(() => {
     const newMuted = !isMuted
@@ -353,7 +401,7 @@ export function VoicePractice({ onSessionEnd }: VoicePracticeProps) {
         <div className="max-w-5xl mx-auto">
           <AnimatePresence mode="wait">
             {/* Setup View */}
-            {!isActive && connectionStatus !== 'connecting' && (
+            {!isActive && connectionStatus !== 'connecting' && !isSaving && (
               <motion.div
                 key="setup"
                 initial={{ opacity: 0 }}
@@ -601,8 +649,65 @@ export function VoicePractice({ onSessionEnd }: VoicePracticeProps) {
               </motion.div>
             )}
 
+            {/* Saving View */}
+            {isSaving && (
+              <motion.div
+                key="saving"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="flex flex-col items-center justify-center min-h-[60vh]"
+              >
+                <Card variant="glass" className="p-12 text-center max-w-sm w-full">
+                  {/* Animated loader */}
+                  <div className="relative w-24 h-24 mx-auto mb-8">
+                    <motion.div
+                      className="absolute inset-0 rounded-full border-4 border-gold/20"
+                      animate={{ rotate: 360 }}
+                      transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
+                    />
+                    <motion.div
+                      className="absolute inset-0 rounded-full border-4 border-transparent border-t-gold"
+                      animate={{ rotate: 360 }}
+                      transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+                    />
+                    <div className="absolute inset-3 rounded-full bg-gradient-to-br from-gold to-gold-light flex items-center justify-center shadow-gold">
+                      <Loader2 className="w-8 h-8 text-navy animate-spin" />
+                    </div>
+                  </div>
+
+                  <h2 className="text-xl font-bold text-navy mb-2">
+                    Analyzing Your Call
+                  </h2>
+                  <p className="text-sm text-muted-foreground mb-6">
+                    Scoring your performance across 6 dimensions...
+                  </p>
+
+                  {/* Progress steps */}
+                  <div className="space-y-2 text-left">
+                    {['Saving transcript', 'Running analysis', 'Generating feedback'].map((step, i) => (
+                      <motion.div
+                        key={step}
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: i * 0.3 }}
+                        className="flex items-center gap-3 text-xs"
+                      >
+                        <motion.div
+                          animate={{ scale: [1, 1.2, 1] }}
+                          transition={{ duration: 0.5, delay: i * 0.3, repeat: Infinity, repeatDelay: 1.5 }}
+                          className="w-2 h-2 rounded-full bg-gold"
+                        />
+                        <span className="text-muted-foreground">{step}</span>
+                      </motion.div>
+                    ))}
+                  </div>
+                </Card>
+              </motion.div>
+            )}
+
             {/* Active Call View */}
-            {isActive && (
+            {isActive && !isSaving && (
               <motion.div
                 key="active"
                 initial={{ opacity: 0 }}
