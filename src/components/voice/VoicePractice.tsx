@@ -291,8 +291,9 @@ export function VoicePractice({ onSessionEnd }: VoicePracticeProps) {
 
   // Save session and redirect to results
   const handleSessionComplete = useCallback(async (transcriptData: TranscriptEntry[], duration: number, vapiId?: string) => {
-    // Skip if no meaningful transcript
+    // Skip if no meaningful transcript - show message to user
     if (transcriptData.length < 2) {
+      setError('Call too short for analysis. Have a longer conversation to get feedback.')
       onSessionEnd?.(transcriptData)
       return
     }
@@ -349,10 +350,18 @@ export function VoicePractice({ onSessionEnd }: VoicePracticeProps) {
           setConnectionStatus('connected')
         },
         onCallEnd: () => {
-          setConnectionStatus('idle')
           const currentCallId = callId
+          const currentTranscript = transcriptDataRef.current
+          const currentDuration = callDurationRef.current
+
+          // Set saving state BEFORE changing connection status to prevent UI flash
+          if (currentTranscript.length >= 2) {
+            setIsSaving(true)
+          }
+
+          setConnectionStatus('idle')
           setCallId(null)
-          handleSessionComplete(transcriptDataRef.current, callDurationRef.current, currentCallId || undefined)
+          handleSessionComplete(currentTranscript, currentDuration, currentCallId || undefined)
         },
         onError: (err) => {
           setError(err.message || 'Connection failed')
@@ -368,11 +377,18 @@ export function VoicePractice({ onSessionEnd }: VoicePracticeProps) {
 
   const handleStop = useCallback(() => {
     stopRoleplaySession()
-    setConnectionStatus('idle')
     const currentCallId = callId
     const currentDuration = callDurationRef.current
+    const currentTranscript = transcriptDataRef.current
+
+    // Set saving state BEFORE changing connection status to prevent UI flash
+    if (currentTranscript.length >= 2) {
+      setIsSaving(true)
+    }
+
+    setConnectionStatus('idle')
     setCallId(null)
-    handleSessionComplete(transcriptDataRef.current, currentDuration, currentCallId || undefined)
+    handleSessionComplete(currentTranscript, currentDuration, currentCallId || undefined)
   }, [callId, handleSessionComplete])
 
   const handleMuteToggle = useCallback(() => {
