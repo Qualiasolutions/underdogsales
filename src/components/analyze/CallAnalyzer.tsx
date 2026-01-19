@@ -42,31 +42,47 @@ export function CallAnalyzer() {
     loadHistory()
   }, [loadHistory])
 
-  // Poll for processing status
+  // SSE for real-time status updates
   useEffect(() => {
     if (!currentCallId || uploadState !== 'processing') return
 
-    const pollStatus = async () => {
-      try {
-        const response = await fetch(`/api/analyze/${currentCallId}`)
-        if (!response.ok) throw new Error('Failed to get status')
+    const eventSource = new EventSource(`/api/analyze/${currentCallId}/stream`)
 
-        const data = await response.json()
+    eventSource.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data)
         setProcessingStatus(data.status)
 
         if (data.status === 'completed') {
+          eventSource.close()
           router.push(`/analyze/${currentCallId}`)
-        } else if (data.status === 'failed') {
+        } else if (data.status === 'failed' || data.status === 'error') {
+          eventSource.close()
           setUploadState('error')
-          setError(data.error_message || 'Processing failed')
+          setError(data.error || 'Processing failed')
         }
       } catch (err) {
-        console.error('Status poll failed:', err)
+        console.error('SSE parse error:', err)
       }
     }
 
-    const interval = setInterval(pollStatus, 2000)
-    return () => clearInterval(interval)
+    eventSource.onerror = () => {
+      eventSource.close()
+      // Fallback: check status via API
+      fetch(`/api/analyze/${currentCallId}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.status === 'completed') {
+            router.push(`/analyze/${currentCallId}`)
+          } else if (data.status === 'failed') {
+            setUploadState('error')
+            setError(data.error_message || 'Processing failed')
+          }
+        })
+        .catch(console.error)
+    }
+
+    return () => eventSource.close()
   }, [currentCallId, uploadState, router])
 
   const handleFileSelect = useCallback((selectedFile: File) => {

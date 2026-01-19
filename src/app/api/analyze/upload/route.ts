@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { getUser } from '@/lib/supabase/server'
+import { checkRateLimit, createRateLimitHeaders, RATE_LIMITS } from '@/lib/rate-limit'
 
 // Max file size: 100MB
 const MAX_FILE_SIZE = 100 * 1024 * 1024
@@ -25,18 +26,33 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
+    // Check rate limit
+    const rateLimitResult = checkRateLimit(`upload:${user.id}`, RATE_LIMITS.upload)
+    const headers = createRateLimitHeaders(
+      rateLimitResult.remaining,
+      rateLimitResult.resetTime,
+      RATE_LIMITS.upload.max
+    )
+
+    if (!rateLimitResult.allowed) {
+      return NextResponse.json(
+        { error: RATE_LIMITS.upload.message },
+        { status: 429, headers }
+      )
+    }
+
     const formData = await request.formData()
     const file = formData.get('file') as File | null
 
     if (!file) {
-      return NextResponse.json({ error: 'No file provided' }, { status: 400 })
+      return NextResponse.json({ error: 'No file provided' }, { status: 400, headers })
     }
 
     // Validate file type
     if (!ALLOWED_TYPES.includes(file.type)) {
       return NextResponse.json(
         { error: 'Invalid file type. Supported: MP3, WAV, WebM, OGG, M4A' },
-        { status: 400 }
+        { status: 400, headers }
       )
     }
 
@@ -44,7 +60,7 @@ export async function POST(request: NextRequest) {
     if (file.size > MAX_FILE_SIZE) {
       return NextResponse.json(
         { error: 'File too large. Maximum size is 100MB' },
-        { status: 400 }
+        { status: 400, headers }
       )
     }
 

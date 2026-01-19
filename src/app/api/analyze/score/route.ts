@@ -3,6 +3,7 @@ import { createClient } from '@supabase/supabase-js'
 import { getUser } from '@/lib/supabase/server'
 import { analyzeTranscript, type ScoringResult } from '@/lib/scoring/engine'
 import type { TranscriptEntry, CallAnalysis } from '@/types'
+import { ScoreRequestSchema, validateInput } from '@/lib/validations'
 
 export async function POST(request: NextRequest) {
   try {
@@ -11,10 +12,18 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const { callId } = await request.json()
-    if (!callId) {
-      return NextResponse.json({ error: 'callId is required' }, { status: 400 })
+    // Validate input
+    const body = await request.json()
+    const validation = validateInput(ScoreRequestSchema, body)
+
+    if (!validation.success) {
+      return NextResponse.json(
+        { error: validation.error },
+        { status: 400 }
+      )
     }
+
+    const { callId } = validation.data!
 
     const supabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,

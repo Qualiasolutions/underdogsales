@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { getUser } from '@/lib/supabase/server'
 import { transcribeAudio } from '@/lib/transcription/whisper'
+import { checkRateLimit, createRateLimitHeaders, RATE_LIMITS } from '@/lib/rate-limit'
+import { TranscribeRequestSchema, validateInput } from '@/lib/validations'
 
 export async function POST(request: NextRequest) {
   try {
@@ -10,10 +12,33 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const { callId } = await request.json()
-    if (!callId) {
-      return NextResponse.json({ error: 'callId is required' }, { status: 400 })
+    // Check rate limit (expensive operation)
+    const rateLimitResult = checkRateLimit(`transcribe:${user.id}`, RATE_LIMITS.transcribe)
+    const headers = createRateLimitHeaders(
+      rateLimitResult.remaining,
+      rateLimitResult.resetTime,
+      RATE_LIMITS.transcribe.max
+    )
+
+    if (!rateLimitResult.allowed) {
+      return NextResponse.json(
+        { error: RATE_LIMITS.transcribe.message },
+        { status: 429, headers }
+      )
     }
+
+    // Validate input
+    const body = await request.json()
+    const validation = validateInput(TranscribeRequestSchema, body)
+
+    if (!validation.success) {
+      return NextResponse.json(
+        { error: validation.error },
+        { status: 400, headers }
+      )
+    }
+
+    const { callId } = validation.data!
 
     const supabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
