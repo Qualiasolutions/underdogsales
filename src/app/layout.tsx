@@ -24,6 +24,7 @@ const mavenPro = Maven_Pro({
 })
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://underdog.ai'),
   title: {
     default: 'Underdog AI Sales Coach',
     template: '%s | Underdog AI',

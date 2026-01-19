@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { withSentryConfig } from '@sentry/nextjs';
 import { resolve } from 'path';
 
 const nextConfig: NextConfig = {
@@ -26,6 +27,49 @@ const nextConfig: NextConfig = {
     // Tree-shake specific packages for smaller bundles
     optimizePackageImports: ['lucide-react', 'motion/react'],
   },
+
+  // Security headers
+  async headers() {
+    return [
+      {
+        source: '/(.*)',
+        headers: [
+          { key: 'X-Frame-Options', value: 'DENY' },
+          { key: 'X-Content-Type-Options', value: 'nosniff' },
+          { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+          { key: 'X-XSS-Protection', value: '1; mode=block' },
+          {
+            key: 'Strict-Transport-Security',
+            value: 'max-age=31536000; includeSubDomains',
+          },
+          {
+            key: 'Content-Security-Policy',
+            value: [
+              "default-src 'self'",
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.vapi.ai",
+              "style-src 'self' 'unsafe-inline'",
+              "img-src 'self' data: blob: https:",
+              "font-src 'self' https://fonts.gstatic.com",
+              "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.vapi.ai wss://api.vapi.ai https://api.openai.com https://openrouter.ai https://*.sentry.io https://*.ingest.sentry.io",
+              "media-src 'self' blob:",
+              "frame-ancestors 'none'",
+            ].join('; '),
+          },
+          {
+            key: 'Permissions-Policy',
+            value: 'camera=(), microphone=(self), geolocation=()',
+          },
+        ],
+      },
+    ];
+  },
 };
 
-export default nextConfig;
+export default withSentryConfig(nextConfig, {
+  // Suppress source map upload logs
+  silent: true,
+  // Upload source maps for better stack traces
+  widenClientFileUpload: true,
+  // Automatically tree-shake Sentry logger statements
+  disableLogger: true,
+});

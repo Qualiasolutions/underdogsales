@@ -1,6 +1,32 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import OpenAI from 'openai'
+import crypto from 'crypto'
+
+// Verify VAPI webhook signature
+function verifyVapiSignature(
+  payload: string,
+  signature: string | null,
+  secret: string | undefined
+): boolean {
+  if (!signature || !secret) {
+    return false
+  }
+
+  try {
+    const expectedSignature = crypto
+      .createHmac('sha256', secret)
+      .update(payload)
+      .digest('hex')
+
+    return crypto.timingSafeEqual(
+      Buffer.from(signature),
+      Buffer.from(expectedSignature)
+    )
+  } catch {
+    return false
+  }
+}
 
 // VAPI Webhook Payload Types
 interface VapiToolCall {
@@ -40,7 +66,24 @@ const isDev = process.env.NODE_ENV === 'development'
 
 export async function POST(request: NextRequest) {
   try {
-    const payload: VapiWebhookPayload = await request.json()
+    // Get raw body for signature verification
+    const rawBody = await request.text()
+
+    // Verify webhook signature in production
+    if (!isDev) {
+      const signature = request.headers.get('x-vapi-signature')
+      const webhookSecret = process.env.VAPI_WEBHOOK_SECRET
+
+      if (!verifyVapiSignature(rawBody, signature, webhookSecret)) {
+        console.error('VAPI webhook signature verification failed')
+        return NextResponse.json(
+          { error: 'Invalid webhook signature' },
+          { status: 401 }
+        )
+      }
+    }
+
+    const payload: VapiWebhookPayload = JSON.parse(rawBody)
     const { message } = payload
 
     if (isDev) console.log('VAPI Webhook:', message.type, message.call?.id)

@@ -4,6 +4,26 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
 
+/**
+ * Validate password strength
+ * Returns error message if invalid, null if valid
+ */
+function validatePassword(password: string): string | null {
+  if (password.length < 8) {
+    return 'Password must be at least 8 characters'
+  }
+  if (!/[A-Z]/.test(password)) {
+    return 'Password must contain at least one uppercase letter'
+  }
+  if (!/[a-z]/.test(password)) {
+    return 'Password must contain at least one lowercase letter'
+  }
+  if (!/[0-9]/.test(password)) {
+    return 'Password must contain at least one number'
+  }
+  return null
+}
+
 export interface AuthResult {
   error?: string
   success?: boolean
@@ -27,8 +47,10 @@ export const signup = async (formData: FormData): Promise<AuthResult> => {
     return { error: 'Passwords do not match' }
   }
 
-  if (password.length < 6) {
-    return { error: 'Password must be at least 6 characters' }
+  // Password strength validation
+  const passwordError = validatePassword(password)
+  if (passwordError) {
+    return { error: passwordError }
   }
 
   // Sign up with Supabase Auth

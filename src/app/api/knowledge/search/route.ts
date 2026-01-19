@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import OpenAI from 'openai'
+import { getUser } from '@/lib/supabase/server'
 
 interface SearchRequest {
   query: string
@@ -21,6 +22,15 @@ interface KnowledgeResult {
 
 export async function POST(request: NextRequest) {
   try {
+    // Require authentication
+    const user = await getUser()
+    if (!user) {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      )
+    }
+
     const body: SearchRequest = await request.json()
     const { query, source, limit = 5, threshold = 0.5 } = body
 
