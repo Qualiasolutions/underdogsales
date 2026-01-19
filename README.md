@@ -34,18 +34,23 @@ AI-powered sales training platform for the Underdog Sales methodology by Giulio 
 - **LLM**: OpenAI GPT-4o (via OpenRouter)
 - **Transcription**: OpenAI Whisper
 - **Embeddings**: text-embedding-3-small (pgvector)
+- **Monitoring**: Sentry (error tracking + session replay)
+- **Deployment**: Vercel
 
 ## Getting Started
 
 ### Prerequisites
 
-- Node.js 18+
-- npm/yarn/pnpm
+- Node.js 20+ (see `.nvmrc`)
+- npm
 - Supabase account
 - VAPI account
 - OpenAI API key
+- Sentry account (optional but recommended)
 
 ### Environment Variables
+
+Copy `.env.example` to `.env.local` and fill in your values:
 
 ```env
 # Supabase
@@ -56,12 +61,17 @@ SUPABASE_SERVICE_ROLE_KEY=
 # VAPI
 NEXT_PUBLIC_VAPI_PUBLIC_KEY=
 VAPI_PRIVATE_KEY=
+VAPI_WEBHOOK_SECRET=
 
-# OpenAI (for Whisper transcription + chat)
+# AI APIs
 OPENAI_API_KEY=
-
-# OpenRouter (for embeddings)
 OPENROUTER_API_KEY=
+
+# App Config
+NEXT_PUBLIC_SITE_URL=https://yourdomain.com
+
+# Monitoring (Recommended)
+NEXT_PUBLIC_SENTRY_DSN=
 ```
 
 ### Installation
@@ -93,6 +103,10 @@ src/
 │   ├── curriculum/        # 12-module curriculum
 │   ├── practice/          # Voice practice with personas
 │   └── api/               # API routes
+│       ├── health/        # Health check endpoint
+│       ├── vapi/webhook/  # VAPI webhook handler
+│       ├── user/export/   # GDPR data export
+│       └── ...
 ├── components/
 │   ├── analyze/           # Call analysis components
 │   ├── chat/              # Chat components
@@ -106,21 +120,56 @@ src/
 │   └── rubric.ts          # Scoring rubric (6 dimensions, 19 criteria)
 ├── lib/
 │   ├── actions/           # Server actions
+│   ├── circuit-breaker.ts # Resilience for external services
+│   ├── logger.ts          # Structured logging
 │   ├── scoring/           # Scoring engine
 │   ├── supabase/          # Supabase client + types
 │   ├── transcription/     # Whisper client
 │   └── vapi/              # VAPI client
 └── types/                 # TypeScript types
+
+supabase/
+└── migrations/            # Database migrations
 ```
 
 ## Database Schema
 
-Key tables:
+Key tables (all with RLS enabled):
 - `users` - User accounts (Supabase Auth)
 - `roleplay_sessions` - Voice practice sessions
+- `session_scores` - Scoring results per session
 - `call_uploads` - Uploaded call recordings + analysis
 - `curriculum_progress` - User progress through modules
 - `knowledge_base` - RAG knowledge chunks with embeddings
+- `audit_log` - Security audit trail
+
+## API Endpoints
+
+| Endpoint | Description |
+|----------|-------------|
+| `GET /api/health` | Health check (Supabase, OpenAI, OpenRouter status) |
+| `POST /api/vapi/webhook` | VAPI event handler (signature verified) |
+| `POST /api/chat` | Chat coaching with RAG |
+| `POST /api/analyze/upload` | Upload call recording |
+| `POST /api/analyze/transcribe` | Transcribe with Whisper |
+| `POST /api/analyze/score` | Score transcript |
+| `GET /api/user/export` | GDPR data export |
+
+## Security
+
+- **Authentication**: Supabase Auth with email/password
+- **Authorization**: Row Level Security (RLS) on all tables
+- **Webhook Verification**: HMAC SHA-256 signature validation
+- **Security Headers**: CSP, HSTS, X-Frame-Options, etc.
+- **Audit Logging**: All data changes logged automatically
+- **Soft Delete**: User data retained for compliance
+
+## Monitoring
+
+- **Sentry**: Error tracking with session replay
+- **Health Check**: `/api/health` for uptime monitoring
+- **Structured Logging**: JSON logs for observability
+- **Circuit Breaker**: Automatic failure isolation for external services
 
 ## Deployment
 
@@ -129,6 +178,30 @@ The app auto-deploys to Vercel on push to main.
 ```bash
 # Manual deploy
 vercel --prod
+
+# Check deployment logs
+vercel logs <deployment-url>
+```
+
+### Production URLs
+
+- **App**: https://under-eight.vercel.app
+- **Health**: https://under-eight.vercel.app/api/health
+
+## Development
+
+```bash
+# Lint
+npm run lint
+
+# Type check
+npm run typecheck
+
+# Run tests
+npm run test
+
+# E2E tests
+npm run test:e2e
 ```
 
 ## License
