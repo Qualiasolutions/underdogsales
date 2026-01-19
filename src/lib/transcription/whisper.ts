@@ -1,4 +1,7 @@
 import type { TranscriptEntry, WhisperResponse } from '@/types'
+import { fetchWithTimeout, TIMEOUTS, isTimeoutError } from '@/lib/fetch-utils'
+import { withRetry, isRetryableStatus } from '@/lib/retry'
+import { ErrorCodes, AppError } from '@/lib/errors'
 
 const OPENAI_API_URL = 'https://api.openai.com/v1/audio/transcriptions'
 
@@ -10,6 +13,7 @@ interface TranscribeOptions {
 
 /**
  * Transcribe audio using OpenAI Whisper API
+ * Includes timeout (3 min) and retry logic (3 attempts)
  */
 export async function transcribeAudio(options: TranscribeOptions): Promise<{
   transcript: TranscriptEntry[]
@@ -18,7 +22,7 @@ export async function transcribeAudio(options: TranscribeOptions): Promise<{
 }> {
   const apiKey = process.env.OPENAI_API_KEY
   if (!apiKey) {
-    throw new Error('OPENAI_API_KEY is not configured')
+    throw new AppError(ErrorCodes.INTERNAL_ERROR, 'OPENAI_API_KEY is not configured')
   }
 
   // Create form data for the API request
@@ -30,20 +34,49 @@ export async function transcribeAudio(options: TranscribeOptions): Promise<{
   formData.append('response_format', 'verbose_json')
   formData.append('timestamp_granularities[]', 'segment')
 
-  const response = await fetch(OPENAI_API_URL, {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${apiKey}`,
+  // Execute with retry logic
+  const data = await withRetry(
+    async () => {
+      const response = await fetchWithTimeout(OPENAI_API_URL, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${apiKey}`,
+        },
+        body: formData,
+        timeout: TIMEOUTS.WHISPER,
+      })
+
+      if (!response.ok) {
+        // Check if retryable
+        if (isRetryableStatus(response.status)) {
+          const error = await response.text()
+          throw new Error(`Retryable: ${response.status} - ${error}`)
+        }
+        const error = await response.text()
+        throw new AppError(
+          ErrorCodes.TRANSCRIPTION_FAILED,
+          `OpenAI Whisper API error: ${response.status} - ${error}`
+        )
+      }
+
+      return response.json() as Promise<WhisperResponse>
     },
-    body: formData,
-  })
-
-  if (!response.ok) {
-    const error = await response.text()
-    throw new Error(`OpenAI Whisper API error: ${response.status} - ${error}`)
-  }
-
-  const data: WhisperResponse = await response.json()
+    {
+      maxAttempts: 3,
+      baseDelay: 2000, // 2s base delay
+      maxDelay: 15000, // 15s max delay
+      shouldRetry: (error) => {
+        // Get message before type guard narrows
+        const message = error.message || ''
+        // Retry on retryable errors but not timeouts
+        if (isTimeoutError(error)) return false
+        return message.startsWith('Retryable:')
+      },
+      onRetry: (error, attempt, delay) => {
+        console.log(`Whisper retry ${attempt}: ${error.message}, waiting ${delay}ms`)
+      },
+    }
+  )
 
   // Convert Whisper segments to TranscriptEntry format
   // Since Whisper doesn't do speaker diarization, we'll use a simple heuristic:

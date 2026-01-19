@@ -42,21 +42,40 @@ export function CallAnalyzer() {
     loadHistory()
   }, [loadHistory])
 
-  // SSE for real-time status updates
+  // SSE for real-time status updates with improved error handling
   useEffect(() => {
     if (!currentCallId || uploadState !== 'processing') return
 
+    let retryCount = 0
+    const maxRetries = 3
+    const sseTimeout = 45000 // 45s before fallback
+    let timeoutId: NodeJS.Timeout | null = null
+    let isClosed = false
+
     const eventSource = new EventSource(`/api/analyze/${currentCallId}/stream`)
 
+    // Set SSE timeout - fall back to polling if no message received
+    timeoutId = setTimeout(() => {
+      if (!isClosed) {
+        eventSource.close()
+        fallbackToPoll()
+      }
+    }, sseTimeout)
+
     eventSource.onmessage = (event) => {
+      // Clear timeout on any message received
+      if (timeoutId) clearTimeout(timeoutId)
+
       try {
         const data = JSON.parse(event.data)
         setProcessingStatus(data.status)
 
         if (data.status === 'completed') {
+          isClosed = true
           eventSource.close()
           router.push(`/analyze/${currentCallId}`)
         } else if (data.status === 'failed' || data.status === 'error') {
+          isClosed = true
           eventSource.close()
           setUploadState('error')
           setError(data.error || 'Processing failed')
@@ -67,22 +86,56 @@ export function CallAnalyzer() {
     }
 
     eventSource.onerror = () => {
+      if (timeoutId) clearTimeout(timeoutId)
       eventSource.close()
-      // Fallback: check status via API
-      fetch(`/api/analyze/${currentCallId}`)
-        .then(res => res.json())
-        .then(data => {
-          if (data.status === 'completed') {
-            router.push(`/analyze/${currentCallId}`)
-          } else if (data.status === 'failed') {
-            setUploadState('error')
-            setError(data.error_message || 'Processing failed')
-          }
-        })
-        .catch(console.error)
+      fallbackToPoll()
     }
 
-    return () => eventSource.close()
+    // Fallback polling with exponential backoff
+    async function fallbackToPoll() {
+      if (isClosed) return
+
+      if (retryCount >= maxRetries) {
+        setUploadState('error')
+        setError('Processing timed out. Please try again.')
+        return
+      }
+
+      retryCount++
+      const delay = Math.pow(2, retryCount) * 1000 // 2s, 4s, 8s
+
+      await new Promise(resolve => setTimeout(resolve, delay))
+      if (isClosed) return
+
+      try {
+        const response = await fetch(`/api/analyze/${currentCallId}`)
+        if (!response.ok) throw new Error('Status check failed')
+
+        const data = await response.json()
+        setProcessingStatus(data.status)
+
+        if (data.status === 'completed') {
+          isClosed = true
+          router.push(`/analyze/${currentCallId}`)
+        } else if (data.status === 'failed') {
+          isClosed = true
+          setUploadState('error')
+          setError(data.error_message || 'Processing failed')
+        } else {
+          // Still processing, continue polling
+          fallbackToPoll()
+        }
+      } catch (err) {
+        console.error('Fallback poll error:', err)
+        fallbackToPoll() // Retry on error
+      }
+    }
+
+    return () => {
+      isClosed = true
+      if (timeoutId) clearTimeout(timeoutId)
+      eventSource.close()
+    }
   }, [currentCallId, uploadState, router])
 
   const handleFileSelect = useCallback((selectedFile: File) => {

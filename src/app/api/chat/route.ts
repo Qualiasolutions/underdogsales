@@ -4,12 +4,17 @@ import { GIULIO_SYSTEM_PROMPT } from '@/lib/vapi/giulio-prompt'
 import { getUser } from '@/lib/supabase/server'
 import { checkRateLimit, createRateLimitHeaders, RATE_LIMITS } from '@/lib/rate-limit'
 import { ChatRequestSchema, validateInput } from '@/lib/validations'
+import { ErrorCodes, createErrorResponse } from '@/lib/errors'
+
+const CHAT_TIMEOUT = 30000 // 30 seconds
 
 // Lazy-load OpenAI client to avoid build-time errors
 function getOpenAIClient() {
   return new OpenAI({
     apiKey: process.env.OPENAI_API_KEY || process.env.OPENROUTER_API_KEY,
     baseURL: process.env.OPENROUTER_API_KEY ? 'https://openrouter.ai/api/v1' : undefined,
+    timeout: CHAT_TIMEOUT,
+    maxRetries: 2,
   })
 }
 
@@ -84,8 +89,33 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ message: assistantMessage }, { headers })
   } catch (error) {
     console.error('Chat API error:', error)
+
+    // Handle specific error types
+    if (error instanceof OpenAI.APIError) {
+      if (error.status === 429) {
+        return NextResponse.json(
+          createErrorResponse(ErrorCodes.RATE_LIMITED),
+          { status: 429 }
+        )
+      }
+      if (error.status === 503 || error.status === 502) {
+        return NextResponse.json(
+          createErrorResponse(ErrorCodes.SERVICE_UNAVAILABLE),
+          { status: 503 }
+        )
+      }
+    }
+
+    // Handle timeout
+    if (error instanceof Error && error.name === 'AbortError') {
+      return NextResponse.json(
+        createErrorResponse(ErrorCodes.TIMEOUT),
+        { status: 408 }
+      )
+    }
+
     return NextResponse.json(
-      { error: 'Failed to generate response' },
+      createErrorResponse(ErrorCodes.INTERNAL_ERROR),
       { status: 500 }
     )
   }
