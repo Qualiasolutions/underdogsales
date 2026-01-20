@@ -447,60 +447,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Methodology Section */}
-      <section id="methodology" className="py-24 px-6 bg-navy text-white relative overflow-hidden">
-        {/* Background Pattern */}
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-0 left-1/4 w-96 h-96 bg-gold rounded-full blur-3xl" />
-          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-gold rounded-full blur-3xl" />
-        </div>
-
-        <div className="relative max-w-7xl mx-auto">
-          <ScrollReveal className="text-center max-w-2xl mx-auto mb-16">
-            <Badge variant="gold" className="mb-4">Methodology</Badge>
-            <h2 className="text-4xl font-bold mb-4 font-[family-name:var(--font-maven-pro)]">
-              Built on the <span className="text-gold">Underdog</span> Framework
-            </h2>
-            <p className="text-white/70">
-              Our scoring system evaluates 6 key dimensions of cold calling excellence
-            </p>
-          </ScrollReveal>
-
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            {[
-              { name: 'Opener', weight: '15%', color: 'from-gold to-gold-light' },
-              { name: 'Pitch', weight: '15%', color: 'from-gold-light to-gold' },
-              { name: 'Discovery', weight: '25%', color: 'from-gold to-gold-dark' },
-              { name: 'Objections', weight: '20%', color: 'from-gold-dark to-gold' },
-              { name: 'Closing', weight: '15%', color: 'from-gold to-gold-light' },
-              { name: 'Communication', weight: '10%', color: 'from-gold-light to-gold' },
-            ].map((dim, i) => (
-              <ScrollReveal key={dim.name} delay={i * 0.1}>
-                <motion.div
-                  whileHover={{ scale: 1.05, y: -4 }}
-                  className={`p-6 rounded-2xl bg-gradient-to-br ${dim.color} text-navy text-center`}
-                >
-                  <p className="font-bold text-lg mb-1">{dim.name}</p>
-                  <p className="text-sm font-medium opacity-80">{dim.weight}</p>
-                </motion.div>
-              </ScrollReveal>
-            ))}
-          </div>
-
-          <ScrollReveal delay={0.6} className="mt-16 text-center">
-            <p className="text-white/60 text-sm mb-6">
-              Based on proven psychology principles: Reactance, Loss Aversion, Negative Framing
-            </p>
-            <Link href="/practice">
-              <Button variant="gold" size="lg">
-                Start Your Training
-                <ArrowRight className="w-5 h-5" />
-              </Button>
-            </Link>
-          </ScrollReveal>
-        </div>
-      </section>
-
       {/* CTA Section */}
       <section className="py-24 px-6 relative overflow-hidden">
         <div className="absolute inset-0 bg-grid-pattern opacity-30" />
@@ -549,8 +495,8 @@ export default function Home() {
             </Link>
 
             <p className="text-sm text-muted-foreground">
-              Built by <span className="font-semibold text-navy">Qualia Solutions</span> for{' '}
-              <span className="font-semibold text-navy">Underdog Sales</span>
+              Powered by <span className="font-semibold text-navy">Qualia Solutions</span> | Copyright &copy; 2026{' '}
+              <span className="font-semibold text-navy">Underdog Sales</span>. All Rights Reserved.
             </p>
 
             <div className="flex items-center gap-6">
