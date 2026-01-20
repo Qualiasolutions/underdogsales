@@ -104,8 +104,9 @@ export async function startRoleplaySession(options: RoleplaySessionOptions): Pro
       voice: {
         provider: '11labs',
         voiceId: persona.voiceId,
-        // @ts-ignore: v3 alpha is supported by VAPI but not yet in the web SDK types
-        model: 'eleven_multilingual_v3',
+        // Using turbo_v2_5 as it's the latest stable high-quality model for real-time use.
+        // v3 alpha currently lacks streaming support and causes 400 errors.
+        model: 'eleven_turbo_v2_5',
       },
     })
 
