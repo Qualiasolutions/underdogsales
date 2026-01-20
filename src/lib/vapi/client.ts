@@ -95,10 +95,17 @@ export async function startRoleplaySession(options: RoleplaySessionOptions): Pro
 
   try {
     // Use persona-specific assistant (voice is pre-configured in VAPI)
+    // Override voice to use v3 alpha for better quality
     await vapi.start(persona.assistantId, {
       variableValues: {
         scenario_type: scenarioType,
         difficulty: getDifficultyFromWarmth(persona.warmth),
+      },
+      voice: {
+        provider: '11labs',
+        voiceId: persona.voiceId,
+        // @ts-ignore: v3 alpha is supported by VAPI but not yet in the web SDK types
+        model: 'eleven_multilingual_v3',
       },
     })
 
