@@ -1,27 +1,28 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { searchKnowledgeBase } from '@/lib/knowledge'
-import { z } from 'zod'
-
-// Schema for VAPI tool call validation
-const KnowledgeToolSchema = z.object({
-    message: z.object({
-        toolCalls: z.array(z.object({
-            id: z.string(),
-            type: z.literal('function'),
-            function: z.object({
-                name: z.string(),
-                arguments: z.string().or(z.object({ query: z.string() }))
-            })
-        }))
-    })
-})
+import { verifyVapiRequest } from '@/lib/vapi/auth'
+import { logger } from '@/lib/logger'
 
 export async function POST(request: NextRequest) {
     try {
-        const body = await request.json()
-        console.log('VAPI Knowledge Tool Request:', JSON.stringify(body, null, 2))
+        // Get raw body for signature verification
+        const rawBody = await request.text()
 
-        // VAPI sends the tool call in a specific format. 
+        // Verify VAPI signature
+        const verificationError = verifyVapiRequest(
+            rawBody,
+            request.headers.get('x-vapi-signature')
+        )
+        if (verificationError) {
+            return NextResponse.json(
+                { error: verificationError.error },
+                { status: verificationError.status }
+            )
+        }
+
+        const body = JSON.parse(rawBody)
+
+        // VAPI sends the tool call in a specific format.
         // We expect the function name "queryKnowledgeBase" and argument "query"
 
         // Simple parsing to extract the query from the first tool call
@@ -36,9 +37,11 @@ export async function POST(request: NextRequest) {
 
         const { id, function: func } = toolCall;
 
-        if (func.name !== 'queryKnowledgeBase') {
-            // Not our function?
-            return NextResponse.json({ results: [] });
+        if (func.name !== 'search_knowledge') {
+            // Not our function - check legacy name for backwards compatibility
+            if (func.name !== 'queryKnowledgeBase') {
+                return NextResponse.json({ results: [] });
+            }
         }
 
         let query = '';
@@ -48,7 +51,7 @@ export async function POST(request: NextRequest) {
                 const args = JSON.parse(func.arguments);
                 query = args.query;
             } catch (e) {
-                console.error("Failed to parse arguments string", e);
+                logger.exception('Failed to parse VAPI arguments', e, { operation: 'vapi_knowledge' })
             }
         } else {
             query = func.arguments?.query;
@@ -63,11 +66,9 @@ export async function POST(request: NextRequest) {
             });
         }
 
-        console.log(`Searching knowledge base for: "${query}"`);
-
         const results = await searchKnowledgeBase(query, {
             limit: 3,
-            threshold: 0.6 // Higher threshold for voice to avoid irrelevant noise
+            threshold: 0.55 // Standardized threshold
         });
 
         // Format for VAPI to speak
@@ -84,7 +85,7 @@ export async function POST(request: NextRequest) {
         });
 
     } catch (error) {
-        console.error('VAPI Knowledge Tool Error:', error)
+        logger.exception('VAPI Knowledge Tool Error', error, { operation: 'vapi_knowledge' })
         return NextResponse.json(
             { error: 'Internal server error' },
             { status: 500 }

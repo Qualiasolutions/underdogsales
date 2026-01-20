@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 import OpenAI from 'openai'
+import { logger } from './logger'
 
 export interface KnowledgeResult {
     id: string
@@ -54,7 +55,7 @@ export async function searchKnowledgeBase(
         })
 
         if (error) {
-            console.error('Error searching knowledge base:', error)
+            logger.error('Knowledge base search error', { error: error.message })
             throw error
         }
 
@@ -68,7 +69,7 @@ export async function searchKnowledgeBase(
             similarity: item.similarity,
         }))
     } catch (error) {
-        console.error('Knowledge search failed:', error)
+        logger.exception('Knowledge search failed', error)
         return []
     }
 }

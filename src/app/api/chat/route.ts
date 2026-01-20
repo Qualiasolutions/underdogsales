@@ -5,6 +5,7 @@ import { getUser } from '@/lib/supabase/server'
 import { checkRateLimit, createRateLimitHeaders, RATE_LIMITS } from '@/lib/rate-limit'
 import { ChatRequestSchema, validateInput } from '@/lib/validations'
 import { ErrorCodes, createErrorResponse } from '@/lib/errors'
+import { logger } from '@/lib/logger'
 
 const CHAT_TIMEOUT = 30000 // 30 seconds
 
@@ -67,7 +68,7 @@ export async function POST(request: NextRequest) {
 
       const knowledgeResults = await searchKnowledgeBase(lastMessage, {
         limit: 3,
-        threshold: 0.5
+        threshold: 0.55
       })
 
       if (knowledgeResults.length > 0) {
@@ -107,7 +108,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ message: assistantMessage }, { headers })
   } catch (error) {
-    console.error('Chat API error:', error)
+    logger.exception('Chat API error', error, { operation: 'chat' })
 
     // Handle specific error types
     if (error instanceof OpenAI.APIError) {

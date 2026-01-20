@@ -1,32 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import OpenAI from 'openai'
-import crypto from 'crypto'
-
-// Verify VAPI webhook signature
-function verifyVapiSignature(
-  payload: string,
-  signature: string | null,
-  secret: string | undefined
-): boolean {
-  if (!signature || !secret) {
-    return false
-  }
-
-  try {
-    const expectedSignature = crypto
-      .createHmac('sha256', secret)
-      .update(payload)
-      .digest('hex')
-
-    return crypto.timingSafeEqual(
-      Buffer.from(signature),
-      Buffer.from(expectedSignature)
-    )
-  } catch {
-    return false
-  }
-}
+import { verifyVapiSignature } from '@/lib/vapi/auth'
 
 // VAPI Webhook Payload Types
 interface VapiToolCall {

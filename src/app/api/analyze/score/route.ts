@@ -4,6 +4,7 @@ import { getUser } from '@/lib/supabase/server'
 import { analyzeTranscript, type ScoringResult } from '@/lib/scoring/engine'
 import type { TranscriptEntry, CallAnalysis } from '@/types'
 import { ScoreRequestSchema, validateInput } from '@/lib/validations'
+import { logger } from '@/lib/logger'
 
 export async function POST(request: NextRequest) {
   try {
@@ -104,14 +105,14 @@ export async function POST(request: NextRequest) {
         .update({ status: 'failed', error_message: errorMessage })
         .eq('id', callId)
 
-      console.error('Scoring error:', scoreError)
+      logger.exception('Scoring error', scoreError, { operation: 'score', callId })
       return NextResponse.json(
         { error: 'Scoring failed', details: errorMessage },
         { status: 500 }
       )
     }
   } catch (error) {
-    console.error('Score route error:', error)
+    logger.exception('Score route error', error, { operation: 'score' })
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

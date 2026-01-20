@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { getUser } from '@/lib/supabase/server'
 import type { Database } from '@/lib/supabase/types'
+import { logger } from '@/lib/logger'
 
 export async function GET(
   request: NextRequest,
@@ -47,7 +48,7 @@ export async function GET(
       createdAt: callUpload.created_at,
     })
   } catch (error) {
-    console.error('Get call details error:', error)
+    logger.exception('Get call details error', error, { operation: 'get_call' })
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

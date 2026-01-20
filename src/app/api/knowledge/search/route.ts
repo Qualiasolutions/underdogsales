@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getUser } from '@/lib/supabase/server'
 import { searchKnowledgeBase } from '@/lib/knowledge'
+import { logger } from '@/lib/logger'
 
 interface SearchRequest {
   query: string
@@ -43,7 +44,7 @@ export async function POST(request: NextRequest) {
       count: results.length
     })
   } catch (error) {
-    console.error('Knowledge search error:', error)
+    logger.exception('Knowledge search error', error, { operation: 'knowledge_search' })
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

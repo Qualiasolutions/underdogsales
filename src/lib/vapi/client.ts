@@ -94,24 +94,11 @@ export async function startRoleplaySession(options: RoleplaySessionOptions): Pro
   vapi.on('camera-error', cameraErrorHandler)
 
   try {
-    // Use persona-specific assistant (voice is pre-configured in VAPI)
-    // Override voice to use v3 alpha for better quality
+    // Use persona-specific assistant (voice is pre-configured in VAPI dashboard)
     await vapi.start(persona.assistantId, {
       variableValues: {
         scenario_type: scenarioType,
         difficulty: getDifficultyFromWarmth(persona.warmth),
-      },
-      voice: {
-        provider: '11labs',
-        voiceId: persona.voiceId,
-        // Using turbo_v2_5 as it's the latest stable high-quality model for real-time use.
-        // v3 alpha currently lacks streaming support and causes 400 errors.
-        model: 'eleven_turbo_v2_5',
-        // Boost expressiveness/emotion to address "0 emotion" feedback
-        stability: 0.35, // Lower = more emotion/variability
-        similarityBoost: 0.8,
-        style: 0.2, // Exaggerate style slightly
-        useSpeakerBoost: true,
       },
     })
 

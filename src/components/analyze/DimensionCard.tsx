@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence } from 'motion/react'
 import { ChevronDown, CheckCircle, XCircle } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { ScoreDimension, DimensionScore } from '@/types'

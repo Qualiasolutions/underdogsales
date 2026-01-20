@@ -3,5 +3,18 @@
   "buildCommand": "next build",
   "outputDirectory": ".next",
   "installCommand": "npm ci",
-  "framework": "nextjs"
+  "framework": "nextjs",
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.under-eight.vercel.app"
+        }
+      ],
+      "destination": "https://under-eight.vercel.app/:path*",
+      "permanent": true
+    }
+  ]
 }

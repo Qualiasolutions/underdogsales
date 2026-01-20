@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { getUser } from '@/lib/supabase/server'
 import { checkRateLimit, createRateLimitHeaders, RATE_LIMITS } from '@/lib/rate-limit'
+import { logger } from '@/lib/logger'
 
 // Max file size: 100MB
 const MAX_FILE_SIZE = 100 * 1024 * 1024
@@ -84,7 +85,7 @@ export async function POST(request: NextRequest) {
       })
 
     if (uploadError) {
-      console.error('Storage upload error:', uploadError)
+      logger.error('Storage upload error', { error: uploadError.message, operation: 'upload' })
       return NextResponse.json(
         { error: 'Failed to upload file' },
         { status: 500 }
@@ -106,7 +107,7 @@ export async function POST(request: NextRequest) {
       .single()
 
     if (dbError) {
-      console.error('Database insert error:', dbError)
+      logger.error('Database insert error', { error: dbError.message, operation: 'upload' })
       // Clean up uploaded file
       await supabase.storage.from('call-recordings').remove([filePath])
       return NextResponse.json(
@@ -122,7 +123,7 @@ export async function POST(request: NextRequest) {
       message: 'File uploaded successfully',
     })
   } catch (error) {
-    console.error('Upload error:', error)
+    logger.exception('Upload error', error, { operation: 'upload' })
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

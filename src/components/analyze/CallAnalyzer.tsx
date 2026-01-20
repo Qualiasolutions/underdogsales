@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useCallback, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence } from 'motion/react'
 import { useRouter } from 'next/navigation'
 import { FileAudio, ArrowLeft, RefreshCw } from 'lucide-react'
 import { Header } from '@/components/ui/header'

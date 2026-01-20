@@ -4,6 +4,7 @@ import { getUser } from '@/lib/supabase/server'
 import { transcribeAudio } from '@/lib/transcription/whisper'
 import { checkRateLimit, createRateLimitHeaders, RATE_LIMITS } from '@/lib/rate-limit'
 import { TranscribeRequestSchema, validateInput } from '@/lib/validations'
+import { logger } from '@/lib/logger'
 
 export async function POST(request: NextRequest) {
   try {
@@ -132,14 +133,14 @@ export async function POST(request: NextRequest) {
         .update({ status: 'failed', error_message: errorMessage })
         .eq('id', callId)
 
-      console.error('Transcription error:', transcribeError)
+      logger.exception('Transcription error', transcribeError, { operation: 'transcribe', callId })
       return NextResponse.json(
         { error: 'Transcription failed', details: errorMessage },
         { status: 500 }
       )
     }
   } catch (error) {
-    console.error('Transcribe route error:', error)
+    logger.exception('Transcribe route error', error, { operation: 'transcribe' })
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
