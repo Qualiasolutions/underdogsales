@@ -1,23 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
-import OpenAI from 'openai'
 import { getUser } from '@/lib/supabase/server'
+import { searchKnowledgeBase } from '@/lib/knowledge'
 
 interface SearchRequest {
   query: string
-  source?: 'wiki' | 'persona' | 'rubric' | 'curriculum'
+  source?: string
   limit?: number
   threshold?: number
-}
-
-interface KnowledgeResult {
-  id: string
-  source: string
-  source_file: string
-  section_title: string
-  content: string
-  topics: string[]
-  similarity: number
 }
 
 export async function POST(request: NextRequest) {
@@ -41,55 +30,12 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Generate embedding for query using OpenRouter
-    const openrouterClient = new OpenAI({
-      apiKey: process.env.OPENROUTER_API_KEY,
-      baseURL: 'https://openrouter.ai/api/v1',
+    // Use shared knowledge service
+    const results = await searchKnowledgeBase(query, {
+      limit,
+      threshold,
+      source
     })
-    const embeddingResponse = await openrouterClient.embeddings.create({
-      model: 'openai/text-embedding-3-small',
-      input: query.trim(),
-    })
-    const queryEmbedding = embeddingResponse.data[0].embedding
-
-    // Search knowledge base
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    )
-
-    const { data, error } = await supabase.rpc('match_knowledge', {
-      query_embedding: queryEmbedding,
-      match_threshold: threshold,
-      match_count: limit,
-      filter_source: source || null,
-    })
-
-    if (error) {
-      console.error('Knowledge search error:', error)
-      return NextResponse.json(
-        { error: 'Search failed', details: error.message },
-        { status: 500 }
-      )
-    }
-
-    const results: KnowledgeResult[] = (data || []).map((item: {
-      id: string
-      source: string
-      source_file: string
-      section_title: string
-      content: string
-      topics: string[]
-      similarity: number
-    }) => ({
-      id: item.id,
-      source: item.source,
-      source_file: item.source_file,
-      section_title: item.section_title,
-      content: item.content,
-      topics: item.topics,
-      similarity: item.similarity,
-    }))
 
     return NextResponse.json({
       results,

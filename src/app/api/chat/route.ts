@@ -60,6 +60,25 @@ export async function POST(request: NextRequest) {
     // Build system prompt with coaching mode context
     let systemPrompt = GIULIO_SYSTEM_PROMPT
 
+    // RAG: Search knowledge base based on user input (last message)
+    if (messages.length > 0) {
+      const lastMessage = messages[messages.length - 1].content
+      const { searchKnowledgeBase } = await import('@/lib/knowledge')
+
+      const knowledgeResults = await searchKnowledgeBase(lastMessage, {
+        limit: 3,
+        threshold: 0.5
+      })
+
+      if (knowledgeResults.length > 0) {
+        const knowledgeContext = knowledgeResults
+          .map(k => `[SOURCE: ${k.source_file}]\n${k.content}`)
+          .join('\n\n')
+
+        systemPrompt += `\n\nRELEVANT KNOWLEDGE BASE CONTEXT:\n${knowledgeContext}\n\nUse this context to answer the user's questions accurately. Quote the methodology when appropriate.`
+      }
+    }
+
     if (mode) {
       const modeContext: Record<string, string> = {
         curriculum: '\n\nThe user wants to learn the curriculum. Focus on teaching the 12 modules systematically.',
