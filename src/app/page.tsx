@@ -495,7 +495,11 @@ export default function Home() {
             </Link>
 
             <p className="text-sm text-muted-foreground">
-              Powered by <span className="font-semibold text-navy">Qualia Solutions</span> | Copyright &copy; 2026{' '}
+              Powered by{' '}
+              <a href="https://qualiasolutions.net" target="_blank" rel="noopener noreferrer" className="font-semibold text-teal-600 hover:text-teal-700 transition-colors">
+                Qualia Solutions
+              </a>{' '}
+              | Copyright &copy; 2026{' '}
               <span className="font-semibold text-navy">Underdog Sales</span>. All Rights Reserved.
             </p>
 
