@@ -126,13 +126,23 @@ export async function GET() {
   const services = { supabase, openai, openrouter }
 
   // Determine overall status
-  const statuses = Object.values(services).map((s) => s.status)
+  // OpenAI is optional if OpenRouter is available (OpenRouter is primary LLM provider)
+  const criticalServices = [supabase, openrouter]
+  const optionalServices = [openai]
+
   let overallStatus: HealthCheck['status'] = 'healthy'
-  if (statuses.some((s) => s === 'unhealthy')) {
+
+  // Check critical services first
+  if (criticalServices.some((s) => s.status === 'unhealthy')) {
     overallStatus = 'unhealthy'
-  } else if (statuses.some((s) => s === 'degraded')) {
+  } else if (criticalServices.some((s) => s.status === 'degraded')) {
     overallStatus = 'degraded'
   }
+  // Only check optional services if critical are healthy
+  else if (optionalServices.some((s) => s.status === 'degraded')) {
+    overallStatus = 'degraded'
+  }
+  // OpenAI unhealthy is OK if OpenRouter is healthy
 
   const health: HealthCheck = {
     status: overallStatus,
