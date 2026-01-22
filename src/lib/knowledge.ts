@@ -1,6 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 import OpenAI from 'openai'
 import { logger } from './logger'
+import { openrouterCircuit } from './circuit-breaker'
 
 export interface KnowledgeResult {
     id: string
@@ -29,16 +30,18 @@ export async function searchKnowledgeBase(
     }
 
     try {
-        // Generate embedding
+        // Generate embedding with circuit breaker protection
         const openrouterClient = new OpenAI({
             apiKey: process.env.OPENROUTER_API_KEY,
             baseURL: 'https://openrouter.ai/api/v1',
         })
 
-        const embeddingResponse = await openrouterClient.embeddings.create({
-            model: 'openai/text-embedding-3-small',
-            input: query.trim(),
-        })
+        const embeddingResponse = await openrouterCircuit.execute(() =>
+            openrouterClient.embeddings.create({
+                model: 'openai/text-embedding-3-small',
+                input: query.trim(),
+            })
+        )
         const queryEmbedding = embeddingResponse.data[0].embedding
 
         // Search Supabase

@@ -2,10 +2,29 @@ import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 import { NextResponse, type NextRequest } from 'next/server'
 
+// Allowed redirect paths after authentication
+const ALLOWED_PATHS = ['/practice', '/dashboard', '/curriculum', '/analyze', '/history']
+
+function getSafeRedirectPath(next: string | null): string {
+  const defaultPath = '/practice'
+
+  if (!next) return defaultPath
+
+  // Must start with / but not // (protocol-relative URL)
+  if (!next.startsWith('/') || next.startsWith('//')) return defaultPath
+
+  // Check if path starts with an allowed prefix
+  const isAllowed = ALLOWED_PATHS.some(allowed =>
+    next === allowed || next.startsWith(`${allowed}/`) || next.startsWith(`${allowed}?`)
+  )
+
+  return isAllowed ? next : defaultPath
+}
+
 export async function GET(request: NextRequest) {
   const requestUrl = new URL(request.url)
   const code = requestUrl.searchParams.get('code')
-  const next = requestUrl.searchParams.get('next') ?? '/practice'
+  const next = getSafeRedirectPath(requestUrl.searchParams.get('next'))
 
   if (code) {
     const cookieStore = await cookies()

@@ -3,6 +3,8 @@
 import { createClient } from '@supabase/supabase-js'
 import { getUser } from '@/lib/supabase/server'
 import { analyzeTranscript } from '@/lib/scoring/engine'
+import { supabaseCircuit, CircuitOpenError } from '@/lib/circuit-breaker'
+import { logger } from '@/lib/logger'
 import type { TranscriptEntry, ScoreDimension, CallAnalysis } from '@/types'
 
 interface SaveSessionInput {
@@ -86,25 +88,36 @@ export async function savePracticeSession(
 
     const supabase = getServiceSupabase()
 
-    // Save the session
-    const { data: sessionData, error: sessionError } = await supabase
-      .from('roleplay_sessions')
-      .insert({
-        user_id: user.id,
-        persona_id: input.personaId,
-        scenario_type: input.scenarioType,
-        duration_seconds: input.durationSeconds,
-        vapi_call_id: input.vapiCallId || null,
-        transcript: input.transcript,
+    // Save the session with circuit breaker protection
+    let session: { id: string } | null = null
+    try {
+      const result = await supabaseCircuit.execute(async () => {
+        return await supabase
+          .from('roleplay_sessions')
+          .insert({
+            user_id: user.id,
+            persona_id: input.personaId,
+            scenario_type: input.scenarioType,
+            duration_seconds: input.durationSeconds,
+            vapi_call_id: input.vapiCallId || null,
+            transcript: input.transcript,
+          })
+          .select('id')
+          .single()
       })
-      .select('id')
-      .single()
 
-    const session = sessionData as { id: string } | null
+      session = result.data as { id: string } | null
 
-    if (sessionError || !session) {
-      console.error('Error saving session:', sessionError)
-      return { success: false, error: 'Failed to save session' }
+      if (result.error || !session) {
+        logger.error('Error saving session', { operation: 'savePracticeSession', error: result.error?.message })
+        return { success: false, error: 'Failed to save session' }
+      }
+    } catch (error) {
+      if (error instanceof CircuitOpenError) {
+        logger.warn('Database circuit breaker open', { operation: 'savePracticeSession' })
+        return { success: false, error: 'Service temporarily unavailable. Please try again.' }
+      }
+      throw error
     }
 
     // Save dimension scores
@@ -122,13 +135,13 @@ export async function savePracticeSession(
       .insert(scoreInserts)
 
     if (scoresError) {
-      console.error('Error saving scores:', scoresError)
+      logger.error('Error saving scores', { operation: 'savePracticeSession', error: scoresError.message })
       // Don't fail the whole operation, session is saved
     }
 
     return { success: true, sessionId: session.id }
   } catch (error) {
-    console.error('Error in savePracticeSession:', error)
+    logger.exception('Error in savePracticeSession', error, { operation: 'savePracticeSession' })
     return { success: false, error: 'An unexpected error occurred' }
   }
 }
@@ -145,29 +158,35 @@ export async function getPracticeSession(
 
     const supabase = getServiceSupabase()
 
-    // Get session
+    // Get session with scores in single query (fixes N+1)
     const { data: sessionData, error: sessionError } = await supabase
       .from('roleplay_sessions')
-      .select('*')
+      .select(`
+        id,
+        user_id,
+        persona_id,
+        scenario_type,
+        duration_seconds,
+        vapi_call_id,
+        transcript,
+        created_at,
+        session_scores (
+          id,
+          session_id,
+          dimension,
+          score,
+          feedback,
+          created_at
+        )
+      `)
       .eq('id', sessionId)
       .eq('user_id', user.id)
       .single()
 
-    const session = sessionData as RoleplaySessionRow | null
+    if (sessionError || !sessionData) return null
 
-    if (sessionError || !session) return null
-
-    // Get scores
-    const { data: scoresData, error: scoresError } = await supabase
-      .from('session_scores')
-      .select('*')
-      .eq('session_id', sessionId)
-
-    const scores = (scoresData || []) as SessionScoreRow[]
-
-    if (scoresError) {
-      console.error('Error fetching scores:', scoresError)
-    }
+    const session = sessionData as RoleplaySessionRow & { session_scores: SessionScoreRow[] }
+    const scores = session.session_scores || []
 
     // Reconstruct the analysis from scores
     const dimensionScores: CallAnalysis['scores'] = {} as CallAnalysis['scores']
@@ -246,7 +265,7 @@ export async function getPracticeSession(
       analysis,
     }
   } catch (error) {
-    console.error('Error in getPracticeSession:', error)
+    logger.exception('Error in getPracticeSession', error, { operation: 'getPracticeSession' })
     return null
   }
 }
@@ -304,7 +323,7 @@ export async function getUserPracticeSessions(): Promise<
       }
     })
   } catch (error) {
-    console.error('Error in getUserPracticeSessions:', error)
+    logger.exception('Error in getUserPracticeSessions', error, { operation: 'getUserPracticeSessions' })
     return []
   }
 }

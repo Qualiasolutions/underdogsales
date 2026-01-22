@@ -6,6 +6,7 @@ import { checkRateLimit, createRateLimitHeaders, RATE_LIMITS } from '@/lib/rate-
 import { ChatRequestSchema, validateInput } from '@/lib/validations'
 import { ErrorCodes, createErrorResponse } from '@/lib/errors'
 import { logger } from '@/lib/logger'
+import { openrouterCircuit, CircuitOpenError } from '@/lib/circuit-breaker'
 
 const CHAT_TIMEOUT = 30000 // 30 seconds
 
@@ -91,18 +92,22 @@ export async function POST(request: NextRequest) {
     }
 
     const openai = getOpenAIClient()
-    const response = await openai.chat.completions.create({
-      model: process.env.OPENROUTER_API_KEY ? 'openai/gpt-4o' : 'gpt-4o',
-      messages: [
-        { role: 'system' as const, content: systemPrompt },
-        ...messages.map((m) => ({
-          role: m.role as 'user' | 'assistant',
-          content: m.content,
-        })),
-      ],
-      temperature: 0.8,
-      max_tokens: 1000,
-    })
+
+    // Use circuit breaker to prevent cascading failures
+    const response = await openrouterCircuit.execute(() =>
+      openai.chat.completions.create({
+        model: process.env.OPENROUTER_API_KEY ? 'openai/gpt-4o' : 'gpt-4o',
+        messages: [
+          { role: 'system' as const, content: systemPrompt },
+          ...messages.map((m) => ({
+            role: m.role as 'user' | 'assistant',
+            content: m.content,
+          })),
+        ],
+        temperature: 0.8,
+        max_tokens: 1000,
+      })
+    )
 
     const assistantMessage = response.choices[0]?.message?.content || 'Sorry, I couldn\'t generate a response.'
 
@@ -131,6 +136,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         createErrorResponse(ErrorCodes.TIMEOUT),
         { status: 408 }
+      )
+    }
+
+    // Handle circuit breaker open
+    if (error instanceof CircuitOpenError) {
+      return NextResponse.json(
+        { error: 'Service temporarily unavailable. Please try again in a moment.' },
+        { status: 503 }
       )
     }
 

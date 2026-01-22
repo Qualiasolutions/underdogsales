@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import { Geist, Geist_Mono, Maven_Pro } from 'next/font/google'
+import { Analytics } from '@vercel/analytics/react'
+import { SpeedInsights } from '@vercel/speed-insights/next'
 import { AuthProvider } from '@/components/providers/auth-provider'
 import { getUser } from '@/lib/supabase/server'
 import './globals.css'
@@ -20,7 +22,7 @@ const mavenPro = Maven_Pro({
   variable: '--font-maven-pro',
   subsets: ['latin'],
   display: 'swap',
-  weight: ['400', '500', '600', '700', '800', '900'],
+  weight: ['400', '600', '700'], // Reduced from 6 weights to 3 (~15KB savings)
 })
 
 export const metadata: Metadata = {
@@ -86,6 +88,8 @@ export default async function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${mavenPro.variable} antialiased bg-background text-foreground`}
       >
         <AuthProvider initialUser={user}>{children}</AuthProvider>
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   )
