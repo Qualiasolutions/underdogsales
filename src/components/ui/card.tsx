@@ -5,7 +5,7 @@ import { motion, type HTMLMotionProps } from 'motion/react'
 import { cn } from '@/lib/utils'
 
 interface CardProps extends Omit<HTMLMotionProps<'div'>, 'ref'> {
-  variant?: 'default' | 'elevated' | 'bordered' | 'glass' | 'gradient' | 'navy'
+  variant?: 'default' | 'elevated' | 'bordered' | 'glass' | 'gradient' | 'navy' | 'premium'
   hover?: boolean
   glow?: boolean
 }
@@ -19,6 +19,7 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
       glass: 'glass',
       gradient: 'bg-gradient-to-br from-white to-muted border border-border',
       navy: 'bg-navy text-white',
+      premium: 'bg-white border border-border/50 shadow-sm card-glow gradient-border',
     }
 
     return (
@@ -34,6 +35,7 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
         whileHover={hover ? {
           y: -4,
           boxShadow: '0 20px 40px -12px rgb(2 25 69 / 0.15)',
+          transition: { type: 'spring', stiffness: 400, damping: 25 },
         } : undefined}
         transition={{ type: 'spring', stiffness: 300, damping: 20 }}
         {...props}

@@ -58,16 +58,16 @@ export default function Home() {
             </Link>
 
             <div className="hidden md:flex items-center gap-8">
-              <Link href="/coach" className="text-sm font-medium text-navy/70 hover:text-navy transition-colors">
+              <Link href="/coach" className="text-sm font-medium text-navy/70 hover:text-navy transition-colors link-underline">
                 Coach
               </Link>
-              <Link href="/chat" className="text-sm font-medium text-navy/70 hover:text-navy transition-colors">
+              <Link href="/chat" className="text-sm font-medium text-navy/70 hover:text-navy transition-colors link-underline">
                 Chat
               </Link>
-              <Link href="/curriculum" className="text-sm font-medium text-navy/70 hover:text-navy transition-colors">
+              <Link href="/curriculum" className="text-sm font-medium text-navy/70 hover:text-navy transition-colors link-underline">
                 Curriculum
               </Link>
-              <Link href="#features" className="text-sm font-medium text-navy/70 hover:text-navy transition-colors">
+              <Link href="#features" className="text-sm font-medium text-navy/70 hover:text-navy transition-colors link-underline">
                 Features
               </Link>
             </div>

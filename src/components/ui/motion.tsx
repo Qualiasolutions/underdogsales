@@ -408,3 +408,158 @@ export const Glow = ({
     <div className="relative">{children}</div>
   </div>
 )
+
+// Skeleton Loader with Shimmer
+interface SkeletonProps {
+  className?: string
+  rounded?: 'sm' | 'md' | 'lg' | 'xl' | 'full'
+}
+
+export const Skeleton = ({
+  className,
+  rounded = 'lg',
+}: SkeletonProps) => {
+  const roundedClasses = {
+    sm: 'rounded-sm',
+    md: 'rounded-md',
+    lg: 'rounded-lg',
+    xl: 'rounded-xl',
+    full: 'rounded-full',
+  }
+
+  return (
+    <div
+      className={cn(
+        'skeleton',
+        roundedClasses[rounded],
+        className
+      )}
+    />
+  )
+}
+
+// Spotlight Effect - follows cursor
+interface SpotlightProps {
+  children: ReactNode
+  className?: string
+  size?: number
+}
+
+export const Spotlight = ({
+  children,
+  className,
+  size = 400,
+}: SpotlightProps) => {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [position, setPosition] = useState({ x: 0, y: 0 })
+  const [isHovering, setIsHovering] = useState(false)
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!containerRef.current) return
+    const rect = containerRef.current.getBoundingClientRect()
+    setPosition({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+    })
+  }
+
+  return (
+    <div
+      ref={containerRef}
+      onMouseMove={handleMouseMove}
+      onMouseEnter={() => setIsHovering(true)}
+      onMouseLeave={() => setIsHovering(false)}
+      className={cn('relative overflow-hidden', className)}
+    >
+      <motion.div
+        className="pointer-events-none absolute -inset-px z-10"
+        animate={{
+          background: isHovering
+            ? `radial-gradient(${size}px circle at ${position.x}px ${position.y}px, rgba(231, 178, 33, 0.06), transparent 60%)`
+            : 'none',
+        }}
+        transition={{ duration: 0.15 }}
+      />
+      {children}
+    </div>
+  )
+}
+
+// Text Shimmer - Animated gradient text
+interface TextShimmerProps {
+  children: ReactNode
+  className?: string
+}
+
+export const TextShimmer = ({
+  children,
+  className,
+}: TextShimmerProps) => (
+  <motion.span
+    className={cn(
+      'bg-clip-text text-transparent bg-gradient-to-r from-gold via-gold-light to-gold bg-[length:200%_auto]',
+      className
+    )}
+    animate={{
+      backgroundPosition: ['0% center', '200% center'],
+    }}
+    transition={{
+      duration: 3,
+      repeat: Infinity,
+      ease: 'linear',
+    }}
+  >
+    {children}
+  </motion.span>
+)
+
+// Hover Card - Subtle tilt effect on hover
+interface HoverTiltProps {
+  children: ReactNode
+  className?: string
+  tiltAmount?: number
+}
+
+export const HoverTilt = ({
+  children,
+  className,
+  tiltAmount = 5,
+}: HoverTiltProps) => {
+  const ref = useRef<HTMLDivElement>(null)
+  const [rotateX, setRotateX] = useState(0)
+  const [rotateY, setRotateY] = useState(0)
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!ref.current) return
+    const rect = ref.current.getBoundingClientRect()
+    const centerX = rect.left + rect.width / 2
+    const centerY = rect.top + rect.height / 2
+    const mouseX = e.clientX - centerX
+    const mouseY = e.clientY - centerY
+
+    setRotateX((-mouseY / (rect.height / 2)) * tiltAmount)
+    setRotateY((mouseX / (rect.width / 2)) * tiltAmount)
+  }
+
+  const handleMouseLeave = () => {
+    setRotateX(0)
+    setRotateY(0)
+  }
+
+  return (
+    <motion.div
+      ref={ref}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      animate={{
+        rotateX,
+        rotateY,
+      }}
+      transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+      style={{ perspective: 1000 }}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  )
+}
