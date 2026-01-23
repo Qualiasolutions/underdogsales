@@ -15,6 +15,7 @@ import {
   Mic,
   MessageSquare,
   Home,
+  LayoutDashboard,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from './button'
@@ -27,6 +28,7 @@ interface HeaderProps {
 
 const navLinks = [
   { href: '/', label: 'Home', icon: Home },
+  { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/practice', label: 'Practice', icon: Mic },
   { href: '/chat', label: 'Chat', icon: MessageSquare },
   { href: '/curriculum', label: 'Curriculum', icon: BookOpen },
