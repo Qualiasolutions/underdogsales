@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion } from 'motion/react'
-import { Mic, FileAudio, Loader2 } from 'lucide-react'
+import { Mic, FileAudio, Loader2, BarChart3 } from 'lucide-react'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
@@ -12,7 +12,10 @@ import { getUserCallUploads } from '@/lib/actions/call-analysis'
 import { SessionHistoryCard } from './SessionHistoryCard'
 import { CallHistoryCard } from './CallHistoryCard'
 import { Header } from '@/components/ui/header'
-import type { CallUpload } from '@/types'
+import { ScoreTrendChart } from './progress/ScoreTrendChart'
+import { DimensionRadarChart } from './progress/DimensionRadarChart'
+import { CurriculumProgressCard } from './progress/CurriculumProgressCard'
+import type { CallUpload, ScoreDimension } from '@/types'
 
 interface PracticeSession {
   id: string
@@ -23,11 +26,21 @@ interface PracticeSession {
   overall_score: number
 }
 
+interface ModuleProgress {
+  moduleId: number
+  completed: boolean
+  score: number | null
+  completedAt: string | null
+}
+
 interface DashboardClientProps {
   initialSessions: PracticeSession[]
   initialSessionsHasMore: boolean
   initialCalls: CallUpload[]
   initialCallsHasMore: boolean
+  initialScoreTrends: Array<{ date: string; score: number }>
+  initialDimensionAverages: Record<ScoreDimension, number>
+  initialCurriculumProgress: ModuleProgress[]
 }
 
 export function DashboardClient({
@@ -35,6 +48,9 @@ export function DashboardClient({
   initialSessionsHasMore,
   initialCalls,
   initialCallsHasMore,
+  initialScoreTrends,
+  initialDimensionAverages,
+  initialCurriculumProgress,
 }: DashboardClientProps) {
   const router = useRouter()
 
@@ -51,7 +67,7 @@ export function DashboardClient({
   const [callsOffset, setCallsOffset] = useState(0)
 
   // Tab state
-  const [activeTab, setActiveTab] = useState<'practice' | 'calls'>('practice')
+  const [activeTab, setActiveTab] = useState<'practice' | 'calls' | 'progress'>('practice')
 
   // Navigation handlers
   const handleSessionClick = (sessionId: string) => {
@@ -131,6 +147,18 @@ export function DashboardClient({
               >
                 <FileAudio className="w-4 h-4 inline mr-2" />
                 Call Analyses
+              </button>
+              <button
+                onClick={() => setActiveTab('progress')}
+                className={cn(
+                  'px-4 py-2 rounded-md text-sm font-medium transition-colors',
+                  activeTab === 'progress'
+                    ? 'bg-white text-navy shadow-sm'
+                    : 'text-muted-foreground hover:text-navy'
+                )}
+              >
+                <BarChart3 className="w-4 h-4 inline mr-2" />
+                Progress
               </button>
             </div>
           </motion.div>
@@ -237,6 +265,28 @@ export function DashboardClient({
                     )}
                   </>
                 )}
+              </div>
+            )}
+
+            {activeTab === 'progress' && (
+              <div className="space-y-8">
+                {/* Curriculum Progress */}
+                <div className="bg-white rounded-2xl p-6 shadow-sm border">
+                  <h2 className="text-lg font-semibold text-navy mb-4">Curriculum Progress</h2>
+                  <CurriculumProgressCard progress={initialCurriculumProgress} />
+                </div>
+
+                {/* Performance Charts - 2 column grid on lg */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <div className="bg-white rounded-2xl p-6 shadow-sm border">
+                    <h2 className="text-lg font-semibold text-navy mb-4">Score Trend</h2>
+                    <ScoreTrendChart data={initialScoreTrends} />
+                  </div>
+                  <div className="bg-white rounded-2xl p-6 shadow-sm border">
+                    <h2 className="text-lg font-semibold text-navy mb-4">Skills Breakdown</h2>
+                    <DimensionRadarChart data={initialDimensionAverages} />
+                  </div>
+                </div>
               </div>
             )}
           </motion.div>
