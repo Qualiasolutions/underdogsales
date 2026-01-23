@@ -9,9 +9,9 @@ Requirements for MVP release (~13/03/2026). Each maps to roadmap phases.
 
 ### User Dashboard
 
-- [ ] **DASH-01**: User can view list of past practice sessions with date, persona, and score
+- [x] **DASH-01**: User can view list of past practice sessions with date, persona, and score
 - [ ] **DASH-02**: User can see curriculum progress with completed/total modules
-- [ ] **DASH-03**: User can view history of uploaded call analyses with scores
+- [x] **DASH-03**: User can view history of uploaded call analyses with scores
 - [ ] **DASH-04**: User can see performance trends (score improvements over time)
 
 ### Admin Dashboard
@@ -70,9 +70,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| DASH-01 | Phase 1 | Pending |
+| DASH-01 | Phase 1 | Complete |
 | DASH-02 | Phase 2 | Pending |
-| DASH-03 | Phase 1 | Pending |
+| DASH-03 | Phase 1 | Complete |
 | DASH-04 | Phase 2 | Pending |
 | ADMIN-01 | Phase 3 | Pending |
 | ADMIN-02 | Phase 4 | Pending |

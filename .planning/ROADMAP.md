@@ -8,7 +8,7 @@
 
 | Phase | Name | Requirements | Status |
 |-------|------|--------------|--------|
-| 1 | User Dashboard - History | DASH-01, DASH-03 | ◐ Planned |
+| 1 | User Dashboard - History | DASH-01, DASH-03 | ✓ Complete |
 | 2 | User Dashboard - Progress | DASH-02, DASH-04 | ○ Pending |
 | 3 | Admin Dashboard - Users | ADMIN-01, ADMIN-04 | ○ Pending |
 | 4 | Admin Dashboard - Analytics | ADMIN-02, ADMIN-03 | ○ Pending |
@@ -28,15 +28,15 @@
 **Plans:** 2 plans
 
 Plans:
-- [ ] 01-01-PLAN.md — Foundation (nav link + server action pagination)
-- [ ] 01-02-PLAN.md — Dashboard UI (page + history components)
+- [x] 01-01-PLAN.md — Foundation (nav link + server action pagination)
+- [x] 01-02-PLAN.md — Dashboard UI (page + history components)
 
 **Success Criteria:**
-- [ ] Dashboard page accessible from main navigation
-- [ ] Practice sessions list with pagination
-- [ ] Call analyses list with pagination
-- [ ] Click to view session/analysis details
-- [ ] Empty states for users with no history
+- [x] Dashboard page accessible from main navigation
+- [x] Practice sessions list with pagination
+- [x] Call analyses list with pagination
+- [x] Click to view session/analysis details
+- [x] Empty states for users with no history
 
 **Key Files:**
 - `src/app/dashboard/page.tsx` (new)
@@ -181,4 +181,4 @@ Phases 5-6 depend on features being complete.
 
 ---
 *Roadmap created: 2026-01-23*
-*Last updated: 2026-01-23*
+*Last updated: 2026-01-23 — Phase 1 complete*
