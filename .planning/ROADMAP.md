@@ -8,7 +8,7 @@
 
 | Phase | Name | Requirements | Status |
 |-------|------|--------------|--------|
-| 1 | User Dashboard - History | DASH-01, DASH-03 | ○ Pending |
+| 1 | User Dashboard - History | DASH-01, DASH-03 | ◐ Planned |
 | 2 | User Dashboard - Progress | DASH-02, DASH-04 | ○ Pending |
 | 3 | Admin Dashboard - Users | ADMIN-01, ADMIN-04 | ○ Pending |
 | 4 | Admin Dashboard - Analytics | ADMIN-02, ADMIN-03 | ○ Pending |
@@ -25,6 +25,12 @@
 - DASH-01: View past practice sessions with date, persona, score
 - DASH-03: View call analysis history with scores
 
+**Plans:** 2 plans
+
+Plans:
+- [ ] 01-01-PLAN.md — Foundation (nav link + server action pagination)
+- [ ] 01-02-PLAN.md — Dashboard UI (page + history components)
+
 **Success Criteria:**
 - [ ] Dashboard page accessible from main navigation
 - [ ] Practice sessions list with pagination
@@ -34,8 +40,9 @@
 
 **Key Files:**
 - `src/app/dashboard/page.tsx` (new)
-- `src/components/dashboard/SessionHistory.tsx` (new)
-- `src/components/dashboard/CallHistory.tsx` (new)
+- `src/components/dashboard/DashboardClient.tsx` (new)
+- `src/components/dashboard/SessionHistoryCard.tsx` (new)
+- `src/components/dashboard/CallHistoryCard.tsx` (new)
 
 ---
 
