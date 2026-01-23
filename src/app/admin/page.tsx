@@ -64,14 +64,10 @@ function QuickLinkCard({ title, description, href, icon: Icon }: QuickLinkCardPr
 }
 
 export default async function AdminDashboard() {
-  // Fetch user count
-  const { users } = await getAllUsers({ limit: 1 })
-
-  // We fetch with limit 1 just to check connectivity
+  // Fetch users for count (limit 100 for dashboard overview)
   // For accurate count, we'd need a dedicated count action
-  // For now, we'll show a placeholder that links to the full list
-  const { users: allUsers } = await getAllUsers({ limit: 100 })
-  const userCount = allUsers.length
+  const { users } = await getAllUsers({ limit: 100 })
+  const userCount = users.length
 
   // Get persona count
   const personas = getAllPersonas()
