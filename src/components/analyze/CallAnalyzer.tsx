@@ -29,8 +29,8 @@ export function CallAnalyzer() {
   const loadHistory = useCallback(async () => {
     setIsLoadingHistory(true)
     try {
-      const data = await getUserCallUploads()
-      setAnalyses(data)
+      const result = await getUserCallUploads()
+      setAnalyses(result.uploads)
     } catch (err) {
       console.error('Failed to load analysis history:', err)
     } finally {
