@@ -121,6 +121,12 @@ Plans:
 - ADMIN-02: Usage metrics (sessions, calls, users)
 - ADMIN-03: System health overview
 
+**Plans:** 2 plans
+
+Plans:
+- [ ] 04-01-PLAN.md — Analytics data layer + metrics cards
+- [ ] 04-02-PLAN.md — Usage charts + system health
+
 **Success Criteria:**
 - [ ] Dashboard with key metrics cards
 - [ ] Charts: sessions/day, calls/day, active users
@@ -205,4 +211,4 @@ Phases 5-6 depend on features being complete.
 
 ---
 *Roadmap created: 2026-01-23*
-*Last updated: 2026-01-23 — Phase 3 complete*
+*Last updated: 2026-01-23 — Phase 4 planned*
