@@ -1,11 +1,17 @@
 'use server'
 
-import { createClient } from '@supabase/supabase-js'
 import { getUser } from '@/lib/supabase/server'
+import { getAdminClient } from '@/lib/supabase/admin'
+import { logger } from '@/lib/logger'
 import type { CallUpload, CallUploadStatus } from '@/types'
 import type { Database } from '@/lib/supabase/types'
 
 type CallUploadRow = Database['public']['Tables']['call_uploads']['Row']
+
+interface PaginationOptions {
+  limit?: number
+  offset?: number
+}
 
 function rowToCallUpload(row: CallUploadRow): CallUpload {
   return {
@@ -15,42 +21,44 @@ function rowToCallUpload(row: CallUploadRow): CallUpload {
     original_filename: row.original_filename || '',
     file_size_bytes: row.file_size_bytes || 0,
     duration_seconds: row.duration_seconds || 0,
-    status: row.status as CallUploadStatus,
+    status: (row.status || 'pending') as CallUploadStatus,
     error_message: row.error_message || undefined,
     transcript: (row.transcript as unknown as CallUpload['transcript']) || [],
     analysis: (row.analysis as unknown as CallUpload['analysis']) || null,
     overall_score: row.overall_score,
-    created_at: row.created_at,
+    created_at: row.created_at || new Date().toISOString(),
   }
 }
 
-function getServiceSupabase() {
-  return createClient<Database>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-  )
-}
-
 /**
- * Get all call uploads for the current user
+ * Get all call uploads for the current user with pagination
  */
-export async function getUserCallUploads(): Promise<CallUpload[]> {
+export async function getUserCallUploads(
+  options: PaginationOptions = {}
+): Promise<{ uploads: CallUpload[]; hasMore: boolean }> {
+  const { limit = 10, offset = 0 } = options
   const user = await getUser()
-  if (!user) return []
+  if (!user) return { uploads: [], hasMore: false }
 
-  const supabase = getServiceSupabase()
+  const supabase = getAdminClient()
+  // Fetch limit + 1 for hasMore detection
   const { data, error } = await supabase
     .from('call_uploads')
     .select('*')
     .eq('user_id', user.id)
     .order('created_at', { ascending: false })
+    .range(offset, offset + limit)
 
   if (error) {
-    console.error('Error fetching call uploads:', error)
-    return []
+    logger.error('Error fetching call uploads', { error: error.message, operation: 'getUserCallUploads' })
+    return { uploads: [], hasMore: false }
   }
 
-  return (data || []).map(rowToCallUpload)
+  const uploads = (data || []).map(rowToCallUpload)
+  return {
+    uploads: uploads.slice(0, limit),
+    hasMore: uploads.length > limit
+  }
 }
 
 /**
@@ -60,7 +68,7 @@ export async function getCallUpload(callId: string): Promise<CallUpload | null> 
   const user = await getUser()
   if (!user) return null
 
-  const supabase = getServiceSupabase()
+  const supabase = getAdminClient()
   const { data, error } = await supabase
     .from('call_uploads')
     .select('*')
@@ -84,7 +92,7 @@ export async function deleteCallUpload(
     return { success: false, error: 'Not authenticated' }
   }
 
-  const supabase = getServiceSupabase()
+  const supabase = getAdminClient()
 
   // Get the file path first
   const { data } = await supabase

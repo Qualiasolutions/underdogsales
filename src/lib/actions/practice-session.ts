@@ -1,11 +1,12 @@
 'use server'
 
-import { createClient } from '@supabase/supabase-js'
 import { getUser } from '@/lib/supabase/server'
+import { getAdminClient } from '@/lib/supabase/admin'
 import { analyzeTranscript } from '@/lib/scoring/engine'
 import { supabaseCircuit, CircuitOpenError } from '@/lib/circuit-breaker'
 import { logger } from '@/lib/logger'
 import type { TranscriptEntry, ScoreDimension, CallAnalysis } from '@/types'
+import type { Json } from '@/lib/supabase/types'
 
 interface SaveSessionInput {
   personaId: string
@@ -34,11 +35,9 @@ interface SessionWithScores {
   analysis: CallAnalysis
 }
 
-function getServiceSupabase() {
-  return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-  )
+interface PaginationOptions {
+  limit?: number
+  offset?: number
 }
 
 // DB row types for type safety
@@ -86,7 +85,7 @@ export async function savePracticeSession(
       scenarioType: input.scenarioType,
     })
 
-    const supabase = getServiceSupabase()
+    const supabase = getAdminClient()
 
     // Save the session with circuit breaker protection
     let session: { id: string } | null = null
@@ -100,7 +99,7 @@ export async function savePracticeSession(
             scenario_type: input.scenarioType,
             duration_seconds: input.durationSeconds,
             vapi_call_id: input.vapiCallId || null,
-            transcript: input.transcript,
+            transcript: input.transcript as unknown as Json,
           })
           .select('id')
           .single()
@@ -156,7 +155,7 @@ export async function getPracticeSession(
     const user = await getUser()
     if (!user) return null
 
-    const supabase = getServiceSupabase()
+    const supabase = getAdminClient()
 
     // Get session with scores in single query (fixes N+1)
     const { data: sessionData, error: sessionError } = await supabase
@@ -271,10 +270,12 @@ export async function getPracticeSession(
 }
 
 /**
- * Get all practice sessions for the current user
+ * Get all practice sessions for the current user with pagination
  */
-export async function getUserPracticeSessions(): Promise<
-  Array<{
+export async function getUserPracticeSessions(
+  options: PaginationOptions = {}
+): Promise<{
+  sessions: Array<{
     id: string
     persona_id: string
     scenario_type: string
@@ -282,14 +283,16 @@ export async function getUserPracticeSessions(): Promise<
     created_at: string
     overall_score: number
   }>
-> {
+  hasMore: boolean
+}> {
   try {
+    const { limit = 10, offset = 0 } = options
     const user = await getUser()
-    if (!user) return []
+    if (!user) return { sessions: [], hasMore: false }
 
-    const supabase = getServiceSupabase()
+    const supabase = getAdminClient()
 
-    // Get sessions with their scores
+    // Get sessions with their scores (fetch limit + 1 for hasMore detection)
     const { data: sessions, error } = await supabase
       .from('roleplay_sessions')
       .select(`
@@ -302,11 +305,11 @@ export async function getUserPracticeSessions(): Promise<
       `)
       .eq('user_id', user.id)
       .order('created_at', { ascending: false })
-      .limit(20)
+      .range(offset, offset + limit)
 
-    if (error || !sessions) return []
+    if (error || !sessions) return { sessions: [], hasMore: false }
 
-    return sessions.map((session) => {
+    const mapped = sessions.map((session) => {
       const scores = (session.session_scores as Array<{ score: number }>) || []
       const avgScore =
         scores.length > 0
@@ -318,12 +321,17 @@ export async function getUserPracticeSessions(): Promise<
         persona_id: session.persona_id,
         scenario_type: session.scenario_type,
         duration_seconds: session.duration_seconds || 0,
-        created_at: session.created_at,
+        created_at: session.created_at || new Date().toISOString(),
         overall_score: Math.round(avgScore * 10) / 10,
       }
     })
+
+    return {
+      sessions: mapped.slice(0, limit),
+      hasMore: mapped.length > limit
+    }
   } catch (error) {
     logger.exception('Error in getUserPracticeSessions', error, { operation: 'getUserPracticeSessions' })
-    return []
+    return { sessions: [], hasMore: false }
   }
 }
