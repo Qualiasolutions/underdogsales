@@ -4,6 +4,8 @@ import { getScoreTrends, getDimensionAverages } from '@/lib/actions/progress'
 import { getCurriculumProgress } from '@/lib/actions/curriculum'
 import { DashboardClient } from '@/components/dashboard/DashboardClient'
 
+export const dynamic = 'force-dynamic'
+
 export const metadata = {
   title: 'Dashboard | Underdog Sales',
   description: 'View your practice history and progress',
