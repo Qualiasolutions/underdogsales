@@ -54,6 +54,12 @@ Plans:
 - DASH-02: Curriculum progress visualization
 - DASH-04: Performance trends over time
 
+**Plans:** 2 plans
+
+Plans:
+- [ ] 02-01-PLAN.md — Data layer (server actions + recharts)
+- [ ] 02-02-PLAN.md — Progress UI (charts + tab)
+
 **Success Criteria:**
 - [ ] Curriculum progress bar/chart showing completion
 - [ ] Module breakdown with status indicators
@@ -61,8 +67,12 @@ Plans:
 - [ ] Average score by dimension breakdown
 
 **Key Files:**
-- `src/components/dashboard/CurriculumProgress.tsx` (new)
-- `src/components/dashboard/PerformanceTrends.tsx` (new)
+- `src/lib/actions/progress.ts` (new)
+- `src/lib/actions/curriculum.ts` (new)
+- `src/components/dashboard/progress/ScoreTrendChart.tsx` (new)
+- `src/components/dashboard/progress/DimensionRadarChart.tsx` (new)
+- `src/components/dashboard/progress/CurriculumProgressCard.tsx` (new)
+- `src/components/dashboard/progress/ModuleBreakdown.tsx` (new)
 
 ---
 
@@ -181,4 +191,4 @@ Phases 5-6 depend on features being complete.
 
 ---
 *Roadmap created: 2026-01-23*
-*Last updated: 2026-01-23 — Phase 1 complete*
+*Last updated: 2026-01-23 — Phase 2 planned*
