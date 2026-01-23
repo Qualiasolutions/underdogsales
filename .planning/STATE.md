@@ -17,12 +17,12 @@ See: `.planning/PROJECT.md` (updated 2026-01-23)
 
 | Phase | Name | Status | Plans |
 |-------|------|--------|-------|
-| 1 | User Dashboard - History | Complete | 2/2 |
-| 2 | User Dashboard - Progress | Complete | 2/2 |
-| 3 | Admin Dashboard - Users | Pending | 0/0 |
-| 4 | Admin Dashboard - Analytics | Pending | 0/0 |
-| 5 | Technical Documentation | Pending | 0/0 |
-| 6 | User Guide & Handover | Pending | 0/0 |
+| 1 | User Dashboard - History | ✓ Complete | 2/2 |
+| 2 | User Dashboard - Progress | ✓ Complete | 2/2 |
+| 3 | Admin Dashboard - Users | ○ Pending | 0/0 |
+| 4 | Admin Dashboard - Analytics | ○ Pending | 0/0 |
+| 5 | Technical Documentation | ○ Pending | 0/0 |
+| 6 | User Guide & Handover | ○ Pending | 0/0 |
 
 Progress: ████░░░░░░ 40%
 

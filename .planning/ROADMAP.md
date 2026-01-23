@@ -9,7 +9,7 @@
 | Phase | Name | Requirements | Status |
 |-------|------|--------------|--------|
 | 1 | User Dashboard - History | DASH-01, DASH-03 | ✓ Complete |
-| 2 | User Dashboard - Progress | DASH-02, DASH-04 | ○ Pending |
+| 2 | User Dashboard - Progress | DASH-02, DASH-04 | ✓ Complete |
 | 3 | Admin Dashboard - Users | ADMIN-01, ADMIN-04 | ○ Pending |
 | 4 | Admin Dashboard - Analytics | ADMIN-02, ADMIN-03 | ○ Pending |
 | 5 | Technical Documentation | DOC-01 | ○ Pending |
@@ -57,14 +57,14 @@ Plans:
 **Plans:** 2 plans
 
 Plans:
-- [ ] 02-01-PLAN.md — Data layer (server actions + recharts)
-- [ ] 02-02-PLAN.md — Progress UI (charts + tab)
+- [x] 02-01-PLAN.md — Data layer (server actions + recharts)
+- [x] 02-02-PLAN.md — Progress UI (charts + tab)
 
 **Success Criteria:**
-- [ ] Curriculum progress bar/chart showing completion
-- [ ] Module breakdown with status indicators
-- [ ] Score trend chart (practice sessions over time)
-- [ ] Average score by dimension breakdown
+- [x] Curriculum progress bar/chart showing completion
+- [x] Module breakdown with status indicators
+- [x] Score trend chart (practice sessions over time)
+- [x] Average score by dimension breakdown
 
 **Key Files:**
 - `src/lib/actions/progress.ts` (new)
@@ -191,4 +191,4 @@ Phases 5-6 depend on features being complete.
 
 ---
 *Roadmap created: 2026-01-23*
-*Last updated: 2026-01-23 — Phase 2 planned*
+*Last updated: 2026-01-23 — Phase 2 complete*
