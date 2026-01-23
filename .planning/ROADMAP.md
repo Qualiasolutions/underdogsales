@@ -10,7 +10,7 @@
 |-------|------|--------------|--------|
 | 1 | User Dashboard - History | DASH-01, DASH-03 | ✓ Complete |
 | 2 | User Dashboard - Progress | DASH-02, DASH-04 | ✓ Complete |
-| 3 | Admin Dashboard - Users | ADMIN-01, ADMIN-04 | ○ Pending |
+| 3 | Admin Dashboard - Users | ADMIN-01, ADMIN-04 | ✓ Complete |
 | 4 | Admin Dashboard - Analytics | ADMIN-02, ADMIN-03 | ○ Pending |
 | 5 | Technical Documentation | DOC-01 | ○ Pending |
 | 6 | User Guide & Handover | DOC-02, DOC-03 | ○ Pending |
@@ -84,18 +84,32 @@ Plans:
 - ADMIN-01: View all users with activity
 - ADMIN-04: Content management (personas, rubric)
 
+**Plans:** 3 plans
+
+Plans:
+- [x] 03-01-PLAN.md — Infrastructure (admin config, server actions, middleware, debounce hook)
+- [x] 03-02-PLAN.md — User Management UI (layout, user list, user detail)
+- [x] 03-03-PLAN.md — Content Management UI (personas, rubric)
+
 **Success Criteria:**
-- [ ] Admin-only route with auth check
-- [ ] User list with search/filter
-- [ ] User detail view (activity, sessions)
-- [ ] Personas list with view/edit capability
-- [ ] Rubric configuration view/edit
+- [x] Admin-only route with auth check
+- [x] User list with search/filter
+- [x] User detail view (activity, sessions)
+- [x] Personas list with full configuration visibility
+- [x] Rubric configuration visibility
 
 **Key Files:**
+- `src/config/admin.ts` (new)
+- `src/lib/actions/admin.ts` (new)
+- `src/lib/hooks/use-debounce.ts` (new)
+- `src/app/admin/layout.tsx` (new)
 - `src/app/admin/page.tsx` (new)
 - `src/app/admin/users/page.tsx` (new)
+- `src/app/admin/users/[userId]/page.tsx` (new)
 - `src/app/admin/content/page.tsx` (new)
-- `src/components/admin/UserList.tsx` (new)
+- `src/app/admin/content/personas/page.tsx` (new)
+- `src/app/admin/content/rubric/page.tsx` (new)
+- `src/components/admin/*.tsx` (10 components)
 
 ---
 
@@ -191,4 +205,4 @@ Phases 5-6 depend on features being complete.
 
 ---
 *Roadmap created: 2026-01-23*
-*Last updated: 2026-01-23 — Phase 2 complete*
+*Last updated: 2026-01-23 — Phase 3 complete*
