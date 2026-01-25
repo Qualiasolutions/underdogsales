@@ -339,3 +339,153 @@ export async function getUserDetail(userId: string): Promise<GetUserDetailResult
     return { user: null, sessions: [], error: 'An unexpected error occurred' }
   }
 }
+
+/**
+ * Daily metric data point for charts
+ */
+export interface DailyMetric {
+  date: string  // "Jan 15"
+  sessions: number
+  calls: number
+}
+
+interface AnalyticsMetrics {
+  totalSessions: number
+  totalCalls: number
+  activeUsers: number
+  dailyData: DailyMetric[]
+}
+
+interface GetAnalyticsDataResult {
+  metrics: AnalyticsMetrics | null
+  error?: string
+}
+
+/**
+ * Helper to group records by day
+ */
+function groupByDay(
+  records: Array<{ created_at: string | null }>,
+  type: 'sessions' | 'calls'
+): Map<string, number> {
+  const dayMap = new Map<string, number>()
+
+  for (const record of records) {
+    if (!record.created_at) continue
+
+    const dateKey = new Date(record.created_at).toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+    })
+
+    dayMap.set(dateKey, (dayMap.get(dateKey) || 0) + 1)
+  }
+
+  return dayMap
+}
+
+/**
+ * Get platform analytics data (admin only)
+ *
+ * Returns aggregate metrics for sessions, calls, and active users
+ * over the specified time period.
+ */
+export async function getAnalyticsData(
+  days: number = 30
+): Promise<GetAnalyticsDataResult> {
+  try {
+    // Verify admin access
+    const user = await getUser()
+    if (!user) {
+      return { metrics: null, error: 'Not authenticated' }
+    }
+
+    if (!isAdmin(user.email)) {
+      logger.warn('Non-admin attempted to access getAnalyticsData', {
+        userId: user.id,
+        email: user.email,
+      })
+      return { metrics: null, error: 'Admin access required' }
+    }
+
+    const supabase = getAdminClient()
+
+    // Calculate date range
+    const startDate = new Date()
+    startDate.setDate(startDate.getDate() - days)
+    const startDateStr = startDate.toISOString()
+
+    // Query roleplay_sessions for the period
+    const { data: sessionsData, error: sessionsError } = await supabase
+      .from('roleplay_sessions')
+      .select('id, user_id, created_at')
+      .gte('created_at', startDateStr)
+      .is('deleted_at', null)
+
+    if (sessionsError) {
+      logger.error('Error fetching sessions for analytics', {
+        operation: 'getAnalyticsData',
+        error: sessionsError.message,
+      })
+      return { metrics: null, error: 'Failed to fetch analytics data' }
+    }
+
+    // Query call_uploads for the period
+    const { data: callsData, error: callsError } = await supabase
+      .from('call_uploads')
+      .select('id, created_at')
+      .gte('created_at', startDateStr)
+      .is('deleted_at', null)
+
+    if (callsError) {
+      logger.error('Error fetching calls for analytics', {
+        operation: 'getAnalyticsData',
+        error: callsError.message,
+      })
+      return { metrics: null, error: 'Failed to fetch analytics data' }
+    }
+
+    const sessions = sessionsData || []
+    const calls = callsData || []
+
+    // Count unique active users from sessions
+    const uniqueUserIds = new Set<string>()
+    for (const session of sessions) {
+      uniqueUserIds.add(session.user_id)
+    }
+
+    // Group by day for chart data
+    const sessionsByDay = groupByDay(sessions, 'sessions')
+    const callsByDay = groupByDay(calls, 'calls')
+
+    // Merge into daily data array
+    const allDates = new Set([...sessionsByDay.keys(), ...callsByDay.keys()])
+    const dailyDataUnsorted: DailyMetric[] = Array.from(allDates).map((date) => ({
+      date,
+      sessions: sessionsByDay.get(date) || 0,
+      calls: callsByDay.get(date) || 0,
+    }))
+
+    // Sort by date ascending (parse back to Date for sorting)
+    const currentYear = new Date().getFullYear()
+    dailyDataUnsorted.sort((a, b) => {
+      const dateA = new Date(`${a.date}, ${currentYear}`)
+      const dateB = new Date(`${b.date}, ${currentYear}`)
+      return dateA.getTime() - dateB.getTime()
+    })
+
+    const metrics: AnalyticsMetrics = {
+      totalSessions: sessions.length,
+      totalCalls: calls.length,
+      activeUsers: uniqueUserIds.size,
+      dailyData: dailyDataUnsorted,
+    }
+
+    return { metrics }
+  } catch (error) {
+    logger.exception('Error in getAnalyticsData', error, {
+      operation: 'getAnalyticsData',
+    })
+    return { metrics: null, error: 'An unexpected error occurred' }
+  }
+}
