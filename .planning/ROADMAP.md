@@ -195,6 +195,12 @@ Plans:
 - VOICE-01: Create Retell agents matching existing VAPI personas
 - VOICE-02: Integrate Retell SDK and webhook into application
 
+**Plans:** 2 plans
+
+Plans:
+- [ ] 07-01-PLAN.md — Core infrastructure (Retell SDK, types, client library, webhook)
+- [ ] 07-02-PLAN.md — Integration (register endpoint, VoicePractice component, feature flag)
+
 **Success Criteria:**
 - [ ] 7 Retell agents created (Giulio coach + 6 roleplay personas)
 - [ ] Retell webhook endpoint functional
@@ -205,8 +211,9 @@ Plans:
 
 **Key Files:**
 - `src/app/api/retell/webhook/route.ts` (new)
+- `src/app/api/retell/register/route.ts` (new)
 - `src/lib/retell/client.ts` (new)
-- `src/lib/retell/config.ts` (new)
+- `src/lib/retell/auth.ts` (new)
 - `src/components/voice/VoicePractice.tsx` (modify)
 - `src/config/personas.ts` (modify - add Retell agent IDs)
 
