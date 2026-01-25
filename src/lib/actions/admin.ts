@@ -365,8 +365,7 @@ interface GetAnalyticsDataResult {
  * Helper to group records by day
  */
 function groupByDay(
-  records: Array<{ created_at: string | null }>,
-  type: 'sessions' | 'calls'
+  records: Array<{ created_at: string | null }>
 ): Map<string, number> {
   const dayMap = new Map<string, number>()
 
@@ -455,8 +454,8 @@ export async function getAnalyticsData(
     }
 
     // Group by day for chart data
-    const sessionsByDay = groupByDay(sessions, 'sessions')
-    const callsByDay = groupByDay(calls, 'calls')
+    const sessionsByDay = groupByDay(sessions)
+    const callsByDay = groupByDay(calls)
 
     // Merge into daily data array
     const allDates = new Set([...sessionsByDay.keys(), ...callsByDay.keys()])
