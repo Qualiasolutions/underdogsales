@@ -14,6 +14,7 @@
 | 4 | Admin Dashboard - Analytics | ADMIN-02, ADMIN-03 | ○ Pending |
 | 5 | Technical Documentation | DOC-01 | ○ Pending |
 | 6 | User Guide & Handover | DOC-02, DOC-03 | ○ Pending |
+| 7 | Voice Platform Migration | VOICE-01, VOICE-02 | ○ Pending |
 
 ---
 
@@ -186,6 +187,48 @@ Plans:
 
 ---
 
+## Phase 7: Voice Platform Migration
+
+**Goal:** Migrate voice practice from VAPI to Retell AI for better pricing and voice realism.
+
+**Requirements:**
+- VOICE-01: Create Retell agents matching existing VAPI personas
+- VOICE-02: Integrate Retell SDK and webhook into application
+
+**Success Criteria:**
+- [ ] 7 Retell agents created (Giulio coach + 6 roleplay personas)
+- [ ] Retell webhook endpoint functional
+- [ ] Web client uses Retell SDK
+- [ ] Voice practice works end-to-end with Retell
+- [ ] Feature flag to toggle VAPI/Retell (optional)
+- [ ] VAPI assistants deprecated after validation
+
+**Key Files:**
+- `src/app/api/retell/webhook/route.ts` (new)
+- `src/lib/retell/client.ts` (new)
+- `src/lib/retell/config.ts` (new)
+- `src/components/voice/VoicePractice.tsx` (modify)
+- `src/config/personas.ts` (modify - add Retell agent IDs)
+
+**Migration Scope:**
+| VAPI Assistant | Retell Agent |
+|----------------|--------------|
+| Giulio Segantini - Underdog Sales Coach | → Retell coach agent |
+| Tony Ricci (Sales Director) | → Retell persona |
+| Lisa Martinez (Head of Ops) | → Retell persona |
+| David Park (Ops Mgr) | → Retell persona |
+| Emily Torres (EA) | → Retell persona |
+| Marcus Johnson (VP Sales) | → Retell persona |
+| Sarah Chen (CFO) | → Retell persona |
+
+**Benefits:**
+- ~40-50% cost reduction (~$0.07-0.10/min vs $0.15-0.20/min)
+- Lower latency voice pipeline
+- Better interruption handling
+- More natural conversation flow
+
+---
+
 ## Dependencies
 
 ```
@@ -194,10 +237,13 @@ Phase 1 ─┬─► Phase 2 (needs session data structures)
 Phase 3 ─┴─► Phase 4 (needs admin routes)
          │
 Phase 5 ─┬─► Phase 6 (tech docs inform user guide)
+
+Phase 7 (independent - can start anytime after Phase 4)
 ```
 
 Phases 1-2 and 3-4 can run in parallel.
 Phases 5-6 depend on features being complete.
+Phase 7 can run in parallel with Phases 5-6 (no dependencies).
 
 ---
 
@@ -208,7 +254,8 @@ Phases 5-6 depend on features being complete.
 | Scope creep | Deadline miss | Strict adherence to requirements |
 | API rate limits | Feature degradation | Existing circuit breaker handles this |
 | Client feedback loops | Delays | Async reviews, batch feedback |
+| Voice platform migration | Service disruption | Feature flag toggle, parallel operation |
 
 ---
 *Roadmap created: 2026-01-23*
-*Last updated: 2026-01-23 — Phase 4 planned*
+*Last updated: 2026-01-25 — Phase 7 added (Retell migration)*

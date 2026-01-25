@@ -27,6 +27,11 @@ Requirements for MVP release (~13/03/2026). Each maps to roadmap phases.
 - [ ] **DOC-02**: User guide explaining all features for end users
 - [ ] **DOC-03**: Training materials for client handover session
 
+### Voice Platform
+
+- [ ] **VOICE-01**: Migrate voice agents from VAPI to Retell AI (7 agents)
+- [ ] **VOICE-02**: Integrate Retell SDK and webhook for voice practice flow
+
 ## v2 Requirements
 
 Deferred to post-MVP. Tracked but not in current roadmap.
@@ -74,19 +79,21 @@ Which phases cover which requirements. Updated during roadmap creation.
 | DASH-02 | Phase 2 | Complete |
 | DASH-03 | Phase 1 | Complete |
 | DASH-04 | Phase 2 | Complete |
-| ADMIN-01 | Phase 3 | Pending |
+| ADMIN-01 | Phase 3 | Complete |
 | ADMIN-02 | Phase 4 | Pending |
 | ADMIN-03 | Phase 4 | Pending |
-| ADMIN-04 | Phase 3 | Pending |
+| ADMIN-04 | Phase 3 | Complete |
 | DOC-01 | Phase 5 | Pending |
 | DOC-02 | Phase 6 | Pending |
 | DOC-03 | Phase 6 | Pending |
+| VOICE-01 | Phase 7 | Pending |
+| VOICE-02 | Phase 7 | Pending |
 
 **Coverage:**
-- v1 requirements: 11 total
-- Mapped to phases: 11
+- v1 requirements: 13 total
+- Mapped to phases: 13
 - Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-01-23*
-*Last updated: 2026-01-23 — Phase 2 complete*
+*Last updated: 2026-01-25 — Phase 7 added (Retell migration)*
