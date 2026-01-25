@@ -8,41 +8,39 @@ The platform integrates with the following external services:
 
 | Service | Purpose | Required |
 |---------|---------|----------|
-| **VAPI** | Voice AI for roleplay sessions | Yes |
+| **Retell AI** | Voice AI for roleplay sessions | Yes |
 | **OpenRouter** | LLM API for chat coaching and scoring | Yes |
 | **OpenAI** | Whisper transcription for call analysis | Yes |
 | **Sentry** | Error tracking and session replay | No |
-| **ElevenLabs** | Voice synthesis (via VAPI) | Yes |
-| **Retell** | Alternative voice platform | No |
+| **ElevenLabs** | Voice synthesis (via Retell) | Yes |
 
 Each service requires its own credentials. See sections below for setup instructions.
 
 ---
 
-## VAPI (Voice AI)
+## Retell AI (Voice Platform)
 
-VAPI powers the real-time voice roleplay sessions with AI personas.
+Retell AI powers the real-time voice roleplay sessions with AI personas.
 
 ### Account Setup
 
-1. Go to [vapi.ai](https://vapi.ai) and create an account
-2. Navigate to Dashboard > Settings > API Keys
-3. Copy your Public Key and Private Key
+1. Go to [retellai.com](https://retellai.com) and create an account
+2. Navigate to Dashboard > API Keys
+3. Copy your API key
 
 ### Environment Variables
 
 ```bash
-NEXT_PUBLIC_VAPI_PUBLIC_KEY=pk_...  # Used in browser
-VAPI_PRIVATE_KEY=sk_...              # Used on server only
-VAPI_WEBHOOK_SECRET=whsec_...        # Webhook signature verification
+RETELL_API_KEY=key_...  # Server-side API key
 ```
 
-### Assistants Configuration
+### Agent Configuration
 
-Each persona requires a pre-configured VAPI assistant. The following assistants are used:
+Each persona has a corresponding Retell agent. The following agents are configured:
 
-| Persona | Assistant Name | Purpose | Warmth |
-|---------|----------------|---------|--------|
+| Persona | Agent Name | Purpose | Warmth |
+|---------|------------|---------|--------|
+| Giulio Segantini | Underdog Sales Coach | Sales coach | N/A |
 | Sarah Chen | skeptical_cfo | CFO - ROI-focused, skeptical | 0.1 (Cold) |
 | Marcus Johnson | busy_vp_sales | VP Sales - Aggressive, results-only | 0.2 (Cold) |
 | Emily Torres | friendly_gatekeeper | Executive Assistant - Protective | 0.3 (Cool) |
@@ -50,71 +48,48 @@ Each persona requires a pre-configured VAPI assistant. The following assistants 
 | Lisa Martinez | interested_but_stuck | Head of Ops - Stressed, irritable | 0.4 (Neutral) |
 | Tony Ricci | aggressive_closer | Sales Director - Combative | 0.15 (Cold) |
 
-**Creating Assistants:**
+**Creating Agents:**
 
-1. Go to VAPI Dashboard > Assistants
-2. Create new assistant for each persona
+1. Go to Retell Dashboard > Agents
+2. Create new agent for each persona
 3. Configure:
-   - Name: Match persona ID from `src/config/personas.ts`
-   - Voice: ElevenLabs voice (see voice IDs in personas.ts)
-   - System prompt: Use prompts from `PERSONA_PROMPTS` in personas.ts
+   - Name: Match persona from `src/config/personas.ts`
+   - Voice: Select ElevenLabs voice
+   - LLM: Custom LLM with persona prompts from `PERSONA_PROMPTS`
    - Model: GPT-4o recommended
-4. Copy the Assistant ID to `src/config/personas.ts`
+4. Copy the Agent ID to `src/config/personas.ts` (`retellAgentId` field)
 
 ### Webhook Configuration
 
-The application receives VAPI events via webhook.
+The application receives Retell events via webhook.
 
 **Setup:**
 
-1. Go to VAPI Dashboard > Webhooks
+1. Go to Retell Dashboard > Webhooks
 2. Add webhook endpoint:
-   - URL: `https://your-domain.com/api/vapi/webhook`
-   - Secret: Generate a secure secret
-3. Enable all event types:
-   - `call-started`
-   - `call-ended`
-   - `transcript`
-   - `speech-update`
-   - `function-call`
-4. Copy the signing secret to `VAPI_WEBHOOK_SECRET`
-
-### Signature Verification
-
-Webhooks are verified using HMAC SHA-256. Implementation in `src/lib/vapi/auth.ts`:
-
-```typescript
-// Signature verification (production only)
-const expectedSignature = crypto
-  .createHmac('sha256', VAPI_WEBHOOK_SECRET)
-  .update(rawBody)
-  .digest('hex')
-
-// Timing-safe comparison
-crypto.timingSafeEqual(
-  Buffer.from(signature),
-  Buffer.from(expectedSignature)
-)
-```
-
-**Note:** Signature verification is skipped in development mode for easier testing.
+   - URL: `https://your-domain.com/api/retell/webhook`
+3. Events handled:
+   - `call_started`
+   - `call_ended`
+   - `call_analyzed`
 
 ### Client Integration
 
-The VAPI client is initialized in `src/lib/vapi/client.ts`:
+Voice calls are registered via the `/api/retell/register` endpoint, which returns an access token for the Retell Web SDK:
 
 ```typescript
-import Vapi from '@vapi-ai/web'
+import { RetellWebClient } from 'retell-client-js-sdk'
 
-const vapi = new Vapi(process.env.NEXT_PUBLIC_VAPI_PUBLIC_KEY)
-
-// Start roleplay session
-await vapi.start(persona.assistantId, {
-  variableValues: {
-    scenario_type: 'cold_call',
-    difficulty: 'hard',
-  },
+// Register call and get access token
+const response = await fetch('/api/retell/register', {
+  method: 'POST',
+  body: JSON.stringify({ agentId: persona.retellAgentId }),
 })
+const { access_token } = await response.json()
+
+// Start the call
+const retellClient = new RetellWebClient()
+await retellClient.startCall({ accessToken: access_token })
 ```
 
 ---
@@ -311,7 +286,7 @@ ElevenLabs provides voice synthesis for AI personas.
 
 ### Integration Method
 
-ElevenLabs is integrated **via VAPI**, not directly. Voice configuration is done in VAPI assistant settings.
+ElevenLabs is integrated **via Retell AI**, not directly. Voice configuration is done in Retell agent settings.
 
 ### Voice IDs
 
@@ -330,38 +305,8 @@ Each persona uses a specific ElevenLabs voice:
 
 1. Create ElevenLabs account at [elevenlabs.io](https://elevenlabs.io)
 2. Note: You don't need an API key for this app
-3. Voices are configured in VAPI assistant settings
+3. Voices are configured in Retell agent settings
 4. Voice IDs are stored in `src/config/personas.ts` for reference
-
----
-
-## Retell (Alternative Voice Platform)
-
-Retell is an optional alternative to VAPI for voice roleplay.
-
-### Account Setup
-
-1. Go to [retellai.com](https://retellai.com) and create an account
-2. Navigate to Dashboard > API Keys
-3. Copy your API key
-
-### Environment Variables
-
-```bash
-RETELL_API_KEY=key_...
-```
-
-### Feature Flag
-
-Retell is controlled by a feature flag. When enabled, users can choose between VAPI and Retell in the voice practice interface.
-
-### Agent Configuration
-
-Each persona has a corresponding Retell agent ID in `src/config/personas.ts`:
-
-```typescript
-retellAgentId: 'agent_xxx...'
-```
 
 ---
 
@@ -412,14 +357,14 @@ console.log(openaiCircuit.getStats())
 
 ## Troubleshooting
 
-### VAPI Issues
+### Retell Issues
 
 | Problem | Solution |
 |---------|----------|
-| Calls don't start | Check `NEXT_PUBLIC_VAPI_PUBLIC_KEY` is set |
+| Calls don't start | Check `RETELL_API_KEY` is set |
 | No audio | Verify browser microphone permissions |
-| Webhook fails | Check `VAPI_WEBHOOK_SECRET` matches dashboard |
-| Wrong persona voice | Update assistant voice in VAPI dashboard |
+| Webhook fails | Check webhook URL in Retell dashboard |
+| Wrong persona voice | Update agent voice in Retell dashboard |
 
 ### OpenRouter Issues
 

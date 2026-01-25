@@ -11,7 +11,7 @@ Before deploying, ensure you have:
 - **Git** - Version control
 - **Vercel account** - Deployment platform
 - **Supabase project** - Database and authentication
-- **VAPI account** - Voice AI platform
+- **Retell AI account** - Voice AI platform
 - **OpenRouter account** - LLM API access
 - **OpenAI account** - Whisper transcription
 - **Sentry account** (optional) - Error tracking
@@ -70,9 +70,7 @@ These environment variables are **required** - the application will not start wi
 | `NEXT_PUBLIC_SUPABASE_URL` | Supabase project URL | Supabase Dashboard > Settings > API > Project URL |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Public anonymous key | Supabase Dashboard > Settings > API > anon public |
 | `SUPABASE_SERVICE_ROLE_KEY` | Server-side admin key (never expose to client) | Supabase Dashboard > Settings > API > service_role |
-| `NEXT_PUBLIC_VAPI_PUBLIC_KEY` | VAPI public key for client-side calls | VAPI Dashboard > Settings > API Keys |
-| `VAPI_PRIVATE_KEY` | VAPI private key for server-side operations | VAPI Dashboard > Settings > API Keys |
-| `VAPI_WEBHOOK_SECRET` | Webhook signature verification secret | VAPI Dashboard > Webhooks > Signing Secret |
+| `RETELL_API_KEY` | Retell AI API key for voice calls | Retell Dashboard > API Keys |
 | `OPENAI_API_KEY` | OpenAI API key for Whisper transcription | OpenAI Dashboard > API Keys |
 | `OPENROUTER_API_KEY` | OpenRouter API key for LLM access | OpenRouter Dashboard > Keys |
 
@@ -84,7 +82,6 @@ These variables are optional. Features will degrade gracefully if not set.
 |----------|-------------|---------|
 | `NEXT_PUBLIC_SENTRY_DSN` | Sentry project DSN for error tracking | (error tracking disabled) |
 | `NEXT_PUBLIC_SITE_URL` | Production URL for absolute links | `https://under-eight.vercel.app` |
-| `RETELL_API_KEY` | Retell AI API key (alternative voice platform) | (Retell features disabled) |
 
 ### Environment Variable Format
 
@@ -94,10 +91,8 @@ NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 
-# VAPI
-NEXT_PUBLIC_VAPI_PUBLIC_KEY=pk_...
-VAPI_PRIVATE_KEY=sk_...
-VAPI_WEBHOOK_SECRET=whsec_...
+# Retell AI
+RETELL_API_KEY=key_...
 
 # OpenAI & OpenRouter
 OPENAI_API_KEY=sk-...
@@ -243,7 +238,7 @@ After deployment, verify everything works:
 
 - [ ] **Health Check**: `GET /api/health` returns `{ status: 'healthy' }`
 - [ ] **Authentication**: Users can sign up and log in
-- [ ] **Voice Practice**: VAPI calls start and receive webhook events
+- [ ] **Voice Practice**: Retell calls start and receive webhook events
 - [ ] **Call Analysis**: Audio uploads transcribe and score correctly
 - [ ] **Chat Coaching**: AI responses include knowledge base context
 - [ ] **Error Tracking**: Errors appear in Sentry (if configured)
@@ -273,11 +268,11 @@ npm run build
 2. Verify all environment variables are set correctly
 3. Ensure service accounts have required permissions
 
-### VAPI Webhook Failures
+### Retell Webhook Failures
 
-1. Verify `VAPI_WEBHOOK_SECRET` matches VAPI Dashboard > Webhooks
-2. Check webhook URL is accessible: `https://your-domain/api/vapi/webhook`
-3. Verify webhook events are enabled in VAPI Dashboard
+1. Verify `RETELL_API_KEY` is set correctly
+2. Check webhook URL is accessible: `https://your-domain/api/retell/webhook`
+3. Configure webhook URL in Retell Dashboard > Webhooks
 4. Check Vercel function logs for signature verification errors
 
 ### Database Connection Issues
@@ -290,7 +285,7 @@ npm run build
 
 ## Related Documentation
 
-- [INTEGRATIONS.md](./INTEGRATIONS.md) - External service setup (VAPI, OpenRouter, Sentry)
+- [INTEGRATIONS.md](./INTEGRATIONS.md) - External service setup (Retell, OpenRouter, Sentry)
 - [ARCHITECTURE.md](./ARCHITECTURE.md) - System design overview
 - [API.md](./API.md) - API reference documentation
 

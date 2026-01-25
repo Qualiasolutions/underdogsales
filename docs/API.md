@@ -163,49 +163,73 @@ Chat with the AI sales coach (RAG-enhanced with Underdog methodology knowledge).
 
 ---
 
-### Voice Practice (VAPI)
+### Voice Practice (Retell)
 
-#### POST /api/vapi/webhook
+#### POST /api/retell/register
 
-VAPI webhook endpoint for voice call events. Handles tool calls, transcripts, and session management.
+Register a new voice call with Retell AI. Returns an access token for the Retell Web SDK.
 
-**Authentication:** HMAC signature verification (x-vapi-signature header)
+**Authentication:** Required
+
+**Request Body:**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `agentId` | `string` | Yes | Retell agent ID from persona config |
+
+**Response:**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `access_token` | `string` | Token for Retell Web SDK |
+| `call_id` | `string` | Unique call identifier |
+
+**Example Request:**
+```json
+{
+  "agentId": "agent_abc123xyz"
+}
+```
+
+**Example Response:**
+```json
+{
+  "access_token": "ret_...",
+  "call_id": "call_abc123"
+}
+```
+
+**Error Responses:**
+
+| Status | Error | Description |
+|--------|-------|-------------|
+| 400 | Missing agentId | Agent ID not provided |
+| 401 | Unauthorized | Not logged in |
+| 500 | Failed to register call | Retell API error |
+
+---
+
+#### POST /api/retell/webhook
+
+Retell webhook endpoint for voice call events. Handles call lifecycle and session management.
+
+**Authentication:** HMAC signature verification (x-retell-signature header)
 
 **Request Headers:**
 
 | Header | Required | Description |
 |--------|----------|-------------|
-| `x-vapi-signature` | Yes | HMAC SHA-256 signature |
+| `x-retell-signature` | Yes | HMAC SHA-256 signature |
 | `Content-Type` | Yes | `application/json` |
 
-**Request Body:** VAPI event payload (varies by event type)
+**Request Body:** Retell event payload (varies by event type)
 
 **Supported Event Types:**
-- `tool-calls` - Function/tool call requests (RAG lookup, etc.)
-- `call-started` - Call initiated
-- `call-ended` - Call completed (triggers session save)
-- `transcript` - Real-time transcript updates
-- `status-update` - Call status changes
+- `call_started` - Call initiated
+- `call_ended` - Call completed (triggers session save and scoring)
+- `call_analyzed` - Call analysis complete
 
-**Supported Tool Functions:**
-- `search_knowledge` - Search Underdog methodology knowledge base
-- `end_roleplay` - End practice session with outcome
-- `log_objection` - Log objection encountered
-- `log_milestone` - Log conversation milestone
-
-**Response for tool-calls:**
-```json
-{
-  "results": [
-    {
-      "toolCallId": "call_abc123",
-      "result": "Here's relevant information from the Underdog methodology..."
-    }
-  ]
-}
-```
-
-**Response for other events:**
+**Response:**
 ```json
 {
   "success": true
@@ -219,9 +243,9 @@ VAPI webhook endpoint for voice call events. Handles tool calls, transcripts, an
 | 401 | Invalid webhook signature | Signature verification failed |
 | 500 | Webhook processing failed | Internal error |
 
-#### GET /api/vapi/webhook
+#### GET /api/retell/webhook
 
-Health check for VAPI webhook endpoint.
+Health check for Retell webhook endpoint.
 
 **Authentication:** None
 
@@ -229,50 +253,10 @@ Health check for VAPI webhook endpoint.
 ```json
 {
   "status": "active",
-  "endpoint": "/api/vapi/webhook",
-  "supported_events": ["tool-calls", "call-started", "call-ended", "transcript", "status-update"],
-  "supported_functions": ["search_knowledge", "end_roleplay", "log_objection", "log_milestone"]
+  "endpoint": "/api/retell/webhook",
+  "supported_events": ["call_started", "call_ended", "call_analyzed"]
 }
 ```
-
----
-
-#### POST /api/vapi/tools/knowledge-base
-
-VAPI tool call handler for knowledge base search. Called by VAPI during voice calls.
-
-**Authentication:** VAPI signature verification (x-vapi-signature header)
-
-**Request Body:** VAPI tool call payload
-
-**Expected Function Names:**
-- `search_knowledge` (preferred)
-- `queryKnowledgeBase` (legacy, backwards compatible)
-
-**Function Arguments:**
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `query` | `string` | Yes | Search query |
-
-**Response:**
-```json
-{
-  "results": [
-    {
-      "toolCallId": "call_abc123",
-      "result": "Relevant knowledge base content..."
-    }
-  ]
-}
-```
-
-**Error Responses:**
-
-| Status | Error | Description |
-|--------|-------|-------------|
-| 401 | Invalid signature | VAPI signature verification failed |
-| 500 | Internal server error | Processing error |
 
 ---
 
@@ -863,9 +847,9 @@ Returns a downloadable JSON file with all user data.
 |--------|------|------|-------------|
 | GET | `/api/health` | No | Health check |
 | POST | `/api/chat` | Yes | Chat with AI coach |
-| POST | `/api/vapi/webhook` | HMAC | VAPI event webhook |
-| GET | `/api/vapi/webhook` | No | Webhook health check |
-| POST | `/api/vapi/tools/knowledge-base` | HMAC | VAPI knowledge tool |
+| POST | `/api/retell/register` | Yes | Register Retell call |
+| POST | `/api/retell/webhook` | HMAC | Retell event webhook |
+| GET | `/api/retell/webhook` | No | Webhook health check |
 | POST | `/api/knowledge/search` | Yes | Semantic search |
 | GET | `/api/knowledge/search` | No | Search endpoint docs |
 | POST | `/api/analyze/upload` | Yes | Upload audio |

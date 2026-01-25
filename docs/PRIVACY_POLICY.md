@@ -45,7 +45,7 @@ We use your information to:
 
 ## 3. AI Processing
 
-### 3.1 Voice AI (VAPI)
+### 3.1 Voice AI (Retell)
 
 Your voice interactions are processed by third-party AI services:
 - **Speech-to-Text:** Deepgram
@@ -64,7 +64,7 @@ Uploaded recordings are processed using:
 
 We do NOT sell your personal data. We share data only:
 
-- **With Service Providers:** AI providers (OpenAI, VAPI, Anthropic) process data to provide our services
+- **With Service Providers:** AI providers (OpenAI, Retell, Anthropic) process data to provide our services
 - **For Legal Compliance:** When required by law or legal process
 - **With Your Consent:** For any purpose you explicitly approve
 

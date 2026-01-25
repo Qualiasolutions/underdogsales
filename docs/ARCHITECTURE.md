@@ -19,7 +19,7 @@ Salespeople can practice and improve through realistic AI conversations with imm
 | Frontend | Next.js 16.1.2, React 19, TypeScript |
 | Backend | Next.js API Routes (App Router) |
 | Database | Supabase (PostgreSQL + Auth + Storage) |
-| Voice AI | VAPI (ElevenLabs TTS + Deepgram STT) |
+| Voice AI | Retell AI (ElevenLabs TTS + Deepgram STT) |
 | LLM | OpenAI GPT-4o via OpenRouter |
 | Embeddings | OpenAI text-embedding-3-small |
 | Monitoring | Sentry (error tracking + session replay) |
@@ -31,12 +31,12 @@ Salespeople can practice and improve through realistic AI conversations with imm
 flowchart TB
     subgraph Client["Client Layer"]
         UI[React UI]
-        VSDK[VAPI Web SDK]
+        RSDK[Retell Web SDK]
     end
 
     subgraph API["API Layer (Next.js)"]
         CHAT["/api/chat"]
-        WEBHOOK["/api/vapi/webhook"]
+        WEBHOOK["/api/retell/webhook"]
         UPLOAD["/api/analyze/upload"]
         TRANSCRIBE["/api/analyze/transcribe"]
         SCORE["/api/analyze/score"]
@@ -46,7 +46,7 @@ flowchart TB
     end
 
     subgraph External["External Services"]
-        VAPI[VAPI Cloud]
+        RETELL[Retell AI Cloud]
         OPENROUTER[OpenRouter LLM]
         WHISPER[OpenAI Whisper]
     end
@@ -60,9 +60,9 @@ flowchart TB
     UI --> CHAT
     UI --> UPLOAD
     UI --> STREAM
-    VSDK --> VAPI
+    RSDK --> RETELL
 
-    VAPI --> WEBHOOK
+    RETELL --> WEBHOOK
     CHAT --> OPENROUTER
     CHAT --> KNOWLEDGE
     KNOWLEDGE --> PG
@@ -123,7 +123,7 @@ Utility libraries and service integrations.
 | `supabase/client.ts` | Browser Supabase client |
 | `supabase/server.ts` | Server-side Supabase client with service role |
 | `supabase/types.ts` | Generated TypeScript types from database |
-| `vapi.ts` | VAPI SDK initialization and helpers |
+| `retell/client.ts` | Retell SDK initialization and helpers |
 | `knowledge.ts` | RAG search with pgvector embeddings |
 | `logger.ts` | Structured logging utility |
 | `circuit-breaker.ts` | Fault tolerance for external services |
@@ -138,24 +138,24 @@ User conducts a roleplay conversation with an AI sales prospect.
 sequenceDiagram
     participant U as User
     participant UI as React UI
-    participant SDK as VAPI SDK
-    participant V as VAPI Cloud
-    participant WH as /api/vapi/webhook
+    participant SDK as Retell SDK
+    participant R as Retell Cloud
+    participant WH as /api/retell/webhook
     participant DB as Supabase DB
 
     U->>UI: Select persona + scenario
-    UI->>SDK: Start call with assistant config
-    SDK->>V: Initialize voice session
+    UI->>SDK: Start call with agent ID
+    SDK->>R: Initialize voice session
 
     loop Conversation
-        U->>V: Speak (audio stream)
-        V->>V: STT (Deepgram) + LLM + TTS (ElevenLabs)
-        V->>U: AI response (audio)
+        U->>R: Speak (audio stream)
+        R->>R: STT (Deepgram) + LLM + TTS (ElevenLabs)
+        R->>U: AI response (audio)
     end
 
     U->>SDK: End call
-    V->>WH: end-of-call-report event
-    WH->>WH: Verify HMAC signature
+    R->>WH: call_ended event
+    WH->>WH: Verify signature
     WH->>DB: Save roleplay_session
     WH->>DB: Trigger scoring (async)
     WH->>DB: Save session_scores
@@ -234,15 +234,16 @@ sequenceDiagram
 
 ## Technology Decisions
 
-### Why VAPI
+### Why Retell AI
 
 | Decision Factor | Rationale |
 |-----------------|-----------|
 | Managed infrastructure | No need to run WebRTC servers, handle audio codecs, or manage voice model latencies |
 | Voice quality | ElevenLabs integration provides natural-sounding AI voices |
-| Low latency | Real-time conversation with <500ms response time |
-| Webhook events | Reliable delivery of call transcripts and events |
-| SDK simplicity | `@vapi-ai/web` SDK handles all browser audio complexity |
+| Low latency | Real-time conversation with <400ms response time |
+| Better interruption handling | Natural conversation flow with improved turn-taking |
+| Cost efficiency | ~40-50% lower cost compared to alternatives |
+| SDK simplicity | `retell-client-js-sdk` handles all browser audio complexity |
 
 ### Why OpenRouter
 
@@ -290,7 +291,7 @@ sequenceDiagram
 
 ### API Security
 
-- **VAPI Webhooks**: HMAC SHA-256 signature verification
+- **Retell Webhooks**: Signature verification for call events
 - **Rate limiting**: Built into Vercel and Supabase
 - **CSP Headers**: Content Security Policy configured in `next.config.ts`
 - **Audit logging**: All sensitive operations logged to `audit_log` table

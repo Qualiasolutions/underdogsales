@@ -53,7 +53,7 @@ erDiagram
         text persona_id
         text scenario_type
         integer duration_seconds
-        text vapi_call_id
+        text retell_call_id
         jsonb transcript
         timestamptz created_at
         timestamptz deleted_at
@@ -194,7 +194,7 @@ Voice practice session records with transcripts.
 | persona_id | text | No | AI persona identifier from config |
 | scenario_type | text | No | 'cold_call', 'objection', 'closing', 'gatekeeper' |
 | duration_seconds | integer | Yes | Call duration in seconds |
-| vapi_call_id | text | Yes | VAPI call ID for debugging |
+| retell_call_id | text | Yes | Retell call ID for debugging |
 | transcript | jsonb | Yes | Full conversation transcript |
 | created_at | timestamptz | Yes | Session start timestamp |
 | deleted_at | timestamptz | Yes | Soft delete timestamp |
@@ -400,13 +400,13 @@ Audit triggers on: `users`, `roleplay_sessions`, `session_scores`, `call_uploads
 
 ### session_events
 
-Raw VAPI webhook events for debugging.
+Raw Retell webhook events for debugging.
 
 | Column | Type | Nullable | Description |
 |--------|------|----------|-------------|
 | id | uuid | No | Primary key |
 | session_id | uuid | No | Related session ID |
-| event_type | text | No | VAPI event type |
+| event_type | text | No | Retell event type |
 | data | jsonb | No | Full event payload |
 | created_at | timestamptz | Yes | Event timestamp |
 
