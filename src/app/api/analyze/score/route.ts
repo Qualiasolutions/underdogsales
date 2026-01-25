@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
 import { getUser } from '@/lib/supabase/server'
+import { getAdminClient } from '@/lib/supabase/admin'
 import { analyzeTranscript, type ScoringResult } from '@/lib/scoring/engine'
 import type { TranscriptEntry, CallAnalysis } from '@/types'
+import type { Json } from '@/lib/supabase/types'
 import { ScoreRequestSchema, validateInput } from '@/lib/validations'
 import { logger } from '@/lib/logger'
 
@@ -26,10 +27,7 @@ export async function POST(request: NextRequest) {
 
     const { callId } = validation.data!
 
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    )
+    const supabase = getAdminClient()
 
     // Get the call upload record
     const { data: callUpload, error: fetchError } = await supabase
@@ -59,7 +57,7 @@ export async function POST(request: NextRequest) {
 
     try {
       // Run scoring engine
-      const transcript = callUpload.transcript as TranscriptEntry[]
+      const transcript = callUpload.transcript as unknown as TranscriptEntry[]
       const scoringResult: ScoringResult = analyzeTranscript({
         transcript,
         durationSeconds: callUpload.duration_seconds || 0,
@@ -78,7 +76,7 @@ export async function POST(request: NextRequest) {
       const { error: updateError } = await supabase
         .from('call_uploads')
         .update({
-          analysis,
+          analysis: analysis as unknown as Json,
           overall_score: scoringResult.overallScore,
           status: 'completed',
           error_message: null,

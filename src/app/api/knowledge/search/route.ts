@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getUser } from '@/lib/supabase/server'
 import { searchKnowledgeBase } from '@/lib/knowledge'
 import { logger } from '@/lib/logger'
+import { checkRateLimit, createRateLimitHeaders, RATE_LIMITS } from '@/lib/rate-limit'
 
 interface SearchRequest {
   query: string
@@ -21,6 +22,31 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // Apply rate limiting (knowledge search triggers expensive embedding API calls)
+    const rateLimitResult = checkRateLimit(
+      `knowledge:${user.id}`,
+      RATE_LIMITS.knowledge
+    )
+
+    if (!rateLimitResult.allowed) {
+      logger.warn('Knowledge search rate limited', {
+        operation: 'knowledge_search',
+        userId: user.id,
+        resetTime: rateLimitResult.resetTime,
+      })
+      return NextResponse.json(
+        { error: RATE_LIMITS.knowledge.message },
+        {
+          status: 429,
+          headers: createRateLimitHeaders(
+            rateLimitResult.remaining,
+            rateLimitResult.resetTime,
+            RATE_LIMITS.knowledge.max
+          ),
+        }
+      )
+    }
+
     const body: SearchRequest = await request.json()
     const { query, source, limit = 5, threshold = 0.5 } = body
 
@@ -33,16 +59,25 @@ export async function POST(request: NextRequest) {
 
     // Use shared knowledge service
     const results = await searchKnowledgeBase(query, {
-      limit,
-      threshold,
+      limit: Math.min(limit, 10), // Cap at 10 results
+      threshold: Math.max(0.3, Math.min(threshold, 0.9)), // Clamp threshold
       source
     })
 
-    return NextResponse.json({
-      results,
-      query,
-      count: results.length
-    })
+    return NextResponse.json(
+      {
+        results,
+        query,
+        count: results.length
+      },
+      {
+        headers: createRateLimitHeaders(
+          rateLimitResult.remaining,
+          rateLimitResult.resetTime,
+          RATE_LIMITS.knowledge.max
+        ),
+      }
+    )
   } catch (error) {
     logger.exception('Knowledge search error', error, { operation: 'knowledge_search' })
     return NextResponse.json(

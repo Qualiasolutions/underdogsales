@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
 import { getUser } from '@/lib/supabase/server'
+import { getAdminClient } from '@/lib/supabase/admin'
 import { transcribeAudio } from '@/lib/transcription/whisper'
 import { checkRateLimit, createRateLimitHeaders, RATE_LIMITS } from '@/lib/rate-limit'
 import { TranscribeRequestSchema, validateInput } from '@/lib/validations'
 import { logger } from '@/lib/logger'
+import type { Json } from '@/lib/supabase/types'
 
 export async function POST(request: NextRequest) {
   try {
@@ -41,10 +42,7 @@ export async function POST(request: NextRequest) {
 
     const { callId } = validation.data!
 
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    )
+    const supabase = getAdminClient()
 
     // Get the call upload record
     const { data: callUpload, error: fetchError } = await supabase
@@ -108,7 +106,7 @@ export async function POST(request: NextRequest) {
       await supabase
         .from('call_uploads')
         .update({
-          transcript,
+          transcript: transcript as unknown as Json,
           duration_seconds: durationSeconds,
           status: 'scoring',
         })

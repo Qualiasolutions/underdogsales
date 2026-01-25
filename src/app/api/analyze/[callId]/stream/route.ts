@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
 import { getUser } from '@/lib/supabase/server'
+import { getAdminClient } from '@/lib/supabase/admin'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -40,10 +40,7 @@ export async function GET(
     })
   }
 
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-  )
+  const supabase = getAdminClient()
 
   // Verify ownership
   const { data: callUpload, error: fetchError } = await supabase
@@ -79,25 +76,26 @@ export async function GET(
       }
 
       // Send current status immediately
+      const currentStatus = callUpload.status || 'pending'
       sendStatus({
-        status: callUpload.status,
-        progress: statusProgress[callUpload.status] || 0,
-        message: getStatusMessage(callUpload.status),
-        data: callUpload.status === 'completed' ? {
+        status: currentStatus,
+        progress: statusProgress[currentStatus] || 0,
+        message: getStatusMessage(currentStatus),
+        data: currentStatus === 'completed' ? {
           overallScore: callUpload.overall_score,
           analysis: callUpload.analysis,
         } : undefined,
-        error: callUpload.status === 'failed' ? callUpload.error_message : undefined,
+        error: currentStatus === 'failed' ? callUpload.error_message ?? undefined : undefined,
       })
 
       // If already terminal, close stream
-      if (['completed', 'failed'].includes(callUpload.status)) {
+      if (['completed', 'failed'].includes(currentStatus)) {
         controller.close()
         return
       }
 
       // Poll for updates
-      let lastStatus = callUpload.status
+      let lastStatus: string = currentStatus
       const maxPolls = 120 // 2 minutes max
       let pollCount = 0
 
@@ -118,21 +116,22 @@ export async function GET(
             .eq('id', callId)
             .single()
 
-          if (updated && updated.status !== lastStatus) {
-            lastStatus = updated.status
+          const updatedStatus = updated?.status || 'pending'
+          if (updated && updatedStatus !== lastStatus) {
+            lastStatus = updatedStatus
 
             sendStatus({
-              status: updated.status,
-              progress: statusProgress[updated.status] || 0,
-              message: getStatusMessage(updated.status),
-              data: updated.status === 'completed' ? {
+              status: updatedStatus,
+              progress: statusProgress[updatedStatus] || 0,
+              message: getStatusMessage(updatedStatus),
+              data: updatedStatus === 'completed' ? {
                 overallScore: updated.overall_score,
                 analysis: updated.analysis,
               } : undefined,
-              error: updated.status === 'failed' ? updated.error_message : undefined,
+              error: updatedStatus === 'failed' ? updated.error_message ?? undefined : undefined,
             })
 
-            if (['completed', 'failed'].includes(updated.status)) {
+            if (['completed', 'failed'].includes(updatedStatus)) {
               clearInterval(pollInterval)
               controller.close()
             }

@@ -24,12 +24,12 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Header } from '@/components/ui/header'
 import {
-  getVapiClient,
-  stopRoleplaySession,
-  muteRoleplaySession,
-} from '@/lib/vapi/client'
+  startRetellSession,
+  stopRetellSession,
+  muteRetellSession,
+} from '@/lib/retell/client'
 import { GIULIO_COACH, COACHING_MODES, type CoachingMode } from '@/config/coach'
-import type { TranscriptEntry, VapiCallEvent } from '@/types'
+import type { TranscriptEntry } from '@/types'
 
 type ConnectionStatus = 'idle' | 'connecting' | 'connected' | 'error'
 
@@ -263,8 +263,8 @@ export function VoiceCoach() {
     setError(null)
     setTranscript([])
 
-    if (!process.env.NEXT_PUBLIC_VAPI_PUBLIC_KEY) {
-      setError('Voice service not configured. Please contact support.')
+    if (!GIULIO_COACH.retellAgentId) {
+      setError('Voice agent not configured. Please contact support.')
       setConnectionStatus('error')
       return
     }
@@ -272,48 +272,36 @@ export function VoiceCoach() {
     setConnectionStatus('connecting')
 
     try {
-      const vapi = getVapiClient()
-
-      // Set up event handlers
-      const handleCallStart = () => {
-        const id = (vapi as unknown as { call?: { id: string } }).call?.id || 'unknown'
-        setCallId(id)
-        setConnectionStatus('connected')
-      }
-
-      const handleCallEnd = () => {
-        setConnectionStatus('idle')
-        setCallId(null)
-      }
-
-      const handleMessage = (message: VapiCallEvent) => {
-        if (message.type === 'transcript' && message.transcript && message.transcriptType === 'final') {
-          setTranscript((prev) => [...prev, {
-            role: message.role || 'assistant',
-            content: message.transcript!,
-            timestamp: Date.now(),
-          }])
-        }
-      }
-
-      const handleError = (err: Error) => {
-        setError(err.message || 'Connection failed')
-        setConnectionStatus('error')
-      }
-
-      // Register handlers
-      vapi.on('call-start', handleCallStart)
-      vapi.on('call-end', handleCallEnd)
-      vapi.on('message', handleMessage)
-      vapi.on('error', handleError)
-
-      // Start the call with Giulio
-      await vapi.start(GIULIO_COACH.assistantId, {
-        variableValues: {
-          coaching_mode: selectedMode,
+      const id = await startRetellSession({
+        persona: {
+          id: GIULIO_COACH.id,
+          name: GIULIO_COACH.name,
+          role: GIULIO_COACH.role,
+          retellAgentId: GIULIO_COACH.retellAgentId,
+          personality: '',
+          objections: [],
+          warmth: 0.8,
+          voiceId: '',
+          assistantId: '',
+        },
+        scenarioType: 'cold_call',
+        onTranscript: (entry: TranscriptEntry) => {
+          setTranscript((prev) => [...prev, entry])
+        },
+        onCallStart: (callId: string) => {
+          setCallId(callId)
+          setConnectionStatus('connected')
+        },
+        onCallEnd: () => {
+          setConnectionStatus('idle')
+          setCallId(null)
+        },
+        onError: (err: Error) => {
+          setError(err.message || 'Connection failed')
+          setConnectionStatus('error')
         },
       })
-
+      setCallId(id)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Connection failed')
       setConnectionStatus('error')
@@ -321,7 +309,7 @@ export function VoiceCoach() {
   }, [selectedMode])
 
   const handleStop = useCallback(() => {
-    stopRoleplaySession()
+    stopRetellSession()
     setConnectionStatus('idle')
     setCallId(null)
   }, [])
@@ -329,7 +317,7 @@ export function VoiceCoach() {
   const handleMuteToggle = useCallback(() => {
     const newMuted = !isMuted
     setIsMuted(newMuted)
-    muteRoleplaySession(newMuted)
+    muteRetellSession(newMuted)
   }, [isMuted])
 
   return (

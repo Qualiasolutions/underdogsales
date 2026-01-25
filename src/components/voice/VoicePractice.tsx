@@ -27,11 +27,6 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Header } from '@/components/ui/header'
 import {
-  startRoleplaySession,
-  stopRoleplaySession,
-  muteRoleplaySession,
-} from '@/lib/vapi/client'
-import {
   startRetellSession,
   stopRetellSession,
   muteRetellSession,
@@ -39,9 +34,6 @@ import {
 import { getAllPersonas, getPersonaById } from '@/config/personas'
 import { savePracticeSession } from '@/lib/actions/practice-session'
 import type { TranscriptEntry } from '@/types'
-
-// Voice provider feature flag - set to 'retell' to use Retell, 'vapi' for VAPI
-const VOICE_PROVIDER = (process.env.NEXT_PUBLIC_VOICE_PROVIDER || 'vapi') as 'vapi' | 'retell'
 
 type ScenarioType = 'cold_call' | 'objection' | 'closing' | 'gatekeeper'
 type ConnectionStatus = 'idle' | 'connecting' | 'connected' | 'error'
@@ -340,19 +332,11 @@ export function VoicePractice({ onSessionEnd }: VoicePracticeProps) {
     setError(null)
     setTranscript([])
 
-    // Check provider configuration
-    if (VOICE_PROVIDER === 'retell') {
-      if (!selectedPersona.retellAgentId) {
-        setError('Retell agent not configured for this persona.')
-        setConnectionStatus('error')
-        return
-      }
-    } else {
-      if (!process.env.NEXT_PUBLIC_VAPI_PUBLIC_KEY) {
-        setError('Voice service not configured. Please contact support.')
-        setConnectionStatus('error')
-        return
-      }
+    // Check Retell configuration
+    if (!selectedPersona.retellAgentId) {
+      setError('Voice agent not configured for this persona.')
+      setConnectionStatus('error')
+      return
     }
 
     setConnectionStatus('connecting')
@@ -386,24 +370,11 @@ export function VoicePractice({ onSessionEnd }: VoicePracticeProps) {
     }
 
     try {
-      let id: string
-
-      if (VOICE_PROVIDER === 'retell') {
-        // Use Retell
-        id = await startRetellSession({
-          persona: selectedPersona,
-          scenarioType: selectedScenario,
-          ...commonCallbacks,
-        })
-      } else {
-        // Use VAPI (default)
-        id = await startRoleplaySession({
-          persona: selectedPersona,
-          scenarioType: selectedScenario,
-          ...commonCallbacks,
-        })
-      }
-
+      const id = await startRetellSession({
+        persona: selectedPersona,
+        scenarioType: selectedScenario,
+        ...commonCallbacks,
+      })
       setCallId(id)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Connection failed')
@@ -412,12 +383,7 @@ export function VoicePractice({ onSessionEnd }: VoicePracticeProps) {
   }, [selectedPersona, selectedScenario, onSessionEnd, callId, handleSessionComplete])
 
   const handleStop = useCallback(() => {
-    // Stop based on provider
-    if (VOICE_PROVIDER === 'retell') {
-      stopRetellSession()
-    } else {
-      stopRoleplaySession()
-    }
+    stopRetellSession()
 
     const currentCallId = callId
     const currentDuration = callDurationRef.current
@@ -436,12 +402,7 @@ export function VoicePractice({ onSessionEnd }: VoicePracticeProps) {
   const handleMuteToggle = useCallback(() => {
     const newMuted = !isMuted
     setIsMuted(newMuted)
-    // Mute based on provider
-    if (VOICE_PROVIDER === 'retell') {
-      muteRetellSession(newMuted)
-    } else {
-      muteRoleplaySession(newMuted)
-    }
+    muteRetellSession(newMuted)
   }, [isMuted])
 
   const getDifficultyLabel = (warmth: number) => {

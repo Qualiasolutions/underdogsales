@@ -8,10 +8,18 @@ import Retell from 'retell-sdk'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
 import { logger } from '@/lib/logger'
 
-// Initialize Retell client
-const retell = new Retell({
-  apiKey: process.env.RETELL_API_KEY!,
-})
+// Lazy initialize Retell client to avoid build-time errors
+let retellClient: Retell | null = null
+
+function getRetellClient(): Retell {
+  if (!retellClient) {
+    if (!process.env.RETELL_API_KEY) {
+      throw new Error('RETELL_API_KEY environment variable is not set')
+    }
+    retellClient = new Retell({ apiKey: process.env.RETELL_API_KEY })
+  }
+  return retellClient
+}
 
 interface RegisterRequest {
   agentId: string
@@ -53,6 +61,7 @@ export async function POST(request: NextRequest) {
     })
 
     // Create web call via Retell API
+    const retell = getRetellClient()
     const response = await retell.call.createWebCall({
       agent_id: agentId,
       metadata: {

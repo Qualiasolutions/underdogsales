@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
 import { getUser } from '@/lib/supabase/server'
+import { getAdminClient } from '@/lib/supabase/admin'
 import { checkRateLimit, createRateLimitHeaders, RATE_LIMITS } from '@/lib/rate-limit'
 import { logger } from '@/lib/logger'
 
@@ -65,11 +65,8 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Create Supabase client with service role for storage operations
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    )
+    // Use admin client for storage operations
+    const supabase = getAdminClient()
 
     // Generate unique file path
     const callId = crypto.randomUUID()

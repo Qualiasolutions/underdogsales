@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
+import { getAdminClient } from '@/lib/supabase/admin'
 
 interface ServiceStatus {
   status: 'healthy' | 'unhealthy' | 'degraded'
@@ -24,10 +24,7 @@ const startTime = Date.now()
 async function checkSupabase(): Promise<ServiceStatus> {
   const start = Date.now()
   try {
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    )
+    const supabase = getAdminClient()
 
     // Simple query to verify connection
     const { error } = await supabase

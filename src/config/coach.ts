@@ -5,8 +5,7 @@ export const GIULIO_COACH = {
   name: 'Giulio Segantini',
   role: 'Sales Coach',
   title: 'The Weirdest Sales Trainer',
-  assistantId: 'bf7824d3-cd35-4bed-b0e1-ebb254fb59bd',
-  voiceId: 'eCs7DikQQqNVSd0Rn5jL',
+  retellAgentId: 'agent_93437dbb48f6257ba8f72cde68',
   description: 'Master cold calling with the Underdog methodology. 12-module curriculum, objection handling, and real-time coaching.',
 }
 

@@ -1,7 +1,7 @@
-import { createClient } from '@supabase/supabase-js'
 import OpenAI from 'openai'
 import { logger } from './logger'
 import { openrouterCircuit } from './circuit-breaker'
+import { getAdminClient } from './supabase/admin'
 
 export interface KnowledgeResult {
     id: string
@@ -43,18 +43,17 @@ export async function searchKnowledgeBase(
             })
         )
         const queryEmbedding = embeddingResponse.data[0].embedding
+        // Convert to pgvector string format
+        const embeddingString = `[${queryEmbedding.join(',')}]`
 
-        // Search Supabase
-        const supabase = createClient(
-            process.env.NEXT_PUBLIC_SUPABASE_URL!,
-            process.env.SUPABASE_SERVICE_ROLE_KEY!
-        )
+        // Search Supabase using admin client
+        const supabase = getAdminClient()
 
         const { data, error } = await supabase.rpc('match_knowledge', {
-            query_embedding: queryEmbedding,
+            query_embedding: embeddingString,
             match_threshold: threshold,
             match_count: limit,
-            filter_source: source || null,
+            filter_source: source ?? undefined,
         })
 
         if (error) {

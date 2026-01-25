@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
 import { getUser } from '@/lib/supabase/server'
+import { getAdminClient } from '@/lib/supabase/admin'
 import type { Database } from '@/lib/supabase/types'
 import { logger } from '@/lib/logger'
 
@@ -16,10 +16,7 @@ export async function GET(
 
     const { callId } = await params
 
-    const supabase = createClient<Database>(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    )
+    const supabase = getAdminClient()
 
     const { data, error } = await supabase
       .from('call_uploads')
