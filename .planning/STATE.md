@@ -5,7 +5,7 @@
 See: `.planning/PROJECT.md` (updated 2026-01-23)
 
 **Core value:** Salespeople can practice and improve through realistic AI conversations with immediate feedback
-**Current focus:** Phase 5 - Technical Documentation (Plan 02 complete)
+**Current focus:** Phase 6 - User Guide & Handover (Plan 01 complete)
 
 ## Current Milestone
 
@@ -22,10 +22,10 @@ See: `.planning/PROJECT.md` (updated 2026-01-23)
 | 3 | Admin Dashboard - Users | ✓ Complete | 3/3 |
 | 4 | Admin Dashboard - Analytics | ✓ Complete | 2/2 |
 | 5 | Technical Documentation | ✓ Complete | 3/3 |
-| 6 | User Guide & Handover | ○ Pending | 0/0 |
+| 6 | User Guide & Handover | ◐ In Progress | 1/2 |
 | 7 | Voice Platform Migration | ✓ Complete | 2/2 |
 
-Progress: █████████░ 90%
+Progress: █████████░ 93%
 
 ## Accumulated Decisions
 
@@ -53,19 +53,20 @@ Progress: █████████░ 90%
 | Inline RLS policy docs per table | Better discoverability than separate section | 05-01 |
 | Consistent endpoint doc format | method, path, auth, request, response, errors for each | 05-02 |
 | Summary tables for quick reference | Endpoints, rate limits, error codes at end of API.md | 05-02 |
+| Non-technical user documentation style | Salesperson-friendly language, step-by-step guides | 06-01 |
+| Combined Voice Practice + Call Analysis docs | Single USER_GUIDE.md for unified UX | 06-01 |
 
 ## Next Action
 
-**Plan Phase 6:** User Guide & Handover
+**Execute Phase 6 Plan 02:** Chat Coaching, Curriculum, FAQ
 
 ```
-/gsd:plan-phase 6
+/gsd:execute-phase 6
 ```
 
-### Phase 5 Complete
-- **05-01**: ARCHITECTURE.md + DATABASE.md - COMPLETE
-- **05-02**: API.md - COMPLETE
-- **05-03**: DEPLOYMENT.md, INTEGRATIONS.md - COMPLETE
+### Phase 6 Progress
+- **06-01**: USER_GUIDE.md (Voice Practice + Call Analysis) - COMPLETE
+- **06-02**: Chat Coaching, Curriculum, FAQ sections - PENDING
 
 ## Session Log
 
@@ -89,11 +90,12 @@ Progress: █████████░ 90%
 | 2026-01-25 | Phase 5 plan 01 executed | ARCHITECTURE.md + DATABASE.md complete |
 | 2026-01-25 | Phase 5 plan 02 executed | API.md verified complete, Phase 5 done |
 | 2026-01-25 | Phase 5 docs corrected | Updated all docs to use Retell instead of VAPI |
+| 2026-01-25 | Phase 6 plan 01 executed | USER_GUIDE.md with Voice Practice + Call Analysis |
 
 ## Session Continuity
 
 Last session: 2026-01-25
-Stopped at: Phase 5 complete - Technical Documentation
+Stopped at: Phase 6 Plan 01 complete - USER_GUIDE.md created
 Resume file: None
 
 ---
