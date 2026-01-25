@@ -20,11 +20,11 @@ See: `.planning/PROJECT.md` (updated 2026-01-23)
 | 1 | User Dashboard - History | ✓ Complete | 2/2 |
 | 2 | User Dashboard - Progress | ✓ Complete | 2/2 |
 | 3 | Admin Dashboard - Users | ✓ Complete | 3/3 |
-| 4 | Admin Dashboard - Analytics | ○ Pending | 0/0 |
+| 4 | Admin Dashboard - Analytics | ○ In Progress | 1/2 |
 | 5 | Technical Documentation | ○ Pending | 0/0 |
 | 6 | User Guide & Handover | ○ Pending | 0/0 |
 
-Progress: ██████░░░░ 60%
+Progress: ███████░░░ 65%
 
 ## Accumulated Decisions
 
@@ -43,19 +43,20 @@ Progress: ██████░░░░ 60%
 | Warmth indicator with color gradient | Visual feedback: blue=cold, orange=warm | 03-03 |
 | URL-based pagination and search | Bookmarkable, shareable URLs; browser back/forward works | 03-02 |
 | Server component pattern for admin pages | Minimize client JS, only interactive elements need 'use client' | 03-02 |
+| DailyMetric date format: 'Jan 15' | Human-readable dates for chart labels | 04-01 |
+| Active users from roleplay_sessions only | Sessions represent direct platform engagement | 04-01 |
 
 ## Next Action
 
-**Phase 3 complete!** Ready for Phase 4 planning.
+**Continue with Plan 02:** Add charts to analytics page.
 
 ```
-/gsd:discuss-phase 4
+/gsd:execute-phase 4
 ```
 
-### Phase 3 Summary
-- **03-01**: Admin config, server actions, middleware, debounce hook - COMPLETE
-- **03-02**: Admin layout, user management UI - COMPLETE
-- **03-03**: Content management UI - COMPLETE
+### Phase 4 Progress
+- **04-01**: Analytics data layer + MetricsCards - COMPLETE
+- **04-02**: Charts (ActivityChart, ScoreTrendChart) - PENDING
 
 ## Session Log
 
@@ -70,12 +71,13 @@ Progress: ██████░░░░ 60%
 | 2026-01-23 | Phase 3 plan 03 executed | Content management UI: personas + rubric display |
 | 2026-01-23 | Phase 3 plan 02 executed | User management UI: layout, dashboard, users list, user detail |
 | 2026-01-23 | Phase 3 verified | All 8 must-haves verified, phase goal achieved |
+| 2026-01-25 | Phase 4 plan 01 executed | Analytics data layer + MetricsCards component |
 
 ## Session Continuity
 
-Last session: 2026-01-23
-Stopped at: Completed Phase 3 (Admin Dashboard - Users)
+Last session: 2026-01-25
+Stopped at: Completed 04-01-PLAN.md
 Resume file: None
 
 ---
-*Last updated: 2026-01-23*
+*Last updated: 2026-01-25*
