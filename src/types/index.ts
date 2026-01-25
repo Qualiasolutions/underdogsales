@@ -28,6 +28,7 @@ export interface Persona {
   warmth: number // 0-1 scale
   voiceId: string
   assistantId: string // VAPI assistant with pre-configured voice
+  retellAgentId?: string // Retell agent ID for migration
 }
 
 export interface RoleplaySession {
