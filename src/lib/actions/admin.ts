@@ -4,6 +4,12 @@ import { getUser } from '@/lib/supabase/server'
 import { getAdminClient } from '@/lib/supabase/admin'
 import { isAdmin } from '@/config/admin'
 import { logger } from '@/lib/logger'
+import {
+  openaiCircuit,
+  openrouterCircuit,
+  vapiCircuit,
+  supabaseCircuit,
+} from '@/lib/circuit-breaker'
 
 /**
  * Admin user with activity metrics
@@ -486,5 +492,113 @@ export async function getAnalyticsData(
       operation: 'getAnalyticsData',
     })
     return { metrics: null, error: 'An unexpected error occurred' }
+  }
+}
+
+/**
+ * System health result with service statuses and circuit breaker states
+ */
+export interface SystemHealthResult {
+  health: {
+    status: 'healthy' | 'unhealthy' | 'degraded'
+    timestamp: string
+    uptime: number
+    services: {
+      supabase: { status: string; latency?: number; error?: string }
+      openai: { status: string; latency?: number; error?: string }
+      openrouter: { status: string; latency?: number; error?: string }
+    }
+  } | null
+  circuitBreakers: Array<{
+    name: string
+    state: string
+    failures: number
+    totalRequests: number
+  }>
+  error: string | null
+}
+
+/**
+ * Get system health status (admin only)
+ *
+ * Fetches health data from /api/health and circuit breaker stats.
+ * Returns partial data if health check fails.
+ */
+export async function getSystemHealth(): Promise<SystemHealthResult> {
+  try {
+    // Verify admin access
+    const user = await getUser()
+    if (!user) {
+      return { health: null, circuitBreakers: [], error: 'Not authenticated' }
+    }
+
+    if (!isAdmin(user.email)) {
+      logger.warn('Non-admin attempted to access getSystemHealth', {
+        userId: user.id,
+        email: user.email,
+      })
+      return { health: null, circuitBreakers: [], error: 'Admin access required' }
+    }
+
+    // Get circuit breaker stats (always available)
+    const circuitBreakers = [
+      { name: 'OpenAI', ...openaiCircuit.getStats() },
+      { name: 'OpenRouter', ...openrouterCircuit.getStats() },
+      { name: 'VAPI', ...vapiCircuit.getStats() },
+      { name: 'Supabase', ...supabaseCircuit.getStats() },
+    ].map((cb) => ({
+      name: cb.name,
+      state: cb.state,
+      failures: cb.failures,
+      totalRequests: cb.totalRequests,
+    }))
+
+    // Fetch health data from API endpoint
+    const baseUrl =
+      process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
+
+    let health: SystemHealthResult['health'] = null
+    let fetchError: string | null = null
+
+    try {
+      const response = await fetch(`${baseUrl}/api/health`, {
+        cache: 'no-store',
+        signal: AbortSignal.timeout(5000),
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        health = {
+          status: data.status,
+          timestamp: data.timestamp,
+          uptime: data.uptime,
+          services: data.services,
+        }
+      } else {
+        fetchError = `Health check returned ${response.status}`
+      }
+    } catch (error) {
+      fetchError =
+        error instanceof Error ? error.message : 'Failed to fetch health status'
+      logger.error('Error fetching health status', {
+        operation: 'getSystemHealth',
+        error: fetchError,
+      })
+    }
+
+    return {
+      health,
+      circuitBreakers,
+      error: fetchError,
+    }
+  } catch (error) {
+    logger.exception('Error in getSystemHealth', error, {
+      operation: 'getSystemHealth',
+    })
+    return {
+      health: null,
+      circuitBreakers: [],
+      error: 'An unexpected error occurred',
+    }
   }
 }
