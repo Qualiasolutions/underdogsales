@@ -2,7 +2,7 @@
 
 ## What This Is
 
-AI-powered sales training platform for Underdog Sales methodology. Combines voice practice with AI personas, call analysis for uploaded recordings, chat-based coaching with RAG, and a 12-module curriculum. Built for sales professionals learning the Underdog Sales approach.
+AI-powered sales training platform for Underdog Sales methodology. Combines voice practice with AI personas (now powered by Retell AI), call analysis for uploaded recordings, chat-based coaching with RAG, and a 12-module curriculum. Built for sales professionals learning the Underdog Sales approach.
 
 ## Core Value
 
@@ -10,12 +10,32 @@ AI-powered sales training platform for Underdog Sales methodology. Combines voic
 
 If everything else fails, voice practice with scoring must work.
 
+## Current State
+
+**Version:** v1.0 (shipped 2026-01-25)
+**Production:** https://under-eight.vercel.app
+
+MVP complete with:
+- Voice practice with 6 AI personas (Retell AI)
+- Call analysis with upload and scoring
+- Chat coaching with RAG knowledge base
+- 12-module Underdog Sales curriculum
+- User dashboard with history and progress
+- Admin dashboard with users, content, analytics
+- Complete technical and user documentation
+
+**Next milestone goals:**
+- Enhanced analytics (dimension breakdown, peer benchmarks)
+- Admin content editing (personas, rubric via UI)
+- Mobile optimization
+
 ## Requirements
 
 ### Validated
 
 <!-- Shipped and confirmed valuable. -->
 
+**Sprint 1-6 (Pre-v1.0):**
 - ✓ **VOICE-01**: AI Sales Coach with 6 distinct personas — Sprint 1
 - ✓ **VOICE-02**: Role-play for cold calling scenarios — Sprint 1
 - ✓ **VOICE-03**: Voice per persona (unique ElevenLabs voices) — Sprint 1
@@ -30,26 +50,26 @@ If everything else fails, voice practice with scoring must work.
 - ✓ **INFRA-02**: Resilient API calls with retry logic — Sprint 6
 - ✓ **INFRA-03**: Sentry error tracking and session replay — Sprint 5
 
+**v1.0 MVP (Phases 1-7):**
+- ✓ **DASH-01**: View practice session history with scores — v1.0
+- ✓ **DASH-02**: Track curriculum progress visually — v1.0
+- ✓ **DASH-03**: View call analysis history — v1.0
+- ✓ **DASH-04**: See performance trends over time — v1.0
+- ✓ **ADMIN-01**: View all users and their activity — v1.0
+- ✓ **ADMIN-02**: Monitor usage metrics (sessions, calls, API) — v1.0
+- ✓ **ADMIN-03**: System health overview — v1.0
+- ✓ **ADMIN-04**: Content management (view personas, rubric) — v1.0
+- ✓ **DOC-01**: Technical documentation (architecture, APIs, deployment) — v1.0
+- ✓ **DOC-02**: User guide for end users — v1.0
+- ✓ **DOC-03**: Training session materials for handover — v1.0
+- ✓ **VOICE-04**: Migrate to Retell AI (cost reduction) — v1.0
+- ✓ **VOICE-05**: Feature flag toggle for voice provider — v1.0
+
 ### Active
 
-<!-- Current scope. Building toward these. -->
+<!-- Next milestone scope. -->
 
-**User Dashboard**
-- [ ] **DASH-01**: View practice session history with scores
-- [ ] **DASH-02**: Track curriculum progress visually
-- [ ] **DASH-03**: View call analysis history
-- [ ] **DASH-04**: See performance trends over time
-
-**Admin Dashboard**
-- [ ] **ADMIN-01**: View all users and their activity
-- [ ] **ADMIN-02**: Monitor usage metrics (sessions, calls, API)
-- [ ] **ADMIN-03**: System health overview
-- [ ] **ADMIN-04**: Content management (personas, rubric config)
-
-**Documentation**
-- [ ] **DOC-01**: Technical documentation (architecture, APIs, deployment)
-- [ ] **DOC-02**: User guide for end users
-- [ ] **DOC-03**: Training session materials for handover
+(None — define in `/gsd:new-milestone`)
 
 ### Out of Scope
 
@@ -66,23 +86,30 @@ If everything else fails, voice practice with scoring must work.
 
 **Contract:** Qualia Solutions × GSC Underdog Sales LTD
 **Signed:** 13/01/2026
-**MVP Deadline:** ~13/03/2026 (7 weeks from today)
+**MVP Deadline:** ~13/03/2026 (shipped 2026-01-25, well ahead of deadline)
 **Value:** €4,800 + VAT + 10% revenue share (12 months post-launch)
 
-**Current State:**
-- Core features complete (voice practice, call analysis, curriculum, chat)
-- 6 sprints completed focusing on features and reliability
-- Production deployed at under-eight.vercel.app
-- Missing: user/admin dashboards, documentation, handover
+**Tech Stack:**
+- Next.js 16.1.2, React 19, TypeScript
+- Supabase (PostgreSQL + Auth + Storage + RLS)
+- Retell AI (voice practice, 6 personas)
+- OpenRouter (chat coaching LLM)
+- Sentry (error tracking + session replay)
+- Vercel (hosting)
+
+**Codebase:**
+- ~37,000 LOC TypeScript
+- 126 files created/modified in v1.0
+- 8 documentation files
 
 **Client:** Giulio (GSC Underdog Sales) — sales training methodology creator
 
 ## Constraints
 
-- **Deadline**: MVP by ~13/03/2026 — Contract obligation
-- **Tech Stack**: Next.js + Supabase + VAPI + Vercel — Already established
+- **Deadline**: MVP by ~13/03/2026 — ✓ Shipped early (2026-01-25)
+- **Tech Stack**: Next.js + Supabase + Retell + Vercel — Established
 - **Budget**: Fixed price contract — No scope creep
-- **Handover**: Must include docs + training — Client will maintain
+- **Handover**: Must include docs + training — ✓ Complete
 
 ## Key Decisions
 
@@ -90,12 +117,16 @@ If everything else fails, voice practice with scoring must work.
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| VAPI for voice | Best-in-class voice AI, ElevenLabs integration | ✓ Good |
+| Retell AI for voice (v1.0) | 40-50% cost reduction, lower latency | ✓ Good |
+| VAPI as fallback | Feature flag toggle for safe migration | ✓ Good |
 | OpenRouter for LLM | Flexibility, cost management, fallback options | ✓ Good |
 | Supabase for backend | Auth, DB, storage, RLS in one platform | ✓ Good |
 | 6 personas with unique voices | Variety in practice scenarios | ✓ Good |
 | RAG for chat coaching | Grounds responses in Underdog methodology | ✓ Good |
 | Circuit breaker pattern | Prevents cascade failures on external APIs | ✓ Good |
+| Hardcoded admin email whitelist | Simple, secure, no DB roundtrip | ✓ Good |
+| Content view-only in admin | Editing requires DB migration (v2 scope) | ✓ Acceptable |
+| URL-based pagination | Bookmarkable, shareable, browser nav works | ✓ Good |
 
 ---
-*Last updated: 2026-01-23 after contract review and milestone planning*
+*Last updated: 2026-01-25 after v1.0 milestone*
