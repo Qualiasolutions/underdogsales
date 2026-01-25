@@ -5,7 +5,7 @@
 See: `.planning/PROJECT.md` (updated 2026-01-23)
 
 **Core value:** Salespeople can practice and improve through realistic AI conversations with immediate feedback
-**Current focus:** Phase 5 - Technical Documentation (Plan 03 complete)
+**Current focus:** Phase 5 - Technical Documentation (Plan 01 complete)
 
 ## Current Milestone
 
@@ -21,7 +21,7 @@ See: `.planning/PROJECT.md` (updated 2026-01-23)
 | 2 | User Dashboard - Progress | ✓ Complete | 2/2 |
 | 3 | Admin Dashboard - Users | ✓ Complete | 3/3 |
 | 4 | Admin Dashboard - Analytics | ✓ Complete | 2/2 |
-| 5 | Technical Documentation | ◐ In Progress | 1/3 |
+| 5 | Technical Documentation | ◐ In Progress | 2/3 |
 | 6 | User Guide & Handover | ○ Pending | 0/0 |
 | 7 | Voice Platform Migration | ✓ Complete | 2/2 |
 
@@ -49,18 +49,20 @@ Progress: █████████░ 90%
 | Dual Area elements for sessions/calls | Overlapping areas show correlation between metrics | 04-02 |
 | Server component for SystemHealth | Minimizes client JS, health data fetched server-side | 04-02 |
 | 5s timeout for health fetch | Prevents blocking page load if health endpoint is slow | 04-02 |
+| Mermaid for architecture diagrams | Text-based, version-controlled, renders in GitHub | 05-01 |
+| Inline RLS policy docs per table | Better discoverability than separate section | 05-01 |
 
 ## Next Action
 
 **Continue Phase 5:** Execute remaining plans
 
 ```
-/gsd:execute-phase 5  # Execute 05-01-PLAN.md, 05-02-PLAN.md
+/gsd:execute-phase 5  # Execute 05-02-PLAN.md (API documentation)
 ```
 
 ### Phase 5 Progress
-- **05-01**: ARCHITECTURE.md - commits exist but no SUMMARY
-- **05-02**: DATABASE.md, API.md - commits exist but no SUMMARY
+- **05-01**: ARCHITECTURE.md + DATABASE.md - COMPLETE
+- **05-02**: API.md - Pending (exists but no SUMMARY)
 - **05-03**: DEPLOYMENT.md, INTEGRATIONS.md - COMPLETE
 
 ## Session Log
@@ -82,11 +84,12 @@ Progress: █████████░ 90%
 | 2026-01-25 | Phase 7 plan 02 executed | Register endpoint, VoicePractice integration |
 | 2026-01-25 | Phase 7 verified | 11/11 must-haves verified, feature flag toggle ready |
 | 2026-01-25 | Phase 5 plan 03 executed | DEPLOYMENT.md, INTEGRATIONS.md complete |
+| 2026-01-25 | Phase 5 plan 01 executed | ARCHITECTURE.md + DATABASE.md complete |
 
 ## Session Continuity
 
 Last session: 2026-01-25
-Stopped at: Phase 5 plan 03 complete - Deployment & Integrations docs
+Stopped at: Phase 5 plan 01 complete - Architecture & Database docs
 Resume file: None
 
 ---
