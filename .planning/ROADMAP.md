@@ -179,6 +179,13 @@ Plans:
 - DOC-02: User guide for end users
 - DOC-03: Training session materials
 
+**Plans:** 3 plans
+
+Plans:
+- [ ] 06-01-PLAN.md — User Guide Core (Voice Practice + Call Analysis documentation)
+- [ ] 06-02-PLAN.md — User Guide Extended (Chat, Curriculum, Dashboard, Admin, FAQ)
+- [ ] 06-03-PLAN.md — Training + Handover (TRAINING.md + HANDOVER_CHECKLIST.md)
+
 **Success Criteria:**
 - [ ] User guide covering all features
 - [ ] Screenshots/walkthroughs for key flows
@@ -271,4 +278,4 @@ Phase 7 can run in parallel with Phases 5-6 (no dependencies).
 
 ---
 *Roadmap created: 2026-01-23*
-*Last updated: 2026-01-25 — Phase 7 added (Retell migration)*
+*Last updated: 2026-01-25 — Phase 6 planned (3 plans)*
