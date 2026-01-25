@@ -21,6 +21,27 @@ Welcome to the Underdog AI Sales Coach! This guide will help you get the most ou
    - [Understanding Call Analysis Results](#understanding-call-analysis-results)
    - [Tips for Accurate Analysis](#tips-for-accurate-analysis)
    - [Troubleshooting Call Analysis](#troubleshooting-call-analysis)
+4. [Chat Coaching](#chat-coaching)
+   - [What You Can Do](#what-you-can-do-2)
+   - [How to Use Chat Coaching](#how-to-use-chat-coaching)
+   - [Best Practices for Chat Coaching](#best-practices-for-chat-coaching)
+   - [Example Questions](#example-questions)
+5. [Curriculum](#curriculum)
+   - [What You Can Do](#what-you-can-do-3)
+   - [Curriculum Modules](#curriculum-modules)
+   - [How to Use the Curriculum](#how-to-use-the-curriculum)
+   - [Recommended Learning Path](#recommended-learning-path)
+6. [Dashboard](#dashboard)
+   - [What You Can Do](#what-you-can-do-4)
+   - [Dashboard Sections](#dashboard-sections)
+   - [Reading Your Progress](#reading-your-progress)
+   - [Using Dashboard Insights](#using-dashboard-insights)
+7. [For Administrators](#for-administrators)
+   - [Accessing the Admin Dashboard](#accessing-the-admin-dashboard)
+   - [Admin Features](#admin-features)
+   - [Admin Best Practices](#admin-best-practices)
+8. [Frequently Asked Questions](#frequently-asked-questions)
+9. [Quick Reference](#quick-reference)
 
 ---
 
@@ -319,14 +340,221 @@ The analysis uses the same 6 scoring dimensions as Voice Practice:
 
 ---
 
-## Need More Help?
+## Chat Coaching
 
-If you're experiencing issues not covered in this guide:
+### What You Can Do
 
-1. Check that your browser is up to date
-2. Try clearing your browser cache and logging in again
-3. Contact your administrator for account-related issues
+Get instant answers to sales questions from an AI coach trained on the Underdog Sales methodology. Ask about techniques, get advice on specific situations, or clarify concepts from the curriculum.
 
-Remember: The goal isn't a perfect score on every call - it's consistent improvement over time. Use the feedback to identify one or two areas to focus on, practice those specifically, and track your progress.
+The coach has knowledge of all 12 curriculum modules and can help you understand how to apply concepts in real selling situations.
 
-Good luck, and happy selling!
+### How to Use Chat Coaching
+
+#### 1. Navigate to Chat
+
+- Click "Coach" or "Chat" in the main navigation
+- The chat interface loads with your conversation history
+
+#### 2. Ask Your Question
+
+- Type your question in the message box at the bottom
+- Be specific for better answers
+- Press Enter or click Send
+
+#### 3. Review the Response
+
+- The AI coach responds with methodology-based advice
+- Responses reference Underdog Sales concepts and techniques
+- Key terms and techniques are explained in context
+
+#### 4. Continue the Conversation
+
+- Ask follow-up questions to dig deeper
+- Request examples or roleplay scenarios
+- Get clarification on anything unclear
+
+### Best Practices for Chat Coaching
+
+**Be Specific:** "How do I handle budget objections from CFOs?" beats "Help with objections"
+
+**Share Context:** "I'm calling mid-market companies selling HR software..." helps tailor advice
+
+**Ask Follow-Ups:** Dig deeper if the first answer needs clarification or more detail
+
+**Request Examples:** Ask for sample scripts or word-for-word phrasing
+
+**Apply and Practice:** Use Voice Practice to test the advice the coach gives you
+
+### Example Questions
+
+| Topic | Example Question |
+|-------|------------------|
+| Openers | "What's a good permission-based opener for getting past a gatekeeper?" |
+| Pitch | "How do I pitch to someone who already has a solution in place?" |
+| Discovery | "How do I get prospects to give me concrete examples of their problems?" |
+| Objections | "The prospect says they're not interested - what's the best response?" |
+| Objections | "How do I handle 'send me an email' without losing the opportunity?" |
+| Closing | "How do I ask for a meeting without using trigger words?" |
+| Psychology | "Why does the methodology focus on problems over benefits?" |
+| General | "What's the difference between a brush-off and a real objection?" |
+
+---
+
+## Curriculum
+
+### What You Can Do
+
+Study the Underdog Sales methodology through 12 structured modules. Each module covers a core concept with explanations, key techniques, and practical examples you can apply immediately.
+
+The curriculum is self-paced - complete modules in order or jump to topics you need most.
+
+### Curriculum Modules
+
+| # | Module | What You'll Learn |
+|---|--------|-------------------|
+| 1 | Call Structure | Complete cold call flow from opener to secure close |
+| 2 | Openers | Permission-based openers with 79-89% success rates |
+| 3 | The Pitch | Problem-focused pitches that resonate 2x stronger than benefit-focused ones |
+| 4 | Discovery | Getting examples, understanding impact, and finding root causes |
+| 5 | Objections | Framework for handling any objection with calm curiosity |
+| 6 | Closing | Negative framing and securing commitment without trigger words |
+| 7 | Gatekeeper | Techniques to reach decision makers through assistants |
+| 8 | Psychology | Why these techniques work - the science behind the methodology |
+| 9 | Attitude | Mindset, mantras, and self-talk for cold calling success |
+| 10 | Disqualification | Testing prospects to find real opportunities (not tire-kickers) |
+| 11 | Advanced Techniques | Enterprise and C-level specific strategies |
+| 12 | Review & Practice | Putting it all together with practice scenarios |
+
+### How to Use the Curriculum
+
+#### 1. Navigate to Curriculum
+
+- Click "Curriculum" in the main navigation
+- You'll see all 12 modules displayed as cards
+- Completed modules show a checkmark
+
+#### 2. Select a Module
+
+- Click on a module card to open it
+- Read through the content at your own pace
+- Key concepts are highlighted and explained
+
+#### 3. Study the Content
+
+- Each module includes:
+  - Core concept explanation
+  - Key techniques with examples
+  - Word-for-word scripts where applicable
+  - Common mistakes to avoid
+
+#### 4. Track Your Progress
+
+- Completed modules are marked automatically
+- Your progress is saved to your account
+- Return anytime to review or continue
+
+### Recommended Learning Path
+
+**For New Salespeople:**
+
+1. Start with Module 1 (Call Structure) to understand the big picture
+2. Work through Modules 2-6 in order - these are the core techniques
+3. After each module, practice in Voice Practice to apply what you learned
+4. Complete Modules 7-12 for advanced topics and deeper psychology
+
+**For Experienced Salespeople:**
+
+1. Skim Module 1 to understand the framework structure
+2. Jump directly to modules where you want improvement
+3. Use Voice Practice to test new techniques against challenging personas
+4. Review Module 8 (Psychology) to understand the "why" behind each technique
+
+**For Quick Improvement:**
+
+1. Focus on Module 4 (Discovery) - it's weighted highest in scoring (25%)
+2. Then Module 5 (Objections) - second highest weight (20%)
+3. Practice these two skills intensively before moving on
+
+---
+
+## Dashboard
+
+### What You Can Do
+
+Track your practice history, view progress over time, and identify areas for improvement. The Dashboard is your home base for monitoring growth and planning what to work on next.
+
+### Dashboard Sections
+
+The Dashboard has two main tabs:
+
+**History Tab:**
+- **Practice Sessions:** All your Voice Practice sessions with dates, personas, and scores
+- **Call Analyses:** All your uploaded recordings with analysis results
+- Click any session to view the full transcript and detailed feedback
+
+**Progress Tab:**
+- **Score Trends:** Line chart showing your scores over time
+- **Dimension Breakdown:** Radar chart comparing your performance across all 6 dimensions
+- **Curriculum Progress:** Visual tracker showing completed vs. remaining modules
+
+### Reading Your Progress
+
+#### Score Trend Chart
+
+- **X-axis:** Date of each practice session
+- **Y-axis:** Overall score (1-10 scale)
+- **Reference line:** Horizontal line at 7.0 marks the target competency level
+- **Trend direction:** Look for an upward trend indicating improvement
+
+What to look for:
+- Are scores generally increasing over time?
+- Are you consistently above the 7.0 reference line?
+- Are there dips that correlate with trying new personas or techniques?
+
+#### Dimension Radar Chart
+
+The radar chart shows your average score in each of the 6 dimensions:
+
+- 6 axes representing: Opener, Pitch, Discovery, Objection Handling, Closing, Communication
+- Larger overall area = stronger performance
+- "Dips" or inward points indicate weak areas to focus on
+- Compare your shape against a perfect hexagon (all 10s) or target hexagon (all 7s)
+
+What to look for:
+- Which dimension has the lowest score?
+- Are weaknesses consistent or improving?
+- Is your shape balanced or lopsided?
+
+#### Curriculum Progress
+
+- **Green checkmarks:** Completed modules
+- **Gray circles:** Modules not yet started
+- **Progress bar:** Overall completion percentage
+
+### Using Dashboard Insights
+
+#### 1. Identify Weak Dimensions
+
+Look at the radar chart for your lowest-scoring dimensions. Then:
+- Review the corresponding curriculum module
+- Ask the Chat Coach for specific tips
+- Focus your next Voice Practice session on that dimension
+
+#### 2. Track Improvement Over Time
+
+- Compare scores from different weeks or months
+- Celebrate when you consistently cross the 7.0 line
+- Notice patterns - what works and what doesn't?
+
+#### 3. Stay Consistent
+
+- Regular practice shows clear trends in your data
+- Sporadic practice makes patterns hard to see
+- Aim for 2-3 practice sessions per week minimum
+- Even 10-minute sessions add up over time
+
+#### 4. Set Goals Based on Data
+
+- Pick one dimension to improve each week
+- Track whether scores in that dimension improve
+- Move to the next dimension once you hit 7+ consistently
