@@ -31,9 +31,17 @@ import {
   stopRoleplaySession,
   muteRoleplaySession,
 } from '@/lib/vapi/client'
+import {
+  startRetellSession,
+  stopRetellSession,
+  muteRetellSession,
+} from '@/lib/retell/client'
 import { getAllPersonas, getPersonaById } from '@/config/personas'
 import { savePracticeSession } from '@/lib/actions/practice-session'
 import type { TranscriptEntry } from '@/types'
+
+// Voice provider feature flag - set to 'retell' to use Retell, 'vapi' for VAPI
+const VOICE_PROVIDER = (process.env.NEXT_PUBLIC_VOICE_PROVIDER || 'vapi') as 'vapi' | 'retell'
 
 type ScenarioType = 'cold_call' | 'objection' | 'closing' | 'gatekeeper'
 type ConnectionStatus = 'idle' | 'connecting' | 'connected' | 'error'
@@ -332,44 +340,70 @@ export function VoicePractice({ onSessionEnd }: VoicePracticeProps) {
     setError(null)
     setTranscript([])
 
-    if (!process.env.NEXT_PUBLIC_VAPI_PUBLIC_KEY) {
-      setError('Voice service not configured. Please contact support.')
-      setConnectionStatus('error')
-      return
+    // Check provider configuration
+    if (VOICE_PROVIDER === 'retell') {
+      if (!selectedPersona.retellAgentId) {
+        setError('Retell agent not configured for this persona.')
+        setConnectionStatus('error')
+        return
+      }
+    } else {
+      if (!process.env.NEXT_PUBLIC_VAPI_PUBLIC_KEY) {
+        setError('Voice service not configured. Please contact support.')
+        setConnectionStatus('error')
+        return
+      }
     }
 
     setConnectionStatus('connecting')
 
+    const commonCallbacks = {
+      onTranscript: (entry: TranscriptEntry) => {
+        setTranscript((prev) => [...prev, entry])
+      },
+      onCallStart: (id: string) => {
+        setCallId(id)
+        setConnectionStatus('connected')
+      },
+      onCallEnd: () => {
+        const currentCallId = callId
+        const currentTranscript = transcriptDataRef.current
+        const currentDuration = callDurationRef.current
+
+        // Set saving state BEFORE changing connection status to prevent UI flash
+        if (currentTranscript.length >= 2) {
+          setIsSaving(true)
+        }
+
+        setConnectionStatus('idle')
+        setCallId(null)
+        handleSessionComplete(currentTranscript, currentDuration, currentCallId || undefined)
+      },
+      onError: (err: Error) => {
+        setError(err.message || 'Connection failed')
+        setConnectionStatus('error')
+      },
+    }
+
     try {
-      const id = await startRoleplaySession({
-        persona: selectedPersona,
-        scenarioType: selectedScenario,
-        onTranscript: (entry) => {
-          setTranscript((prev) => [...prev, entry])
-        },
-        onCallStart: (id) => {
-          setCallId(id)
-          setConnectionStatus('connected')
-        },
-        onCallEnd: () => {
-          const currentCallId = callId
-          const currentTranscript = transcriptDataRef.current
-          const currentDuration = callDurationRef.current
+      let id: string
 
-          // Set saving state BEFORE changing connection status to prevent UI flash
-          if (currentTranscript.length >= 2) {
-            setIsSaving(true)
-          }
+      if (VOICE_PROVIDER === 'retell') {
+        // Use Retell
+        id = await startRetellSession({
+          persona: selectedPersona,
+          scenarioType: selectedScenario,
+          ...commonCallbacks,
+        })
+      } else {
+        // Use VAPI (default)
+        id = await startRoleplaySession({
+          persona: selectedPersona,
+          scenarioType: selectedScenario,
+          ...commonCallbacks,
+        })
+      }
 
-          setConnectionStatus('idle')
-          setCallId(null)
-          handleSessionComplete(currentTranscript, currentDuration, currentCallId || undefined)
-        },
-        onError: (err) => {
-          setError(err.message || 'Connection failed')
-          setConnectionStatus('error')
-        },
-      })
       setCallId(id)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Connection failed')
@@ -378,7 +412,13 @@ export function VoicePractice({ onSessionEnd }: VoicePracticeProps) {
   }, [selectedPersona, selectedScenario, onSessionEnd, callId, handleSessionComplete])
 
   const handleStop = useCallback(() => {
-    stopRoleplaySession()
+    // Stop based on provider
+    if (VOICE_PROVIDER === 'retell') {
+      stopRetellSession()
+    } else {
+      stopRoleplaySession()
+    }
+
     const currentCallId = callId
     const currentDuration = callDurationRef.current
     const currentTranscript = transcriptDataRef.current
@@ -396,7 +436,12 @@ export function VoicePractice({ onSessionEnd }: VoicePracticeProps) {
   const handleMuteToggle = useCallback(() => {
     const newMuted = !isMuted
     setIsMuted(newMuted)
-    muteRoleplaySession(newMuted)
+    // Mute based on provider
+    if (VOICE_PROVIDER === 'retell') {
+      muteRetellSession(newMuted)
+    } else {
+      muteRoleplaySession(newMuted)
+    }
   }, [isMuted])
 
   const getDifficultyLabel = (warmth: number) => {
