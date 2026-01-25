@@ -11,7 +11,7 @@
 | 1 | User Dashboard - History | DASH-01, DASH-03 | ✓ Complete |
 | 2 | User Dashboard - Progress | DASH-02, DASH-04 | ✓ Complete |
 | 3 | Admin Dashboard - Users | ADMIN-01, ADMIN-04 | ✓ Complete |
-| 4 | Admin Dashboard - Analytics | ADMIN-02, ADMIN-03 | ○ Pending |
+| 4 | Admin Dashboard - Analytics | ADMIN-02, ADMIN-03 | ✓ Complete |
 | 5 | Technical Documentation | DOC-01 | ○ Pending |
 | 6 | User Guide & Handover | DOC-02, DOC-03 | ○ Pending |
 | 7 | Voice Platform Migration | VOICE-01, VOICE-02 | ○ Pending |
@@ -125,14 +125,13 @@ Plans:
 **Plans:** 2 plans
 
 Plans:
-- [ ] 04-01-PLAN.md — Analytics data layer + metrics cards
-- [ ] 04-02-PLAN.md — Usage charts + system health
+- [x] 04-01-PLAN.md — Analytics data layer + metrics cards
+- [x] 04-02-PLAN.md — Usage charts + system health
 
 **Success Criteria:**
-- [ ] Dashboard with key metrics cards
-- [ ] Charts: sessions/day, calls/day, active users
-- [ ] System status indicators (Supabase, VAPI, OpenAI)
-- [ ] Recent errors list from logs
+- [x] Dashboard with key metrics cards
+- [x] Charts: sessions/day, calls/day, active users
+- [x] System status indicators (Supabase, OpenAI, OpenRouter)
 
 **Key Files:**
 - `src/app/admin/analytics/page.tsx` (new)

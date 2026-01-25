@@ -16,10 +16,10 @@ Requirements for MVP release (~13/03/2026). Each maps to roadmap phases.
 
 ### Admin Dashboard
 
-- [ ] **ADMIN-01**: Admin can view list of all users with registration date and last activity
-- [ ] **ADMIN-02**: Admin can see usage metrics (total sessions, calls analyzed, active users)
-- [ ] **ADMIN-03**: Admin can view system health (API status, error rates)
-- [ ] **ADMIN-04**: Admin can manage content (view/edit personas, rubric configuration)
+- [x] **ADMIN-01**: Admin can view list of all users with registration date and last activity
+- [x] **ADMIN-02**: Admin can see usage metrics (total sessions, calls analyzed, active users)
+- [x] **ADMIN-03**: Admin can view system health (API status, error rates)
+- [x] **ADMIN-04**: Admin can manage content (view/edit personas, rubric configuration)
 
 ### Documentation
 
@@ -80,8 +80,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | DASH-03 | Phase 1 | Complete |
 | DASH-04 | Phase 2 | Complete |
 | ADMIN-01 | Phase 3 | Complete |
-| ADMIN-02 | Phase 4 | Pending |
-| ADMIN-03 | Phase 4 | Pending |
+| ADMIN-02 | Phase 4 | Complete |
+| ADMIN-03 | Phase 4 | Complete |
 | ADMIN-04 | Phase 3 | Complete |
 | DOC-01 | Phase 5 | Pending |
 | DOC-02 | Phase 6 | Pending |
