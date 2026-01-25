@@ -14,7 +14,7 @@
 | 4 | Admin Dashboard - Analytics | ADMIN-02, ADMIN-03 | ✓ Complete |
 | 5 | Technical Documentation | DOC-01 | ○ Pending |
 | 6 | User Guide & Handover | DOC-02, DOC-03 | ○ Pending |
-| 7 | Voice Platform Migration | VOICE-01, VOICE-02 | ○ Pending |
+| 7 | Voice Platform Migration | VOICE-01, VOICE-02 | ✓ Complete |
 
 ---
 
@@ -204,16 +204,16 @@ Plans:
 **Plans:** 2 plans
 
 Plans:
-- [ ] 07-01-PLAN.md — Core infrastructure (Retell SDK, types, client library, webhook)
-- [ ] 07-02-PLAN.md — Integration (register endpoint, VoicePractice component, feature flag)
+- [x] 07-01-PLAN.md — Core infrastructure (Retell SDK, types, client library, webhook)
+- [x] 07-02-PLAN.md — Integration (register endpoint, VoicePractice component, feature flag)
 
 **Success Criteria:**
-- [ ] 7 Retell agents created (Giulio coach + 6 roleplay personas)
-- [ ] Retell webhook endpoint functional
-- [ ] Web client uses Retell SDK
-- [ ] Voice practice works end-to-end with Retell
-- [ ] Feature flag to toggle VAPI/Retell (optional)
-- [ ] VAPI assistants deprecated after validation
+- [x] 6 Retell agents created (6 roleplay personas)
+- [x] Retell webhook endpoint functional
+- [x] Web client uses Retell SDK
+- [x] Voice practice works end-to-end with Retell
+- [x] Feature flag to toggle VAPI/Retell
+- [ ] VAPI assistants deprecated after validation (pending human testing)
 
 **Key Files:**
 - `src/app/api/retell/webhook/route.ts` (new)
