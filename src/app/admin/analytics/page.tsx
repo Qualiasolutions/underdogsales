@@ -1,5 +1,7 @@
 import { getAnalyticsData } from '@/lib/actions/admin'
 import { MetricsCards } from '@/components/admin/MetricsCards'
+import { UsageCharts } from '@/components/admin/UsageCharts'
+import { SystemHealth } from '@/components/admin/SystemHealth'
 
 export const dynamic = 'force-dynamic'
 
@@ -36,9 +38,13 @@ export default async function AnalyticsPage() {
         activeUsers={metrics.activeUsers}
       />
 
-      {/* Placeholder for charts - will be added in Plan 02 */}
-      <div className="mt-8 bg-gray-50 border border-dashed border-gray-300 rounded-xl p-12 text-center">
-        <p className="text-gray-400">Charts coming in Plan 02</p>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+        <div className="lg:col-span-2">
+          <UsageCharts data={metrics.dailyData} />
+        </div>
+        <div>
+          <SystemHealth />
+        </div>
       </div>
     </div>
   )
