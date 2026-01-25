@@ -23,9 +23,9 @@ Requirements for MVP release (~13/03/2026). Each maps to roadmap phases.
 
 ### Documentation
 
-- [ ] **DOC-01**: Technical documentation covering architecture, APIs, and deployment
-- [ ] **DOC-02**: User guide explaining all features for end users
-- [ ] **DOC-03**: Training materials for client handover session
+- [x] **DOC-01**: Technical documentation covering architecture, APIs, and deployment
+- [x] **DOC-02**: User guide explaining all features for end users
+- [x] **DOC-03**: Training materials for client handover session
 
 ### Voice Platform
 
@@ -83,9 +83,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | ADMIN-02 | Phase 4 | Complete |
 | ADMIN-03 | Phase 4 | Complete |
 | ADMIN-04 | Phase 3 | Complete |
-| DOC-01 | Phase 5 | Pending |
-| DOC-02 | Phase 6 | Pending |
-| DOC-03 | Phase 6 | Pending |
+| DOC-01 | Phase 5 | Complete |
+| DOC-02 | Phase 6 | Complete |
+| DOC-03 | Phase 6 | Complete |
 | VOICE-01 | Phase 7 | Complete |
 | VOICE-02 | Phase 7 | Complete |
 
@@ -96,4 +96,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-01-23*
-*Last updated: 2026-01-25 — Phase 7 added (Retell migration)*
+*Last updated: 2026-01-25 — All v1 requirements complete*
