@@ -558,3 +558,249 @@ Look at the radar chart for your lowest-scoring dimensions. Then:
 - Pick one dimension to improve each week
 - Track whether scores in that dimension improve
 - Move to the next dimension once you hit 7+ consistently
+
+---
+
+## For Administrators
+
+> This section is for users with admin access. If you don't have admin access, you can skip this section.
+
+### Accessing the Admin Dashboard
+
+1. Log in with an admin-enabled account
+2. Click "Admin" in the navigation (visible only to admins)
+3. You'll see the admin dashboard with quick stats and navigation
+
+### Admin Features
+
+**User Management** (`/admin/users`):
+- View all registered users with their activity stats
+- Search users by name or email
+- See user metrics: last active date, total session count, average score
+- Click a user to view their detailed practice history and progress
+- Monitor user engagement and identify inactive users
+
+**Content View** (`/admin/content`):
+- View all AI personas with their full configuration
+  - Personality descriptions
+  - Difficulty levels
+  - Scenario briefs
+- View the scoring rubric with weights and criteria
+  - All 6 dimensions with their weights
+  - Specific evaluation criteria for each dimension
+- This is read-only display (configuration changes require code deployment)
+
+**Analytics** (`/admin/analytics`):
+- Platform-wide metrics displayed in cards:
+  - Total practice sessions
+  - Total active users
+  - Total call analyses
+  - Average score across all users
+- Usage trends over time (daily/weekly activity charts)
+- System health status showing API connection status
+
+### Admin Best Practices
+
+**Monitor New Users:**
+- Check weekly if new users are completing practice sessions
+- Users who don't practice in their first week rarely return
+- Reach out to inactive new users with encouragement
+
+**Identify Struggling Users:**
+- Look for users with consistently low scores (below 5)
+- These users may need additional coaching or resources
+- Consider pairing them with successful users
+
+**Track Platform Health:**
+- Review system health status weekly
+- Check that all API connections are healthy
+- Monitor if analysis times are within normal ranges
+
+**Use Data for Decisions:**
+- Track which personas are most used (and least used)
+- Monitor average scores to gauge methodology adoption
+- Use trends to plan training initiatives
+
+---
+
+## Frequently Asked Questions
+
+### Getting Started
+
+**Q: What browser should I use?**
+
+A: Chrome is recommended for best voice quality and compatibility. Firefox and Safari work but may have minor audio differences. Edge works well too. Make sure your browser is updated to the latest version.
+
+**Q: Do I need to install anything?**
+
+A: No installation needed. Just log in through your browser. You'll need to allow microphone access when you first try Voice Practice - look for a popup asking for permission.
+
+**Q: How do I get an account?**
+
+A: Contact your administrator or manager for login credentials. Accounts are created by your organization's admin. You'll receive an email with login instructions.
+
+**Q: Can I use this on my phone?**
+
+A: The platform works on mobile browsers, but Voice Practice is optimized for desktop/laptop with a good microphone. Call Analysis and Chat Coaching work well on mobile.
+
+### Voice Practice
+
+**Q: The AI seems too harsh - is that normal?**
+
+A: Yes! The personas are designed to be challenging, simulating difficult prospects you'll encounter in real life. This is intentional - practicing against easy prospects doesn't prepare you for the real thing. Start with Medium difficulty personas (Emily, David, Lisa) if Hard ones feel overwhelming.
+
+**Q: Can I practice the same persona multiple times?**
+
+A: Absolutely. In fact, that's recommended. Practice with the same persona until you consistently score 7+ before moving to harder ones. Repetition builds muscle memory for handling specific objection styles.
+
+**Q: Why does the AI sometimes hang up on me?**
+
+A: The AI simulates realistic prospect behavior. If you trigger a dismissal (e.g., not asking for permission, being too pushy, talking too much about features), they'll end the call just like a real prospect would. Review the transcript to see what triggered the hang-up.
+
+**Q: My score seems lower than I expected - why?**
+
+A: The AI scores based on specific methodology criteria, not general salesmanship. Review the transcript to see exactly what was said. Common reasons for lower scores:
+- Skipped the permission-based opener
+- Led with features instead of problems
+- Didn't get a concrete example during discovery
+- Used trigger words when closing ("meeting," "demo," "calendar")
+
+**Q: How long should a practice session be?**
+
+A: Typical sessions are 3-7 minutes. The AI will end the call naturally when appropriate. If you're getting cut off quickly, focus on your opener and permission-asking technique.
+
+### Call Analysis
+
+**Q: Can I upload phone call recordings?**
+
+A: Yes, as long as the audio is in a supported format (MP3, WAV, M4A, WebM) and under 25MB. Phone recordings work well. Make sure you have appropriate permission to record and analyze the call.
+
+**Q: How long does analysis take?**
+
+A: Typically 2-3 minutes for a 10-minute call. Longer calls take proportionally longer. A 30-minute call might take 5-6 minutes. You can leave the page and check back later - the analysis continues in the background.
+
+**Q: Why is the transcription not perfect?**
+
+A: Speech-to-text technology works best with clear audio. Background noise, crosstalk, heavy accents, and low audio quality can affect accuracy. The analysis focuses on patterns and techniques, so minor transcription errors usually don't affect the overall scoring.
+
+**Q: Can I analyze calls where I was the prospect?**
+
+A: The analysis is designed for calls where you're the salesperson. Analyzing calls where you were the prospect won't give meaningful results since the scoring rubric measures seller techniques.
+
+### Scoring
+
+**Q: What's a good score?**
+
+A: 7+ is considered competent - you're applying the methodology correctly. 9+ is excellent. Most people start in the 4-6 range and improve with practice. Don't expect 9s and 10s immediately; those come with consistent practice.
+
+**Q: Why is Discovery weighted so heavily (25%)?**
+
+A: Discovery is where real selling happens. Getting prospects to share examples, impact, and root cause creates the foundation for everything else. Without good discovery, even perfect closing techniques won't work because the prospect hasn't convinced themselves they have a problem worth solving.
+
+**Q: How can I improve my Communication score?**
+
+A: Focus on three things:
+1. Listen more - target less than 40% talk time
+2. Reduce filler words - minimize "um," "uh," "like," "you know"
+3. Pace yourself - speak clearly at a moderate speed, don't rush
+
+**Q: Why did I score low on Closing when I got a meeting?**
+
+A: Getting a meeting is great, but the methodology scores how you asked. Using trigger words like "meeting," "demo," or "calendar" reduces your Closing score even if the outcome was positive. The goal is to close using negative framing: "Would it be a bad idea to explore this?"
+
+### Technical Issues
+
+**Q: Voice Practice won't start - what do I do?**
+
+A: Try these steps in order:
+1. Check microphone permissions in your browser (Settings > Privacy & Security > Microphone)
+2. Make sure you're on a stable internet connection
+3. Try refreshing the page
+4. Try a different browser (Chrome recommended)
+5. Restart your computer if nothing else works
+
+**Q: I can't log in.**
+
+A: Try these steps:
+1. Clear your browser cache and cookies
+2. Try incognito/private browsing mode
+3. Make sure caps lock isn't on
+4. Use the "Forgot Password" link if available
+5. Contact your administrator if the issue persists
+
+**Q: The page is loading slowly.**
+
+A: Check your internet connection speed. If the problem persists:
+- Try a different browser
+- Disable browser extensions temporarily
+- Check if other websites are also slow (network issue)
+- Try at a different time of day
+
+**Q: My session wasn't saved - what happened?**
+
+A: Sessions are saved automatically when the call ends normally. If you lost connection mid-call or closed the browser, the session may not have been saved. Make sure to end calls using the "End Call" button and wait for the results page to load.
+
+---
+
+## Quick Reference
+
+### Scoring Dimensions at a Glance
+
+| Dimension | Weight | Key Focus |
+|-----------|--------|-----------|
+| Opener | 15% | Permission-based approach, attention grab, clear time ask, friendly tone |
+| Pitch | 15% | Problems over features, specific ICP targeting, negative bias |
+| Discovery | 25% | Get a concrete example, understand impact, find root cause |
+| Objection Handling | 20% | Pause 2-3 seconds, acknowledge, ask permission to probe, stay calm |
+| Closing | 15% | Summarize key points, use negative framing, avoid trigger words |
+| Communication | 10% | Listen more (< 40% talk time), clear speech, minimal filler words |
+
+### Persona Difficulty Guide
+
+| Difficulty | Personas | Best For |
+|------------|----------|----------|
+| Medium | Emily (Executive Assistant), David (Sales Manager), Lisa (Head of Operations) | Building confidence, learning the basics, new users |
+| Hard | Sarah (CFO), Marcus (VP Sales), Tony (Sales Director) | Testing skills, realistic challenge, experienced users |
+
+### Key Methodology Reminders
+
+**Opener:**
+> "You weren't expecting my call, but I hope you can help..."
+
+**Focus on Problems:**
+- Lead with 2-3 problems you solve
+- Problems are 2x more motivating than benefits
+
+**Get an Example:**
+> "Can you give me an example of when that happened?"
+- No example = no real problem
+
+**Handle Objections:**
+- Pause 2-3 seconds before responding
+- "I thought you might say that. Do you mind if I ask a question?"
+
+**Close with Negative Framing:**
+> "Would it be a bad idea to explore this further?"
+
+**Avoid Trigger Words:**
+- Never say: meeting, demo, calendar, discovery, schedule
+
+**Listen More:**
+- Target < 40% talk time
+- Your job is to ask questions, not present
+
+### Quick Troubleshooting
+
+| Problem | First Thing to Try |
+|---------|-------------------|
+| Mic not working | Check browser permissions for microphone |
+| Call won't start | Refresh page, check internet connection |
+| Can't log in | Clear browser cache, try incognito mode |
+| Upload failing | Check file size (< 25MB) and format (MP3, WAV, M4A, WebM) |
+| Slow loading | Try a different browser or check network speed |
+
+---
+
+*Last updated: 2026-01-25*
+
+*For technical documentation, see the docs/ folder: [ARCHITECTURE.md](./ARCHITECTURE.md), [API.md](./API.md), [DATABASE.md](./DATABASE.md)*
