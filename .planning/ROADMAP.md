@@ -148,6 +148,13 @@ Plans:
 **Requirements:**
 - DOC-01: Technical documentation (architecture, APIs, deployment)
 
+**Plans:** 3 plans
+
+Plans:
+- [ ] 05-01-PLAN.md — Architecture + Database documentation
+- [ ] 05-02-PLAN.md — API reference (all 12 endpoints)
+- [ ] 05-03-PLAN.md — Deployment + Integrations guides
+
 **Success Criteria:**
 - [ ] Architecture overview document
 - [ ] API reference (all endpoints documented)
