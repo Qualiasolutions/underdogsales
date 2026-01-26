@@ -349,19 +349,21 @@ export function VoicePractice({ onSessionEnd }: VoicePracticeProps) {
         setCallId(id)
         setConnectionStatus('connected')
       },
-      onCallEnd: () => {
+      onCallEnd: (finalTranscript: TranscriptEntry[]) => {
         const currentCallId = callId
-        const currentTranscript = transcriptDataRef.current
         const currentDuration = callDurationRef.current
+        // Use the transcript from Retell client (deduplicated) if available,
+        // otherwise fall back to our local state
+        const transcriptToSave = finalTranscript.length > 0 ? finalTranscript : transcriptDataRef.current
 
         // Set saving state BEFORE changing connection status to prevent UI flash
-        if (currentTranscript.length >= 2) {
+        if (transcriptToSave.length >= 2) {
           setIsSaving(true)
         }
 
         setConnectionStatus('idle')
         setCallId(null)
-        handleSessionComplete(currentTranscript, currentDuration, currentCallId || undefined)
+        handleSessionComplete(transcriptToSave, currentDuration, currentCallId || undefined)
       },
       onError: (err: Error) => {
         setError(err.message || 'Connection failed')
@@ -383,11 +385,13 @@ export function VoicePractice({ onSessionEnd }: VoicePracticeProps) {
   }, [selectedPersona, selectedScenario, onSessionEnd, callId, handleSessionComplete])
 
   const handleStop = useCallback(() => {
-    stopRetellSession()
-
+    // stopRetellSession will trigger onCallEnd with the transcript
+    // But we also handle it here in case the event doesn't fire
     const currentCallId = callId
     const currentDuration = callDurationRef.current
     const currentTranscript = transcriptDataRef.current
+
+    stopRetellSession()
 
     // Set saving state BEFORE changing connection status to prevent UI flash
     if (currentTranscript.length >= 2) {

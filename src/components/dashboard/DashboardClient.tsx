@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import dynamic from 'next/dynamic'
 import { motion } from 'motion/react'
 import { Mic, FileAudio, Loader2, BarChart3 } from 'lucide-react'
 import Link from 'next/link'
@@ -12,10 +13,34 @@ import { getUserCallUploads } from '@/lib/actions/call-analysis'
 import { SessionHistoryCard } from './SessionHistoryCard'
 import { CallHistoryCard } from './CallHistoryCard'
 import { Header } from '@/components/ui/header'
-import { ScoreTrendChart } from './progress/ScoreTrendChart'
-import { DimensionRadarChart } from './progress/DimensionRadarChart'
 import { CurriculumProgressCard } from './progress/CurriculumProgressCard'
 import type { CallUpload, ScoreDimension } from '@/types'
+
+// Lazy load chart components (Recharts is 8MB - defer until Progress tab viewed)
+const ScoreTrendChart = dynamic(
+  () => import('./progress/ScoreTrendChart').then(mod => ({ default: mod.ScoreTrendChart })),
+  {
+    loading: () => <ChartSkeleton />,
+    ssr: false
+  }
+)
+
+const DimensionRadarChart = dynamic(
+  () => import('./progress/DimensionRadarChart').then(mod => ({ default: mod.DimensionRadarChart })),
+  {
+    loading: () => <ChartSkeleton />,
+    ssr: false
+  }
+)
+
+// Loading skeleton for charts
+function ChartSkeleton() {
+  return (
+    <div className="h-64 flex items-center justify-center bg-muted/30 rounded-lg animate-pulse">
+      <BarChart3 className="w-8 h-8 text-muted-foreground/50" />
+    </div>
+  )
+}
 
 interface PracticeSession {
   id: string
