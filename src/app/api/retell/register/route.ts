@@ -8,17 +8,18 @@ import Retell from 'retell-sdk'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
 import { logger } from '@/lib/logger'
 
-// Lazy initialize Retell client to avoid build-time errors
-let retellClient: Retell | null = null
-
-function getRetellClient(): Retell {
-  if (!retellClient) {
-    if (!process.env.RETELL_API_KEY) {
-      throw new Error('RETELL_API_KEY environment variable is not set')
-    }
-    retellClient = new Retell({ apiKey: process.env.RETELL_API_KEY })
+/**
+ * Create a fresh Retell client for each request
+ * This ensures we always use the current API key
+ */
+function createRetellClient(): Retell {
+  const apiKey = process.env.RETELL_API_KEY
+  if (!apiKey) {
+    throw new Error('RETELL_API_KEY environment variable is not set')
   }
-  return retellClient
+  // Clean the API key (remove any whitespace or newlines)
+  const cleanKey = apiKey.trim().replace(/\\n/g, '')
+  return new Retell({ apiKey: cleanKey })
 }
 
 interface RegisterRequest {
@@ -61,7 +62,7 @@ export async function POST(request: NextRequest) {
     })
 
     // Create web call via Retell API
-    const retell = getRetellClient()
+    const retell = createRetellClient()
     const response = await retell.call.createWebCall({
       agent_id: agentId,
       metadata: {
