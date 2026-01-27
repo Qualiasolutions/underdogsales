@@ -83,10 +83,9 @@ export async function POST(request: NextRequest) {
 
     if (mode) {
       const modeContext: Record<string, string> = {
-        curriculum: '\n\nThe user wants to learn the curriculum. Focus on teaching the 12 modules systematically.',
+        pitch: '\n\nThe user wants to build their pitch. Focus on crafting a compelling cold call opener and value proposition.',
         objections: '\n\nThe user wants to practice objection handling. Role-play as a prospect giving objections, then coach them on responses.',
-        techniques: '\n\nThe user wants to learn specific techniques. Focus on openers, pitch, discovery, and closing frameworks.',
-        free: '\n\nThe user wants free-form coaching. Answer any sales-related questions they have.',
+        general: '\n\nThe user wants free-form coaching. Answer any sales-related questions they have.',
       }
       systemPrompt += modeContext[mode] || ''
     }

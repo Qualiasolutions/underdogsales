@@ -12,9 +12,8 @@ import {
   Wifi,
   WifiOff,
   Zap,
-  GraduationCap,
+  Hammer,
   Shield,
-  Lightbulb,
   MessageCircle,
   User,
   type LucideIcon,
@@ -202,16 +201,15 @@ const ErrorMessage = memo(({ error, onDismiss, onRetry }: {
 ErrorMessage.displayName = 'ErrorMessage'
 
 const modeIcons: Record<CoachingMode, LucideIcon> = {
-  curriculum: GraduationCap,
+  pitch: Hammer,
   objections: Shield,
-  techniques: Lightbulb,
-  free: MessageCircle,
+  general: MessageCircle,
 }
 
 export function VoiceCoach() {
   const [connectionStatus, setConnectionStatus] = useState<ConnectionStatus>('idle')
   const [isMuted, setIsMuted] = useState(false)
-  const [selectedMode, setSelectedMode] = useState<CoachingMode>('free')
+  const [selectedMode, setSelectedMode] = useState<CoachingMode>('general')
   const [transcript, setTranscript] = useState<TranscriptEntry[]>([])
   const [callId, setCallId] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
