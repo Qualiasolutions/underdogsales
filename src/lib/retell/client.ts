@@ -2,19 +2,22 @@
  * Retell Web Client Library
  * Mirrors src/lib/vapi/client.ts pattern for voice practice sessions
  *
- * Note: Retell's update event contains the last 5 sentences only.
- * We track seen content hashes to deduplicate transcript entries.
+ * Note: Retell sends streaming partial transcripts. The transcript array
+ * contains completed utterances + the current in-progress utterance.
+ * We only show completed utterances (all except the last) to avoid duplicates.
  */
 
 import { RetellWebClient } from 'retell-client-js-sdk'
 import type { Persona, TranscriptEntry } from '@/types'
 
-// Track seen transcript entries to prevent duplicates
-// Key: hash of role + content, Value: timestamp
-let seenTranscripts = new Set<string>()
+// Track completed utterances by their content hash
+let completedUtterances = new Set<string>()
 
 // Current session's accumulated transcript
 let currentTranscript: TranscriptEntry[] = []
+
+// Track the last speaker to detect turn changes
+let lastSpeaker: 'agent' | 'user' | null = null
 
 // Retell client instance - recreated for each call to ensure clean event handlers
 let retellInstance: RetellWebClient | null = null
@@ -74,8 +77,9 @@ export async function startRetellSession(options: RetellSessionOptions): Promise
   }
 
   // Reset state for new session
-  seenTranscripts = new Set()
+  completedUtterances = new Set()
   currentTranscript = []
+  lastSpeaker = null
 
   // Create fresh client to ensure clean event handlers
   const retell = createRetellClient()
@@ -112,17 +116,21 @@ export async function startRetellSession(options: RetellSessionOptions): Promise
 
   retell.on('update', (update: RetellUpdateEvent) => {
     // Handle transcript updates
-    // Note: Retell sends the last 5 sentences on each update
+    // Retell sends streaming transcripts: completed utterances + current partial
+    // We only show completed utterances (all except the last entry)
     if (update.transcript && update.transcript.length > 0) {
-      for (const entry of update.transcript) {
+      // Process all entries EXCEPT the last one (which is still in progress)
+      const completedEntries = update.transcript.slice(0, -1)
+
+      for (const entry of completedEntries) {
         if (!entry.content || entry.content.trim() === '') continue
 
         const hash = hashEntry(entry.role, entry.content)
 
-        // Skip if we've already seen this entry
-        if (seenTranscripts.has(hash)) continue
+        // Skip if we've already shown this completed utterance
+        if (completedUtterances.has(hash)) continue
 
-        seenTranscripts.add(hash)
+        completedUtterances.add(hash)
 
         const transcriptEntry: TranscriptEntry = {
           role: entry.role === 'agent' ? 'assistant' : 'user',
@@ -132,6 +140,12 @@ export async function startRetellSession(options: RetellSessionOptions): Promise
 
         currentTranscript.push(transcriptEntry)
         onTranscript?.(transcriptEntry)
+      }
+
+      // Track speaker changes to know when an utterance is truly complete
+      const lastEntry = update.transcript[update.transcript.length - 1]
+      if (lastEntry) {
+        lastSpeaker = lastEntry.role
       }
     }
   })

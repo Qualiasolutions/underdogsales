@@ -10,7 +10,7 @@ export const PERSONAS: Record<string, Persona> = {
     warmth: 0.1,
     voiceId: '21m00Tcm4TlvDq8ikWAM', // ElevenLabs Rachel
     assistantId: '147122df-1f2c-4482-95e9-90a95711d813',
-    retellAgentId: 'agent_b9b79f1197d9068036860987f7',
+    retellAgentId: 'agent_500d0aee9afeba6ecbe19f6d58',
   },
   busy_vp_sales: {
     id: 'busy_vp_sales',
@@ -21,7 +21,7 @@ export const PERSONAS: Record<string, Persona> = {
     warmth: 0.2,
     voiceId: 'pNInz6obpgDQGcFmaJgB', // ElevenLabs Adam
     assistantId: 'ea77c65d-b6cc-4ec6-beee-24e841549862',
-    retellAgentId: 'agent_c603b71c7b9082f4b321437167',
+    retellAgentId: 'agent_e6ca297990af98688c3906cceb',
   },
   friendly_gatekeeper: {
     id: 'friendly_gatekeeper',
@@ -32,7 +32,7 @@ export const PERSONAS: Record<string, Persona> = {
     warmth: 0.3,
     voiceId: 'EXAVITQu4vr4xnSDxMaL', // ElevenLabs Bella
     assistantId: '34955843-45f0-4eef-9685-548fbb4c33bf',
-    retellAgentId: 'agent_278924b94088457e84c902d51b',
+    retellAgentId: 'agent_adca29babb61a17211dd2c9caa',
   },
   defensive_manager: {
     id: 'defensive_manager',
@@ -43,7 +43,7 @@ export const PERSONAS: Record<string, Persona> = {
     warmth: 0.2,
     voiceId: 'TxGEqnHWrfWFTfGW9XjX', // ElevenLabs Josh
     assistantId: 'fdf94f58-6959-4b0c-87f0-03ec390c1f42',
-    retellAgentId: 'agent_857b13c0ba053486c06483aa91',
+    retellAgentId: 'agent_ce42eaf756c90cfe4c62446b9e',
   },
   interested_but_stuck: {
     id: 'interested_but_stuck',
@@ -54,7 +54,7 @@ export const PERSONAS: Record<string, Persona> = {
     warmth: 0.4,
     voiceId: 'MF3mGyEYCl7XYWbV9V6O', // ElevenLabs Elli
     assistantId: '290a693d-3d8c-4600-a21b-885e565b0452',
-    retellAgentId: 'agent_67f03d929011acdf9727569463',
+    retellAgentId: 'agent_8f5da322e4a1f03ee3bfc6f6a8',
   },
   aggressive_closer: {
     id: 'aggressive_closer',
@@ -65,7 +65,7 @@ export const PERSONAS: Record<string, Persona> = {
     warmth: 0.15,
     voiceId: 'yoZ06aMxZJJ28mfd3POQ', // ElevenLabs Sam
     assistantId: 'd6d0e091-c244-401a-a0d7-96c5b3531c2b',
-    retellAgentId: 'agent_02ec0cef183965d77f84cc4e6e',
+    retellAgentId: 'agent_ac977b552f5e9b4584d96f2a9d',
   },
 }
 
