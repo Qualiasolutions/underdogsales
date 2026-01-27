@@ -201,6 +201,13 @@ export const vapiCircuit = new CircuitBreaker({
   successThreshold: 2,
 })
 
+export const retellCircuit = new CircuitBreaker({
+  name: 'retell',
+  failureThreshold: 3,
+  resetTimeout: 60000, // 1 minute
+  successThreshold: 2,
+})
+
 export const supabaseCircuit = new CircuitBreaker({
   name: 'supabase',
   failureThreshold: 5,

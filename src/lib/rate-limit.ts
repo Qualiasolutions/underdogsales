@@ -99,6 +99,18 @@ export function createRateLimitHeaders(
 
 // Pre-configured rate limits for different endpoints
 export const RATE_LIMITS = {
+  // Login: 5 attempts per 15 minutes (brute force protection)
+  login: {
+    windowMs: 15 * 60 * 1000,
+    max: 5,
+    message: 'Too many login attempts. Please try again in 15 minutes.',
+  },
+  // Signup: 3 per hour (abuse prevention)
+  signup: {
+    windowMs: 60 * 60 * 1000,
+    max: 3,
+    message: 'Too many signup attempts. Please try again later.',
+  },
   // Upload: 10 uploads per 15 minutes
   upload: {
     windowMs: 15 * 60 * 1000,

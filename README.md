@@ -188,6 +188,18 @@ vercel logs <deployment-url>
 - **App**: https://under-eight.vercel.app
 - **Health**: https://under-eight.vercel.app/api/health
 
+### Rollback Procedure
+
+If a deployment causes issues, rollback immediately:
+
+1. Go to [Vercel Dashboard](https://vercel.com) → Project → Deployments
+2. Find the last stable deployment (green checkmark)
+3. Click the "..." menu → "Promote to Production"
+4. Verify health: https://under-eight.vercel.app/api/health
+5. Check Sentry for errors clearing
+
+For database migration rollbacks, see `/docs/ROLLBACK.md`.
+
 ## Development
 
 ```bash

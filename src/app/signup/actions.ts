@@ -2,7 +2,10 @@
 
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
+import { headers } from 'next/headers'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
+import { checkRateLimit, RATE_LIMITS } from '@/lib/rate-limit'
+import { logger } from '@/lib/logger'
 
 /**
  * Validate password strength
@@ -31,6 +34,15 @@ export interface AuthResult {
 }
 
 export const signup = async (formData: FormData): Promise<AuthResult> => {
+  // Rate limit by IP address
+  const headersList = await headers()
+  const ip = headersList.get('x-forwarded-for')?.split(',')[0] || 'unknown'
+  const rateLimitResult = checkRateLimit(`signup:${ip}`, RATE_LIMITS.signup)
+
+  if (!rateLimitResult.allowed) {
+    return { error: RATE_LIMITS.signup.message }
+  }
+
   const supabase = await createServerSupabaseClient()
 
   const name = formData.get('name') as string
@@ -84,7 +96,7 @@ export const signup = async (formData: FormData): Promise<AuthResult> => {
 
     if (insertError && !insertError.message?.includes('duplicate')) {
       // Log but don't fail - user is already created in auth
-      console.error('Failed to create user record:', insertError)
+      logger.error('Failed to create user record', { error: insertError.message, userId: data.user.id })
     }
   }
 

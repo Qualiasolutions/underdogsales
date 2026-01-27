@@ -8,6 +8,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
 import { logger } from '@/lib/logger'
+import { retellCircuit, CircuitOpenError } from '@/lib/circuit-breaker'
 
 const RETELL_API_BASE = 'https://api.retellai.com'
 
@@ -95,11 +96,13 @@ export async function POST(request: NextRequest) {
       metadata,
     })
 
-    // Create web call via direct API call
-    const response = await createWebCall(apiKey, agentId, {
-      ...metadata,
-      userId: user.id,
-    })
+    // Create web call via direct API call with circuit breaker protection
+    const response = await retellCircuit.execute(() =>
+      createWebCall(apiKey, agentId, {
+        ...metadata,
+        userId: user.id,
+      })
+    )
 
     logger.info('Retell web call registered', {
       operation: 'retell_register',
@@ -115,6 +118,14 @@ export async function POST(request: NextRequest) {
     logger.exception('Failed to register Retell web call', error, {
       operation: 'retell_register',
     })
+
+    // Handle circuit breaker open
+    if (error instanceof CircuitOpenError) {
+      return NextResponse.json(
+        { error: 'Retell service temporarily unavailable. Please try again shortly.' },
+        { status: 503 }
+      )
+    }
 
     // Handle specific Retell errors
     if (error instanceof Error) {
