@@ -7,29 +7,25 @@ export const GIULIO_COACH = {
   title: 'The Weirdest Sales Trainer',
   retellAgentId: 'agent_645c98e3a4ab29e00891834ea9',
   description: 'Master cold calling with the Underdog methodology. 12-module curriculum, objection handling, and real-time coaching.',
+  image: '/giulio.jpg',
 }
 
-export type CoachingMode = 'curriculum' | 'objections' | 'techniques' | 'free'
+export type CoachingMode = 'pitch' | 'objections' | 'general'
 
 export const COACHING_MODES: { id: CoachingMode; label: string; description: string }[] = [
   {
-    id: 'curriculum',
-    label: 'Learn Curriculum',
-    description: 'Work through the 12 modules',
+    id: 'pitch',
+    label: 'Pitch Builder',
+    description: 'Craft your perfect cold call pitch',
   },
   {
     id: 'objections',
-    label: 'Objection Practice',
-    description: 'Handle the 17 toughest objections',
+    label: 'Objections',
+    description: 'Handle the toughest objections',
   },
   {
-    id: 'techniques',
-    label: 'Technique Coaching',
-    description: 'Openers, pitch, discovery, closing',
-  },
-  {
-    id: 'free',
-    label: 'Free Coaching',
+    id: 'general',
+    label: 'General Chat',
     description: 'Ask me anything about sales',
   },
 ]

@@ -5,12 +5,12 @@ import { motion, AnimatePresence } from 'motion/react'
 import {
   Send,
   Loader2,
-  GraduationCap,
+  Hammer,
   Shield,
-  Lightbulb,
   MessageCircle,
   type LucideIcon,
 } from 'lucide-react'
+import Image from 'next/image'
 import { cn } from '@/lib/utils'
 import { Markdown } from '@/lib/markdown'
 import { Button } from '@/components/ui/button'
@@ -25,17 +25,16 @@ interface Message {
 }
 
 const modeIcons: Record<CoachingMode, LucideIcon> = {
-  curriculum: GraduationCap,
+  pitch: Hammer,
   objections: Shield,
-  techniques: Lightbulb,
-  free: MessageCircle,
+  general: MessageCircle,
 }
 
 export function ChatCoach() {
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
-  const [selectedMode, setSelectedMode] = useState<CoachingMode>('free')
+  const [selectedMode, setSelectedMode] = useState<CoachingMode>('general')
   const [hasStarted, setHasStarted] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
@@ -50,10 +49,9 @@ export function ChatCoach() {
 
   const getModeGreeting = (mode: CoachingMode): string => {
     const greetings: Record<CoachingMode, string> = {
-      curriculum: `Hey! This is Giulio. You've chosen to learn the curriculum - smart move. We've got 12 modules covering everything from mindset to closing. Let's start from the beginning: Module 1 is all about MINDSET. Before we talk tactics, we need to get your head right. Most people fail at cold calling because they're scared of rejection. Here's the truth - rejection is just part of the game. So tell me, what's your biggest mental block when it comes to cold calling?`,
+      pitch: `Hey! This is Giulio. You want to build your pitch - smart move. A great pitch is about problems, not features. We're gonna craft something that makes prospects actually want to listen. Tell me - what do you sell, and what's the biggest problem it solves for your customers?`,
       objections: `Hey! This is Giulio. Alright, you want to practice objection handling - this is where the money is made. I've got 17 objections we're going to master together. Here's how we'll do this: I'll throw an objection at you like I'm a prospect, you respond, and I'll coach you on what worked and what didn't. Remember the 4-step framework: Pause, Acknowledge, Ask Permission, Ask a Question. Ready? Let's start with the classic... "I'm not interested." Go ahead, how do you respond?`,
-      techniques: `Hey! This is Giulio. You want to learn specific techniques - I like it. We've got openers, pitches, discovery questions, and closing frameworks to cover. What's your biggest gap right now? Is it the opener where you're getting hung up on? The pitch that's not landing? Discovery where you're not uncovering real pain? Or closing where you can't get the commitment? Pick one and let's drill into it.`,
-      free: `Hey! This is Giulio. You might be wondering why I type a bit weird - that's just my style, I promise I'm not a robot. I'm here to help you master cold calling. Ask me anything - whether it's about handling a specific objection, improving your opener, understanding the psychology behind a technique, or just venting about a tough call. What's on your mind?`,
+      general: `Hey! This is Giulio. I'm here to help you master cold calling. Ask me anything - whether it's about handling a specific objection, improving your opener, understanding the psychology behind a technique, or just venting about a tough call. What's on your mind?`,
     }
     return greetings[mode]
   }
