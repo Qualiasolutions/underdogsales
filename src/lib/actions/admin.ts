@@ -5,7 +5,6 @@ import { getAdminClient } from '@/lib/supabase/admin'
 import { isAdmin } from '@/config/admin'
 import { logger } from '@/lib/logger'
 import {
-  openaiCircuit,
   openrouterCircuit,
   vapiCircuit,
   supabaseCircuit,
@@ -542,7 +541,6 @@ export async function getSystemHealth(): Promise<SystemHealthResult> {
 
     // Get circuit breaker stats (always available)
     const circuitBreakers = [
-      { name: 'OpenAI', ...openaiCircuit.getStats() },
       { name: 'OpenRouter', ...openrouterCircuit.getStats() },
       { name: 'VAPI', ...vapiCircuit.getStats() },
       { name: 'Supabase', ...supabaseCircuit.getStats() },

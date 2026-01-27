@@ -14,7 +14,6 @@ interface HealthCheck {
   uptime: number
   services: {
     supabase: ServiceStatus
-    openai: ServiceStatus
     openrouter: ServiceStatus
   }
 }
@@ -55,35 +54,6 @@ async function checkSupabase(): Promise<ServiceStatus> {
   }
 }
 
-async function checkOpenAI(): Promise<ServiceStatus> {
-  const start = Date.now()
-  try {
-    if (!process.env.OPENAI_API_KEY) {
-      return { status: 'unhealthy', error: 'API key not configured' }
-    }
-
-    const response = await fetch('https://api.openai.com/v1/models', {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-      },
-      signal: AbortSignal.timeout(5000),
-    })
-
-    return {
-      status: response.ok ? 'healthy' : 'degraded',
-      latency: Date.now() - start,
-      error: response.ok ? undefined : `HTTP ${response.status}`,
-    }
-  } catch (error) {
-    return {
-      status: 'unhealthy',
-      latency: Date.now() - start,
-      error: error instanceof Error ? error.message : 'Unknown error',
-    }
-  }
-}
-
 async function checkOpenRouter(): Promise<ServiceStatus> {
   const start = Date.now()
   try {
@@ -114,32 +84,23 @@ async function checkOpenRouter(): Promise<ServiceStatus> {
 }
 
 export async function GET() {
-  const [supabase, openai, openrouter] = await Promise.all([
+  const [supabase, openrouter] = await Promise.all([
     checkSupabase(),
-    checkOpenAI(),
     checkOpenRouter(),
   ])
 
-  const services = { supabase, openai, openrouter }
+  const services = { supabase, openrouter }
 
-  // Determine overall status
-  // OpenAI is optional if OpenRouter is available (OpenRouter is primary LLM provider)
-  const criticalServices = [supabase, openrouter]
-  const optionalServices = [openai]
+  // Determine overall status - both services are critical
+  const allServices = [supabase, openrouter]
 
   let overallStatus: HealthCheck['status'] = 'healthy'
 
-  // Check critical services first
-  if (criticalServices.some((s) => s.status === 'unhealthy')) {
+  if (allServices.some((s) => s.status === 'unhealthy')) {
     overallStatus = 'unhealthy'
-  } else if (criticalServices.some((s) => s.status === 'degraded')) {
+  } else if (allServices.some((s) => s.status === 'degraded')) {
     overallStatus = 'degraded'
   }
-  // Only check optional services if critical are healthy
-  else if (optionalServices.some((s) => s.status === 'degraded')) {
-    overallStatus = 'degraded'
-  }
-  // OpenAI unhealthy is OK if OpenRouter is healthy
 
   const health: HealthCheck = {
     status: overallStatus,

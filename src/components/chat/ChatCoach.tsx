@@ -8,6 +8,7 @@ import {
   Hammer,
   Shield,
   MessageCircle,
+  Search,
   type LucideIcon,
 } from 'lucide-react'
 import Image from 'next/image'
@@ -27,6 +28,7 @@ interface Message {
 const modeIcons: Record<CoachingMode, LucideIcon> = {
   pitch: Hammer,
   objections: Shield,
+  research: Search,
   general: MessageCircle,
 }
 
@@ -51,6 +53,7 @@ export function ChatCoach() {
     const greetings: Record<CoachingMode, string> = {
       pitch: `Hey! This is Giulio. You want to build your pitch - smart move. A great pitch is about problems, not features. We're gonna craft something that makes prospects actually want to listen. Tell me - what do you sell, and what's the biggest problem it solves for your customers?`,
       objections: `Hey! This is Giulio. Alright, you want to practice objection handling - this is where the money is made. I've got 17 objections we're going to master together. Here's how we'll do this: I'll throw an objection at you like I'm a prospect, you respond, and I'll coach you on what worked and what didn't. Remember the 4-step framework: Pause, Acknowledge, Ask Permission, Ask a Question. Ready? Let's start with the classic... "I'm not interested." Go ahead, how do you respond?`,
+      research: `Hey! This is Giulio. Smart - you're doing research before your call. That's what separates the pros from the amateurs. Tell me the company name or website and I'll dig up everything we need to know - what they do, their pain points, recent news. Then I'll help you craft a personalized opener that'll actually get their attention. Who are we researching?`,
       general: `Hey! This is Giulio. I'm here to help you master cold calling. Ask me anything - whether it's about handling a specific objection, improving your opener, understanding the psychology behind a technique, or just venting about a tough call. What's on your mind?`,
     }
     return greetings[mode]

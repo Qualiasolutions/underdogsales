@@ -10,7 +10,7 @@ export const GIULIO_COACH = {
   image: '/giulio.jpg',
 }
 
-export type CoachingMode = 'pitch' | 'objections' | 'general'
+export type CoachingMode = 'pitch' | 'objections' | 'general' | 'research'
 
 export const COACHING_MODES: { id: CoachingMode; label: string; description: string }[] = [
   {
@@ -22,6 +22,11 @@ export const COACHING_MODES: { id: CoachingMode; label: string; description: str
     id: 'objections',
     label: 'Objections',
     description: 'Handle the toughest objections',
+  },
+  {
+    id: 'research',
+    label: 'Prospect Research',
+    description: 'Research companies before calls',
   },
   {
     id: 'general',

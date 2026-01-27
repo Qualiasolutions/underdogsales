@@ -15,6 +15,7 @@ import {
   Hammer,
   Shield,
   MessageCircle,
+  Search,
   User,
   type LucideIcon,
 } from 'lucide-react'
@@ -203,6 +204,7 @@ ErrorMessage.displayName = 'ErrorMessage'
 const modeIcons: Record<CoachingMode, LucideIcon> = {
   pitch: Hammer,
   objections: Shield,
+  research: Search,
   general: MessageCircle,
 }
 

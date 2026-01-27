@@ -14,7 +14,7 @@ export const ChatRequestSchema = z.object({
     .array(ChatMessageSchema)
     .min(1, 'At least one message required')
     .max(50, 'Too many messages'),
-  mode: z.enum(['pitch', 'objections', 'general']).optional(),
+  mode: z.enum(['pitch', 'objections', 'general', 'research']).optional(),
 })
 
 export type ChatRequest = z.infer<typeof ChatRequestSchema>
