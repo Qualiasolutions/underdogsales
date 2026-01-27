@@ -12,6 +12,7 @@ import {
   type LucideIcon,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { Markdown } from '@/lib/markdown'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Header } from '@/components/ui/header'
@@ -246,7 +247,7 @@ export function ChatCoach() {
                           ? 'bg-gradient-to-br from-navy to-navy-light text-white rounded-tr-md'
                           : 'bg-white border border-border text-navy rounded-tl-md'
                       )}>
-                        <p className="whitespace-pre-wrap">{message.content}</p>
+                        <Markdown content={message.content} />
                       </div>
                     </motion.div>
                   ))}
