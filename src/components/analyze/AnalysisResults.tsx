@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
 import Link from 'next/link'
+import * as Sentry from '@sentry/nextjs'
 import {
   ArrowLeft,
   FileAudio,
@@ -46,7 +47,7 @@ export function AnalysisResults({ callId }: AnalysisResultsProps) {
         }
         setCallData(data)
       } catch (err) {
-        console.error('Failed to load call data:', err)
+        Sentry.captureException(err, { tags: { operation: 'load_call_data' } })
         setError('Failed to load analysis')
       } finally {
         setIsLoading(false)

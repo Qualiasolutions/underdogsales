@@ -4,6 +4,7 @@ import { useState, useCallback, useEffect } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
 import { useRouter } from 'next/navigation'
 import { FileAudio, ArrowLeft, RefreshCw } from 'lucide-react'
+import * as Sentry from '@sentry/nextjs'
 import { Header } from '@/components/ui/header'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -32,7 +33,7 @@ export function CallAnalyzer() {
       const result = await getUserCallUploads()
       setAnalyses(result.uploads)
     } catch (err) {
-      console.error('Failed to load analysis history:', err)
+      Sentry.captureException(err, { tags: { operation: 'load_analysis_history' } })
     } finally {
       setIsLoadingHistory(false)
     }
@@ -81,7 +82,7 @@ export function CallAnalyzer() {
           setError(data.error || 'Processing failed')
         }
       } catch (err) {
-        console.error('SSE parse error:', err)
+        Sentry.captureException(err, { tags: { operation: 'sse_parse' } })
       }
     }
 
@@ -126,7 +127,7 @@ export function CallAnalyzer() {
           fallbackToPoll()
         }
       } catch (err) {
-        console.error('Fallback poll error:', err)
+        Sentry.captureException(err, { tags: { operation: 'fallback_poll' } })
         fallbackToPoll() // Retry on error
       }
     }
@@ -209,7 +210,7 @@ export function CallAnalyzer() {
       setProcessingStatus('completed')
       router.push(`/analyze/${callId}`)
     } catch (err) {
-      console.error('Upload error:', err)
+      Sentry.captureException(err, { tags: { operation: 'call_upload' } })
       setUploadState('error')
       setError(err instanceof Error ? err.message : 'An error occurred')
     }

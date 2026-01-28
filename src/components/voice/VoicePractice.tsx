@@ -3,6 +3,7 @@
 import { useState, useCallback, useEffect, useRef, memo } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'motion/react'
+import * as Sentry from '@sentry/nextjs'
 import {
   Mic,
   MicOff,
@@ -313,12 +314,12 @@ export function VoicePractice({ onSessionEnd }: VoicePracticeProps) {
       if (result.success && result.sessionId) {
         router.push(`/practice/results/${result.sessionId}`)
       } else {
-        console.error('Failed to save session:', result.error)
+        Sentry.captureMessage('Failed to save session', { level: 'error', extra: { error: result.error } })
         setError(result.error || 'Failed to save session')
         setIsSaving(false)
       }
     } catch (err) {
-      console.error('Error saving session:', err)
+      Sentry.captureException(err, { tags: { operation: 'save_practice_session' } })
       setError('Failed to save your practice session')
       setIsSaving(false)
     }

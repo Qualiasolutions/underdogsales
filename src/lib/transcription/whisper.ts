@@ -2,6 +2,7 @@ import type { TranscriptEntry, WhisperResponse } from '@/types'
 import { fetchWithTimeout, TIMEOUTS, isTimeoutError } from '@/lib/fetch-utils'
 import { withRetry, isRetryableStatus } from '@/lib/retry'
 import { ErrorCodes, AppError } from '@/lib/errors'
+import { logger } from '@/lib/logger'
 
 const OPENAI_API_URL = 'https://api.openai.com/v1/audio/transcriptions'
 
@@ -73,7 +74,7 @@ export async function transcribeAudio(options: TranscribeOptions): Promise<{
         return message.startsWith('Retryable:')
       },
       onRetry: (error, attempt, delay) => {
-        console.log(`Whisper retry ${attempt}: ${error.message}, waiting ${delay}ms`)
+        logger.warn(`Whisper retry ${attempt}`, { error: error.message, delayMs: delay })
       },
     }
   )

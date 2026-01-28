@@ -39,7 +39,7 @@ export async function getUserCurriculumProgress(): Promise<CurriculumProgress[]>
     .order('module_id', { ascending: true })
 
   if (error) {
-    console.error('Error fetching curriculum progress:', error)
+    logger.error('Error fetching curriculum progress', { error: error.message, operation: 'getUserCurriculumProgress' })
     return []
   }
 
@@ -111,7 +111,7 @@ export async function markModuleComplete(moduleId: number): Promise<{ success: b
       .eq('id', existing.id)
 
     if (error) {
-      console.error('Error updating curriculum progress:', error)
+      logger.error('Error updating curriculum progress', { error: error.message, operation: 'markModuleComplete' })
       return { success: false, error: error.message }
     }
   } else {
@@ -124,7 +124,7 @@ export async function markModuleComplete(moduleId: number): Promise<{ success: b
     })
 
     if (error) {
-      console.error('Error inserting curriculum progress:', error)
+      logger.error('Error inserting curriculum progress', { error: error.message, operation: 'markModuleComplete' })
       return { success: false, error: error.message }
     }
   }
@@ -158,7 +158,7 @@ export async function markModuleStarted(moduleId: number): Promise<{ success: bo
     })
 
     if (error) {
-      console.error('Error inserting curriculum progress:', error)
+      logger.error('Error inserting curriculum progress', { error: error.message, operation: 'markModuleStarted' })
       return { success: false, error: error.message }
     }
   }
