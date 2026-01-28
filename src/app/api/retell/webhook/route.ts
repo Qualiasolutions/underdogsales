@@ -111,11 +111,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// Health check endpoint
+// Return 404 for GET requests (no info disclosure)
 export async function GET() {
-  return NextResponse.json({
-    status: 'active',
-    endpoint: '/api/retell/webhook',
-    supported_events: ['call_started', 'call_ended', 'call_analyzed'],
-  })
+  return new NextResponse(null, { status: 404 })
 }

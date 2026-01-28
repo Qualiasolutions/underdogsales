@@ -6,12 +6,28 @@ import type { TranscriptEntry, CallAnalysis } from '@/types'
 import type { Json } from '@/lib/supabase/types'
 import { ScoreRequestSchema, validateInput } from '@/lib/validations'
 import { logger } from '@/lib/logger'
+import { checkRateLimitAsync, createRateLimitHeaders, RATE_LIMITS } from '@/lib/rate-limit-redis'
 
 export async function POST(request: NextRequest) {
   try {
     const user = await getUser()
     if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    // Check rate limit (uses 'transcribe' config - expensive operation)
+    const rateLimitResult = await checkRateLimitAsync(`score:${user.id}`, 'transcribe')
+    const rateLimitHeaders = createRateLimitHeaders(
+      rateLimitResult.remaining,
+      rateLimitResult.resetTime,
+      RATE_LIMITS.transcribe.max
+    )
+
+    if (!rateLimitResult.allowed) {
+      return NextResponse.json(
+        { error: 'Rate limit exceeded. Please try again later.' },
+        { status: 429, headers: rateLimitHeaders }
+      )
     }
 
     // Validate input
@@ -93,7 +109,7 @@ export async function POST(request: NextRequest) {
         status: 'completed',
         overallScore: scoringResult.overallScore,
         analysis,
-      })
+      }, { headers: rateLimitHeaders })
     } catch (scoreError) {
       const errorMessage =
         scoreError instanceof Error ? scoreError.message : 'Scoring failed'

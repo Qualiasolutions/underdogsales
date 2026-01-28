@@ -137,11 +137,7 @@ async function performWebSearch(query: string): Promise<string> {
   }
 }
 
-// Health check
+// Return 404 for GET requests (no info disclosure)
 export async function GET() {
-  return NextResponse.json({
-    status: 'ok',
-    service: 'retell-web-search',
-    hasApiKey: !!OPENROUTER_API_KEY
-  })
+  return new NextResponse(null, { status: 404 })
 }
