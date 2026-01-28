@@ -114,6 +114,7 @@ export async function GET(
             .from('call_uploads')
             .select('status, error_message, overall_score, analysis')
             .eq('id', callId)
+            .eq('user_id', user.id)
             .single()
 
           const updatedStatus = updated?.status || 'pending'

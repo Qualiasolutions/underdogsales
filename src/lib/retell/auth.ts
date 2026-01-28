@@ -45,8 +45,23 @@ export function verifyRetellRequest(
   rawBody: string,
   signatureHeader: string | null
 ): { error: string; status: number } | null {
-  // Skip verification in development
-  if (isDev) {
+  const skipVerification = process.env.SKIP_WEBHOOK_VERIFICATION === 'true'
+
+  // Skip verification in development (unless explicitly enforced)
+  if (isDev && !process.env.ENFORCE_WEBHOOK_VERIFICATION) {
+    logger.warn('SECURITY: Skipping webhook verification in dev mode', {
+      operation: 'webhook_verification_skip',
+      reason: 'development_mode',
+    })
+    return null
+  }
+
+  // Explicit skip via env var (dangerous, log error)
+  if (skipVerification) {
+    logger.error('SECURITY: Webhook verification disabled via env var - UNSAFE FOR PRODUCTION', {
+      operation: 'webhook_verification_skip',
+      reason: 'env_var_override',
+    })
     return null
   }
 
