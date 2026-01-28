@@ -135,61 +135,69 @@ export async function POST(request: NextRequest) {
     let systemPrompt = GIULIO_SYSTEM_PROMPT
     let useStrictMode = false // Lower temperature for methodology questions
 
-    // RAG: Search knowledge base based on user input (last message)
+    // RAG: Search knowledge base and web in parallel based on user input
     if (messages.length > 0) {
       const lastMessage = messages[messages.length - 1].content
+      const lowerMessage = lastMessage.toLowerCase()
 
-      // Web search for research mode or detected research queries
-      if (needsWebSearch(lastMessage, mode)) {
-        logger.info('Performing web search', { mode, query: lastMessage.substring(0, 100) })
-        const webResults = await performWebSearch(lastMessage)
+      // Determine what searches to run
+      const shouldWebSearch = needsWebSearch(lastMessage, mode)
+      const shouldKnowledgeSearch = mode !== 'research'
 
-        if (webResults) {
-          systemPrompt += `\n\n## WEB RESEARCH RESULTS\n${webResults}\n\nUse this research to help the user prepare for their sales call. Suggest specific cold call openers and talking points based on what you learned about the company/prospect.`
-        }
+      // Detect if query is about core methodology topics
+      const isCoreTopicQuery =
+        lowerMessage.includes('opener') ||
+        lowerMessage.includes('open') ||
+        lowerMessage.includes('pitch') ||
+        lowerMessage.includes('objection') ||
+        lowerMessage.includes('handle') ||
+        lowerMessage.includes('structure') ||
+        lowerMessage.includes('cold call') ||
+        lowerMessage.includes('not interested') ||
+        lowerMessage.includes('send me an email') ||
+        lowerMessage.includes('no budget') ||
+        lowerMessage.includes('busy') ||
+        lowerMessage.includes('brush off') ||
+        mode === 'objections' ||
+        mode === 'pitch'
+
+      // Prepare knowledge search options
+      const searchOptions = {
+        limit: isCoreTopicQuery ? 6 : 3,
+        threshold: isCoreTopicQuery ? 0.40 : 0.55
       }
 
-      // Also search local knowledge base (skip if research mode to prioritize web results)
-      if (mode !== 'research') {
-        const { searchKnowledgeBase } = await import('@/lib/knowledge')
+      // Import knowledge search module
+      const { searchKnowledgeBase } = await import('@/lib/knowledge')
 
-        // Detect if query is about core methodology topics
-        const lowerMessage = lastMessage.toLowerCase()
-        const isCoreTopicQuery =
-          lowerMessage.includes('opener') ||
-          lowerMessage.includes('open') ||
-          lowerMessage.includes('pitch') ||
-          lowerMessage.includes('objection') ||
-          lowerMessage.includes('handle') ||
-          lowerMessage.includes('structure') ||
-          lowerMessage.includes('cold call') ||
-          lowerMessage.includes('not interested') ||
-          lowerMessage.includes('send me an email') ||
-          lowerMessage.includes('no budget') ||
-          lowerMessage.includes('busy') ||
-          lowerMessage.includes('brush off') ||
-          mode === 'objections' ||
-          mode === 'pitch'
+      // Run both searches in parallel for better performance
+      const [webResults, knowledgeResults] = await Promise.all([
+        shouldWebSearch
+          ? (logger.info('Performing web search', { mode, query: lastMessage.substring(0, 100) }), performWebSearch(lastMessage))
+          : Promise.resolve(null),
+        shouldKnowledgeSearch
+          ? searchKnowledgeBase(lastMessage, searchOptions)
+          : Promise.resolve([])
+      ])
 
-        // For core topics, get more results with lower threshold
-        const knowledgeResults = await searchKnowledgeBase(lastMessage, {
-          limit: isCoreTopicQuery ? 6 : 3,
-          threshold: isCoreTopicQuery ? 0.40 : 0.55
-        })
+      // Apply web search results
+      if (webResults) {
+        systemPrompt += `\n\n## WEB RESEARCH RESULTS\n${webResults}\n\nUse this research to help the user prepare for their sales call. Suggest specific cold call openers and talking points based on what you learned about the company/prospect.`
+      }
 
-        if (knowledgeResults.length > 0) {
-          // Enable strict mode for methodology questions with knowledge
-          useStrictMode = isCoreTopicQuery
+      // Apply knowledge base results
+      if (knowledgeResults.length > 0) {
+        // Enable strict mode for methodology questions with knowledge
+        useStrictMode = isCoreTopicQuery
 
-          const knowledgeContext = knowledgeResults
-            .map(k => `[${k.section_title}]\n${k.content}`)
-            .join('\n\n---\n\n')
+        const knowledgeContext = knowledgeResults
+          .map(k => `[${k.section_title}]\n${k.content}`)
+          .join('\n\n---\n\n')
 
-          systemPrompt += `\n\n## RELEVANT KNOWLEDGE BASE CONTEXT (USE ONLY THIS FOR OPENERS/PITCH/OBJECTIONS)\n${knowledgeContext}\n\n**CRITICAL INSTRUCTION - READ CAREFULLY**:\nFor questions about openers, pitch, objections, or call structure:\n1. You MUST ONLY use the scripts and examples from the context above\n2. Do NOT improvise, invent, or provide generic sales advice\n3. Quote the EXACT phrases and scripts provided - do not paraphrase\n4. If asked for "5 openers", provide ONLY openers from the "Favourite Scripts" and "Other Good Scripts" sections above\n5. NEVER use phrases like "You're probably going to hate me" - these are NOT in the methodology`
-        } else if (isCoreTopicQuery) {
-          // If it's a core topic but no results, add warning
-          systemPrompt += `\n\n**NOTE**: No specific methodology content found for this query. Ask the user to be more specific about what they want to learn (openers, pitch structure, specific objection handling, etc.)`
-        }
+        systemPrompt += `\n\n## RELEVANT KNOWLEDGE BASE CONTEXT (USE ONLY THIS FOR OPENERS/PITCH/OBJECTIONS)\n${knowledgeContext}\n\n**CRITICAL INSTRUCTION - READ CAREFULLY**:\nFor questions about openers, pitch, objections, or call structure:\n1. You MUST ONLY use the scripts and examples from the context above\n2. Do NOT improvise, invent, or provide generic sales advice\n3. Quote the EXACT phrases and scripts provided - do not paraphrase\n4. If asked for "5 openers", provide ONLY openers from the "Favourite Scripts" and "Other Good Scripts" sections above\n5. NEVER use phrases like "You're probably going to hate me" - these are NOT in the methodology`
+      } else if (isCoreTopicQuery && shouldKnowledgeSearch) {
+        // If it's a core topic but no results, add warning
+        systemPrompt += `\n\n**NOTE**: No specific methodology content found for this query. Ask the user to be more specific about what they want to learn (openers, pitch structure, specific objection handling, etc.)`
       }
     }
 
