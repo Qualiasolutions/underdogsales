@@ -85,10 +85,15 @@ export async function POST(request: NextRequest) {
   }
 }
 
+const SEARCH_TIMEOUT_MS = 8000 // 8 second timeout for voice search (needs to be fast)
+
 async function performWebSearch(query: string): Promise<string> {
   if (!OPENROUTER_API_KEY) {
     return 'I cannot search right now, but let me help you with what I know about this topic.'
   }
+
+  const controller = new AbortController()
+  const timeoutId = setTimeout(() => controller.abort(), SEARCH_TIMEOUT_MS)
 
   try {
     const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
@@ -96,6 +101,8 @@ async function performWebSearch(query: string): Promise<string> {
       headers: {
         'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
         'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Accept-Encoding': 'gzip, deflate',
         'HTTP-Referer': 'https://underdogsales.vercel.app',
         'X-Title': 'Underdog Sales Coach',
       },
@@ -114,6 +121,7 @@ async function performWebSearch(query: string): Promise<string> {
         max_tokens: 200,
         temperature: 0.3,
       }),
+      signal: controller.signal,
     })
 
     if (!response.ok) {
@@ -132,8 +140,14 @@ async function performWebSearch(query: string): Promise<string> {
     return result
 
   } catch (error) {
+    if (error instanceof Error && error.name === 'AbortError') {
+      logger.warn('Search timeout', { operation: 'retell_search', query: query.substring(0, 50) })
+      return 'Search took too long. Let me help with what I know.'
+    }
     logger.exception('Search fetch error', error, { operation: 'retell_search' })
     return 'Search failed. Let me help you with what I know about this.'
+  } finally {
+    clearTimeout(timeoutId)
   }
 }
 

@@ -11,6 +11,7 @@ import { logger } from '@/lib/logger'
 import { retellCircuit, CircuitOpenError } from '@/lib/circuit-breaker'
 
 const RETELL_API_BASE = 'https://api.retellai.com'
+const RETELL_TIMEOUT_MS = 10000 // 10 second timeout for API calls
 
 interface RegisterRequest {
   agentId: string
@@ -35,24 +36,35 @@ async function createWebCall(
   agentId: string,
   metadata: Record<string, string | undefined>
 ): Promise<RetellWebCallResponse> {
-  const response = await fetch(`${RETELL_API_BASE}/v2/create-web-call`, {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${apiKey}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      agent_id: agentId,
-      metadata,
-    }),
-  })
+  // Create abort controller for timeout
+  const controller = new AbortController()
+  const timeoutId = setTimeout(() => controller.abort(), RETELL_TIMEOUT_MS)
 
-  if (!response.ok) {
-    const errorText = await response.text()
-    throw new Error(`Retell API error ${response.status}: ${errorText}`)
+  try {
+    const response = await fetch(`${RETELL_API_BASE}/v2/create-web-call`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Accept-Encoding': 'gzip, deflate',
+      },
+      body: JSON.stringify({
+        agent_id: agentId,
+        metadata,
+      }),
+      signal: controller.signal,
+    })
+
+    if (!response.ok) {
+      const errorText = await response.text()
+      throw new Error(`Retell API error ${response.status}: ${errorText}`)
+    }
+
+    return response.json()
+  } finally {
+    clearTimeout(timeoutId)
   }
-
-  return response.json()
 }
 
 export async function POST(request: NextRequest) {
@@ -127,8 +139,15 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Handle specific Retell errors
+    // Handle specific errors
     if (error instanceof Error) {
+      // Timeout handling
+      if (error.name === 'AbortError') {
+        return NextResponse.json(
+          { error: 'Retell API request timed out. Please try again.' },
+          { status: 504 }
+        )
+      }
       if (error.message.includes('401') || error.message.includes('Unauthorized')) {
         return NextResponse.json(
           { error: 'Invalid Retell API key' },
