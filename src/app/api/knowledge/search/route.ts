@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getUser } from '@/lib/supabase/server'
 import { searchKnowledgeBase } from '@/lib/knowledge'
 import { logger } from '@/lib/logger'
-import { checkRateLimit, createRateLimitHeaders, RATE_LIMITS } from '@/lib/rate-limit'
+import { checkRateLimitAsync, createRateLimitHeaders, RATE_LIMITS } from '@/lib/rate-limit-redis'
 
 interface SearchRequest {
   query: string
@@ -23,9 +23,9 @@ export async function POST(request: NextRequest) {
     }
 
     // Apply rate limiting (knowledge search triggers expensive embedding API calls)
-    const rateLimitResult = checkRateLimit(
+    const rateLimitResult = await checkRateLimitAsync(
       `knowledge:${user.id}`,
-      RATE_LIMITS.knowledge
+      'knowledge'
     )
 
     if (!rateLimitResult.allowed) {

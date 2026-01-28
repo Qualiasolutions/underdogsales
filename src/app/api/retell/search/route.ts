@@ -7,7 +7,7 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { getUser } from '@/lib/supabase/server'
-import { checkRateLimit, createRateLimitHeaders, RATE_LIMITS } from '@/lib/rate-limit'
+import { checkRateLimitAsync, createRateLimitHeaders, RATE_LIMITS } from '@/lib/rate-limit-redis'
 import { logger } from '@/lib/logger'
 
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY
@@ -31,8 +31,8 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Check rate limit
-    const rateLimitResult = checkRateLimit(`retell-search:${user.id}`, RATE_LIMITS['retell-search'])
+    // Check rate limit (distributed via Redis)
+    const rateLimitResult = await checkRateLimitAsync(`retell-search:${user.id}`, 'retell-search')
     const headers = createRateLimitHeaders(
       rateLimitResult.remaining,
       rateLimitResult.resetTime,

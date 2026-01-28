@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getUser } from '@/lib/supabase/server'
 import { getAdminClient } from '@/lib/supabase/admin'
-import { checkRateLimit, createRateLimitHeaders, RATE_LIMITS } from '@/lib/rate-limit'
+import { checkRateLimitAsync, createRateLimitHeaders, RATE_LIMITS } from '@/lib/rate-limit-redis'
 import { logger } from '@/lib/logger'
 
 // Max file size: 100MB
@@ -27,8 +27,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    // Check rate limit
-    const rateLimitResult = checkRateLimit(`upload:${user.id}`, RATE_LIMITS.upload)
+    // Check rate limit (distributed via Redis)
+    const rateLimitResult = await checkRateLimitAsync(`upload:${user.id}`, 'upload')
     const headers = createRateLimitHeaders(
       rateLimitResult.remaining,
       rateLimitResult.resetTime,

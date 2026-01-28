@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import OpenAI from 'openai'
 import { GIULIO_SYSTEM_PROMPT } from '@/lib/vapi/giulio-prompt'
 import { getUser } from '@/lib/supabase/server'
-import { checkRateLimit, createRateLimitHeaders, RATE_LIMITS } from '@/lib/rate-limit'
+import { checkRateLimitAsync, createRateLimitHeaders, RATE_LIMITS } from '@/lib/rate-limit-redis'
 import { ChatRequestSchema, validateInput } from '@/lib/validations'
 import { ErrorCodes, createErrorResponse } from '@/lib/errors'
 import { logger } from '@/lib/logger'
@@ -103,8 +103,8 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Check rate limit
-    const rateLimitResult = checkRateLimit(`chat:${user.id}`, RATE_LIMITS.chat)
+    // Check rate limit (distributed via Redis)
+    const rateLimitResult = await checkRateLimitAsync(`chat:${user.id}`, 'chat')
     const headers = createRateLimitHeaders(
       rateLimitResult.remaining,
       rateLimitResult.resetTime,
@@ -133,6 +133,7 @@ export async function POST(request: NextRequest) {
 
     // Build system prompt with coaching mode context
     let systemPrompt = GIULIO_SYSTEM_PROMPT
+    let useStrictMode = false // Lower temperature for methodology questions
 
     // RAG: Search knowledge base based on user input (last message)
     if (messages.length > 0) {
@@ -152,27 +153,52 @@ export async function POST(request: NextRequest) {
       if (mode !== 'research') {
         const { searchKnowledgeBase } = await import('@/lib/knowledge')
 
+        // Detect if query is about core methodology topics
+        const lowerMessage = lastMessage.toLowerCase()
+        const isCoreTopicQuery =
+          lowerMessage.includes('opener') ||
+          lowerMessage.includes('open') ||
+          lowerMessage.includes('pitch') ||
+          lowerMessage.includes('objection') ||
+          lowerMessage.includes('handle') ||
+          lowerMessage.includes('structure') ||
+          lowerMessage.includes('cold call') ||
+          lowerMessage.includes('not interested') ||
+          lowerMessage.includes('send me an email') ||
+          lowerMessage.includes('no budget') ||
+          lowerMessage.includes('busy') ||
+          lowerMessage.includes('brush off') ||
+          mode === 'objections' ||
+          mode === 'pitch'
+
+        // For core topics, get more results with lower threshold
         const knowledgeResults = await searchKnowledgeBase(lastMessage, {
-          limit: 3,
-          threshold: 0.55
+          limit: isCoreTopicQuery ? 6 : 3,
+          threshold: isCoreTopicQuery ? 0.40 : 0.55
         })
 
         if (knowledgeResults.length > 0) {
-          const knowledgeContext = knowledgeResults
-            .map(k => `[SOURCE: ${k.source_file}]\n${k.content}`)
-            .join('\n\n')
+          // Enable strict mode for methodology questions with knowledge
+          useStrictMode = isCoreTopicQuery
 
-          systemPrompt += `\n\nRELEVANT KNOWLEDGE BASE CONTEXT:\n${knowledgeContext}\n\nUse this context to answer the user's questions accurately. Quote the methodology when appropriate.`
+          const knowledgeContext = knowledgeResults
+            .map(k => `[${k.section_title}]\n${k.content}`)
+            .join('\n\n---\n\n')
+
+          systemPrompt += `\n\n## RELEVANT KNOWLEDGE BASE CONTEXT (USE ONLY THIS FOR OPENERS/PITCH/OBJECTIONS)\n${knowledgeContext}\n\n**CRITICAL INSTRUCTION - READ CAREFULLY**:\nFor questions about openers, pitch, objections, or call structure:\n1. You MUST ONLY use the scripts and examples from the context above\n2. Do NOT improvise, invent, or provide generic sales advice\n3. Quote the EXACT phrases and scripts provided - do not paraphrase\n4. If asked for "5 openers", provide ONLY openers from the "Favourite Scripts" and "Other Good Scripts" sections above\n5. NEVER use phrases like "You're probably going to hate me" - these are NOT in the methodology`
+        } else if (isCoreTopicQuery) {
+          // If it's a core topic but no results, add warning
+          systemPrompt += `\n\n**NOTE**: No specific methodology content found for this query. Ask the user to be more specific about what they want to learn (openers, pitch structure, specific objection handling, etc.)`
         }
       }
     }
 
     if (mode) {
       const modeContext: Record<string, string> = {
-        pitch: '\n\nThe user wants to build their pitch. Focus on crafting a compelling cold call opener and value proposition.',
-        objections: '\n\nThe user wants to practice objection handling. Role-play as a prospect giving objections, then coach them on responses.',
+        pitch: '\n\nThe user wants to build their pitch. Use ONLY the pitch framework and examples from the knowledge base above. Do NOT invent generic pitch advice.',
+        objections: '\n\nThe user wants to practice objection handling. Use ONLY the ACE framework and specific objection responses from the knowledge base above. Do NOT invent generic objection handling advice.',
         research: '\n\nThe user is researching prospects. Use the web research results to provide detailed company insights and suggest specific cold call strategies, openers, and pain points to address.',
-        general: '\n\nThe user wants free-form coaching. Answer any sales-related questions they have.',
+        general: '\n\nThe user wants free-form coaching. For questions about openers, pitch, or objections, use ONLY the knowledge base context provided.',
       }
       systemPrompt += modeContext[mode] || ''
     }
@@ -190,7 +216,7 @@ export async function POST(request: NextRequest) {
             content: m.content,
           })),
         ],
-        temperature: 0.8,
+        temperature: useStrictMode ? 0.3 : 0.8, // Lower temp for methodology adherence
         max_tokens: 1000,
       })
     ) as OpenAI.Chat.Completions.ChatCompletion

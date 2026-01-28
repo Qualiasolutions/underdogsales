@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getUser } from '@/lib/supabase/server'
 import { getAdminClient } from '@/lib/supabase/admin'
 import { transcribeAudio } from '@/lib/transcription/whisper'
-import { checkRateLimit, createRateLimitHeaders, RATE_LIMITS } from '@/lib/rate-limit'
+import { checkRateLimitAsync, createRateLimitHeaders, RATE_LIMITS } from '@/lib/rate-limit-redis'
 import { TranscribeRequestSchema, validateInput } from '@/lib/validations'
 import { logger } from '@/lib/logger'
 import type { Json } from '@/lib/supabase/types'
@@ -14,8 +14,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    // Check rate limit (expensive operation)
-    const rateLimitResult = checkRateLimit(`transcribe:${user.id}`, RATE_LIMITS.transcribe)
+    // Check rate limit (expensive operation, distributed via Redis)
+    const rateLimitResult = await checkRateLimitAsync(`transcribe:${user.id}`, 'transcribe')
     const headers = createRateLimitHeaders(
       rateLimitResult.remaining,
       rateLimitResult.resetTime,
