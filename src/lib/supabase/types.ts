@@ -413,6 +413,24 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      hybrid_search_knowledge: {
+        Args: {
+          query_text: string
+          query_embedding: string
+          match_count?: number
+          filter_source?: string | null
+          rrf_k?: number
+        }
+        Returns: {
+          id: string
+          source: string
+          source_file: string
+          section_title: string
+          content: string
+          topics: string[]
+          rrf_score: number
+        }[]
+      }
       match_knowledge: {
         Args: {
           filter_source?: string
@@ -423,7 +441,6 @@ export type Database = {
         Returns: {
           content: string
           id: string
-          metadata: Json
           section_title: string
           similarity: number
           source: string
@@ -444,6 +461,22 @@ export type Database = {
           psychology_principle: string
           response_template: string
           similarity: number
+        }[]
+      }
+      search_knowledge_text: {
+        Args: {
+          search_query: string
+          match_count?: number
+          filter_source?: string | null
+        }
+        Returns: {
+          id: string
+          source: string
+          source_file: string
+          section_title: string
+          content: string
+          topics: string[]
+          rank: number
         }[]
       }
     }
