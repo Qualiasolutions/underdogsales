@@ -135,6 +135,12 @@ export const RATE_LIMITS = {
     max: 30,
     message: 'Too many search requests.',
   },
+  // Retell search: 20 per minute
+  'retell-search': {
+    windowMs: 60 * 1000,
+    max: 20,
+    message: 'Too many search requests. Please slow down.',
+  },
   // Default: 100 per minute
   default: {
     windowMs: 60 * 1000,

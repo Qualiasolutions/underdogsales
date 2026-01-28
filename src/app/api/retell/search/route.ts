@@ -6,6 +6,9 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
+import { getUser } from '@/lib/supabase/server'
+import { checkRateLimit, createRateLimitHeaders, RATE_LIMITS } from '@/lib/rate-limit'
+import { logger } from '@/lib/logger'
 
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY
 
@@ -19,33 +22,62 @@ interface SearchRequest {
 
 export async function POST(request: NextRequest) {
   try {
+    // Check authentication
+    const user = await getUser()
+    if (!user) {
+      return NextResponse.json(
+        { error: 'Authentication required', result: 'Authentication required.', success: false },
+        { status: 401 }
+      )
+    }
+
+    // Check rate limit
+    const rateLimitResult = checkRateLimit(`retell-search:${user.id}`, RATE_LIMITS['retell-search'])
+    const headers = createRateLimitHeaders(
+      rateLimitResult.remaining,
+      rateLimitResult.resetTime,
+      RATE_LIMITS['retell-search'].max
+    )
+
+    if (!rateLimitResult.allowed) {
+      logger.warn('Retell search rate limited', {
+        operation: 'retell_search',
+        userId: user.id,
+        resetTime: rateLimitResult.resetTime,
+      })
+      return NextResponse.json(
+        { error: RATE_LIMITS['retell-search'].message, result: 'Too many requests. Please slow down.', success: false },
+        { status: 429, headers }
+      )
+    }
+
     const body: SearchRequest = await request.json()
 
     // Handle both formats: args at root or nested
     const query = body.query || body.args?.query
 
-    console.log('Retell search request:', JSON.stringify(body))
+    logger.info('Retell search request', { operation: 'retell_search', userId: user.id, query: query?.substring(0, 50) })
 
     if (!query) {
       return NextResponse.json({
         result: 'No search query provided.',
         success: false
-      })
+      }, { headers })
     }
 
     const searchResult = await performWebSearch(query)
 
-    console.log('Search result:', searchResult.substring(0, 100))
+    logger.debug('Retell search completed', { operation: 'retell_search', resultLength: searchResult.length })
 
     // Return in format Retell can extract
     return NextResponse.json({
       result: searchResult,
       success: true,
       query: query
-    })
+    }, { headers })
 
   } catch (error) {
-    console.error('Retell search error:', error)
+    logger.exception('Retell search error', error, { operation: 'retell_search' })
     return NextResponse.json({
       result: 'Sorry, the search encountered an error.',
       success: false
@@ -86,7 +118,7 @@ async function performWebSearch(query: string): Promise<string> {
 
     if (!response.ok) {
       const errorText = await response.text()
-      console.error('OpenRouter error:', response.status, errorText)
+      logger.error('OpenRouter web search error', { status: response.status, error: errorText })
       return 'I could not search right now. Let me share what I know instead.'
     }
 
@@ -100,7 +132,7 @@ async function performWebSearch(query: string): Promise<string> {
     return result
 
   } catch (error) {
-    console.error('Search fetch error:', error)
+    logger.exception('Search fetch error', error, { operation: 'retell_search' })
     return 'Search failed. Let me help you with what I know about this.'
   }
 }
