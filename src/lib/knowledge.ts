@@ -13,6 +13,16 @@ export interface KnowledgeResult {
     similarity?: number
 }
 
+interface KnowledgeBaseRow {
+    id: string
+    source: string
+    source_file: string
+    section_title: string | null
+    content: string
+    topics: string[] | null
+    rrf_score?: number
+}
+
 interface SearchOptions {
     limit?: number
     threshold?: number
@@ -126,9 +136,9 @@ async function textBasedSearch(
     }
 
     // Score results by keyword matches
-    const scored = (data || []).map((item: any) => {
-        const text = `${item.section_title} ${item.content}`.toLowerCase()
-        const title = item.section_title.toLowerCase()
+    const scored = (data || []).map((item: KnowledgeBaseRow) => {
+        const text = `${item.section_title || ''} ${item.content}`.toLowerCase()
+        const title = (item.section_title || '').toLowerCase()
         let score = 0
 
         // HEAVILY prioritize canonical coldcallingwiki.com content
@@ -235,7 +245,7 @@ async function hybridSearch(
         throw error
     }
 
-    return (data || []).map((item: any) => ({
+    return (data || []).map((item: KnowledgeBaseRow) => ({
         id: item.id,
         source: item.source,
         source_file: item.source_file,
@@ -309,7 +319,7 @@ export async function searchKnowledgeBase(
 
         logger.info('Knowledge search success (vector fallback)', { resultCount: data?.length ?? 0 })
 
-        return (data || []).map((item: any) => ({
+        return (data || []).map((item: KnowledgeBaseRow & { similarity?: number }) => ({
             id: item.id,
             source: item.source,
             source_file: item.source_file,

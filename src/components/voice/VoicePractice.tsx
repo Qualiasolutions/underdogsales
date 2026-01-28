@@ -230,6 +230,72 @@ const ErrorMessage = memo(({ error, onDismiss, onRetry }: {
 })
 ErrorMessage.displayName = 'ErrorMessage'
 
+// Reusable loading state component (DRY refactor)
+interface LoadingStateProps {
+  title: string
+  subtitle: string
+  icon: LucideIcon
+  iconVariant: 'navy' | 'gold'
+  steps: string[]
+  stepDelay?: number
+}
+
+const LoadingState = memo(({ title, subtitle, icon: Icon, iconVariant, steps, stepDelay = 0.5 }: LoadingStateProps) => (
+  <motion.div
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    exit={{ opacity: 0 }}
+    className="flex flex-col items-center justify-center min-h-[60vh]"
+  >
+    <Card variant="glass" className="p-12 text-center max-w-sm w-full">
+      <div className="relative w-24 h-24 mx-auto mb-8">
+        <motion.div
+          className="absolute inset-0 rounded-full border-4 border-gold/20"
+          animate={{ rotate: 360 }}
+          transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
+        />
+        <motion.div
+          className="absolute inset-0 rounded-full border-4 border-transparent border-t-gold"
+          animate={{ rotate: 360 }}
+          transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+        />
+        <div className={cn(
+          "absolute inset-3 rounded-full flex items-center justify-center",
+          iconVariant === 'navy'
+            ? "bg-gradient-to-br from-navy to-navy-light shadow-navy"
+            : "bg-gradient-to-br from-gold to-gold-light shadow-gold"
+        )}>
+          <Icon className={cn(
+            "w-8 h-8",
+            iconVariant === 'navy' ? 'text-white' : 'text-navy animate-spin'
+          )} />
+        </div>
+      </div>
+      <h2 className="text-xl font-bold text-navy mb-2">{title}</h2>
+      <p className="text-sm text-muted-foreground mb-6">{subtitle}</p>
+      <div className="space-y-2 text-left">
+        {steps.map((step, i) => (
+          <motion.div
+            key={step}
+            initial={{ opacity: 0, x: -10 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: i * stepDelay }}
+            className="flex items-center gap-3 text-xs"
+          >
+            <motion.div
+              animate={{ scale: [1, 1.2, 1] }}
+              transition={{ duration: 0.5, delay: i * stepDelay, repeat: Infinity, repeatDelay: 1.5 }}
+              className="w-2 h-2 rounded-full bg-gold"
+            />
+            <span className="text-muted-foreground">{step}</span>
+          </motion.div>
+        ))}
+      </div>
+    </Card>
+  </motion.div>
+))
+LoadingState.displayName = 'LoadingState'
+
 export function VoicePractice({ onSessionEnd }: VoicePracticeProps) {
   const router = useRouter()
   const [connectionStatus, setConnectionStatus] = useState<ConnectionStatus>('idle')
@@ -623,116 +689,28 @@ export function VoicePractice({ onSessionEnd }: VoicePracticeProps) {
 
             {/* Connecting View */}
             {connectionStatus === 'connecting' && (
-              <motion.div
+              <LoadingState
                 key="connecting"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="flex flex-col items-center justify-center min-h-[60vh]"
-              >
-                <Card variant="glass" className="p-12 text-center max-w-sm w-full">
-                  {/* Animated loader */}
-                  <div className="relative w-24 h-24 mx-auto mb-8">
-                    <motion.div
-                      className="absolute inset-0 rounded-full border-4 border-gold/20"
-                      animate={{ rotate: 360 }}
-                      transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
-                    />
-                    <motion.div
-                      className="absolute inset-0 rounded-full border-4 border-transparent border-t-gold"
-                      animate={{ rotate: 360 }}
-                      transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-                    />
-                    <div className="absolute inset-3 rounded-full bg-gradient-to-br from-navy to-navy-light flex items-center justify-center shadow-navy">
-                      <Mic className="w-8 h-8 text-white" />
-                    </div>
-                  </div>
-
-                  <h2 className="text-xl font-bold text-navy mb-2">
-                    Connecting...
-                  </h2>
-                  <p className="text-sm text-muted-foreground mb-6">
-                    Preparing session with <span className="font-semibold text-navy">{selectedPersona?.name}</span>
-                  </p>
-
-                  {/* Progress steps */}
-                  <div className="space-y-2 text-left">
-                    {['Initializing audio', 'Connecting to server', 'Starting session'].map((step, i) => (
-                      <motion.div
-                        key={step}
-                        initial={{ opacity: 0, x: -10 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: i * 0.5 }}
-                        className="flex items-center gap-3 text-xs"
-                      >
-                        <motion.div
-                          animate={{ scale: [1, 1.2, 1] }}
-                          transition={{ duration: 0.5, delay: i * 0.5, repeat: Infinity, repeatDelay: 1.5 }}
-                          className="w-2 h-2 rounded-full bg-gold"
-                        />
-                        <span className="text-muted-foreground">{step}</span>
-                      </motion.div>
-                    ))}
-                  </div>
-                </Card>
-              </motion.div>
+                title="Connecting..."
+                subtitle={`Preparing session with ${selectedPersona?.name}`}
+                icon={Mic}
+                iconVariant="navy"
+                steps={['Initializing audio', 'Connecting to server', 'Starting session']}
+                stepDelay={0.5}
+              />
             )}
 
             {/* Saving View */}
             {isSaving && (
-              <motion.div
+              <LoadingState
                 key="saving"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="flex flex-col items-center justify-center min-h-[60vh]"
-              >
-                <Card variant="glass" className="p-12 text-center max-w-sm w-full">
-                  {/* Animated loader */}
-                  <div className="relative w-24 h-24 mx-auto mb-8">
-                    <motion.div
-                      className="absolute inset-0 rounded-full border-4 border-gold/20"
-                      animate={{ rotate: 360 }}
-                      transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
-                    />
-                    <motion.div
-                      className="absolute inset-0 rounded-full border-4 border-transparent border-t-gold"
-                      animate={{ rotate: 360 }}
-                      transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-                    />
-                    <div className="absolute inset-3 rounded-full bg-gradient-to-br from-gold to-gold-light flex items-center justify-center shadow-gold">
-                      <Loader2 className="w-8 h-8 text-navy animate-spin" />
-                    </div>
-                  </div>
-
-                  <h2 className="text-xl font-bold text-navy mb-2">
-                    Analyzing Your Call
-                  </h2>
-                  <p className="text-sm text-muted-foreground mb-6">
-                    Scoring your performance across 6 dimensions...
-                  </p>
-
-                  {/* Progress steps */}
-                  <div className="space-y-2 text-left">
-                    {['Saving transcript', 'Running analysis', 'Generating feedback'].map((step, i) => (
-                      <motion.div
-                        key={step}
-                        initial={{ opacity: 0, x: -10 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: i * 0.3 }}
-                        className="flex items-center gap-3 text-xs"
-                      >
-                        <motion.div
-                          animate={{ scale: [1, 1.2, 1] }}
-                          transition={{ duration: 0.5, delay: i * 0.3, repeat: Infinity, repeatDelay: 1.5 }}
-                          className="w-2 h-2 rounded-full bg-gold"
-                        />
-                        <span className="text-muted-foreground">{step}</span>
-                      </motion.div>
-                    ))}
-                  </div>
-                </Card>
-              </motion.div>
+                title="Analyzing Your Call"
+                subtitle="Scoring your performance across 6 dimensions..."
+                icon={Loader2}
+                iconVariant="gold"
+                steps={['Saving transcript', 'Running analysis', 'Generating feedback']}
+                stepDelay={0.3}
+              />
             )}
 
             {/* Active Call View */}
