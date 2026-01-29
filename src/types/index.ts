@@ -216,3 +216,19 @@ export interface TeamAnalytics {
   average_team_score: number
   top_performers: { user_id: string; name: string; score: number }[]
 }
+
+// Leaderboard types
+export type LeaderboardTrend = 'hot' | 'rising' | 'steady'
+
+export interface LeaderboardEntry {
+  user_id: string
+  display_name: string
+  avatar_initial: string
+  total_sessions: number
+  avg_score: number
+  best_score: number
+  total_practice_minutes: number
+  rank: number
+  trend: LeaderboardTrend
+  is_current_user?: boolean
+}

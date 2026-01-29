@@ -479,6 +479,23 @@ export type Database = {
           rank: number
         }[]
       }
+      get_leaderboard: {
+        Args: {
+          result_limit?: number
+          time_period?: string
+        }
+        Returns: {
+          user_id: string
+          display_name: string
+          avatar_initial: string
+          total_sessions: number
+          avg_score: number
+          best_score: number
+          total_practice_minutes: number
+          rank: number
+          trend: string
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never

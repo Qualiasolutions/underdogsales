@@ -129,7 +129,7 @@ const TranscriptMessage = memo(({
     )}
   >
     {entry.role === 'user' ? (
-      <div className="w-9 h-9 flex-shrink-0 rounded-xl flex items-center justify-center text-xs font-bold shadow-sm bg-gradient-to-br from-navy to-navy-light text-white">
+      <div className="w-9 h-9 flex-shrink-0 rounded-xl flex items-center justify-center text-xs font-bold shadow-sm bg-gradient-to-br from-slate-800 to-slate-700 text-white">
         You
       </div>
     ) : (
@@ -138,7 +138,7 @@ const TranscriptMessage = memo(({
     <div className={cn(
       'flex-1 py-3 px-4 rounded-2xl text-sm leading-relaxed shadow-sm',
       entry.role === 'user'
-        ? 'bg-gradient-to-br from-navy to-navy-light text-white rounded-tr-md'
+        ? 'bg-gradient-to-br from-slate-800 to-slate-700 text-white rounded-tr-md'
         : 'bg-card border border-border text-foreground rounded-tl-md',
       isLatest && 'ring-2 ring-gold/30'
     )}>

@@ -17,6 +17,9 @@ import {
   RotateCcw,
   Share2,
   Download,
+  Medal,
+  Flame,
+  ArrowRight,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
@@ -263,7 +266,9 @@ function FeedbackList({
   delay?: number
 }) {
   const isStrengths = variant === 'strengths'
-  const displayItems = items.slice(0, 5)
+  // Deduplicate items and limit to 5
+  const uniqueItems = [...new Set(items)]
+  const displayItems = uniqueItems.slice(0, 5)
 
   return (
     <motion.div
@@ -341,7 +346,7 @@ function TranscriptMessage({
         className={cn(
           'w-9 h-9 flex-shrink-0 rounded-xl flex items-center justify-center text-xs font-bold shadow-sm',
           isUser
-            ? 'bg-gradient-to-br from-navy to-navy-light text-white'
+            ? 'bg-gradient-to-br from-slate-800 to-slate-700 text-white'
             : 'bg-gradient-to-br from-gold/20 to-gold/10 text-gold-dark border border-gold/20'
         )}
       >
@@ -356,7 +361,7 @@ function TranscriptMessage({
         className={cn(
           'flex-1 py-3 px-4 rounded-2xl text-sm leading-relaxed',
           isUser
-            ? 'bg-gradient-to-br from-navy to-navy-light text-white rounded-tr-md'
+            ? 'bg-gradient-to-br from-slate-800 to-slate-700 text-white rounded-tr-md'
             : 'bg-card border border-border text-foreground rounded-tl-md'
         )}
       >
@@ -571,6 +576,58 @@ export function PracticeResults({ session, personaName, personaRole }: PracticeR
               <Download className="w-5 h-5" />
               Export PDF
             </Button>
+          </motion.div>
+
+          {/* Leaderboard Teaser */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.9 }}
+            className="mt-8"
+          >
+            <Link href="/leaderboard">
+              <Card
+                variant="navy"
+                hover
+                className="group cursor-pointer overflow-hidden"
+              >
+                <CardContent className="p-6 flex items-center gap-6">
+                  {/* Icon */}
+                  <div className="relative flex-shrink-0">
+                    <div className="w-16 h-16 rounded-2xl bg-white/10 flex items-center justify-center">
+                      <Trophy className="w-8 h-8 text-gold" />
+                    </div>
+                    <motion.div
+                      className="absolute -top-1 -right-1 w-6 h-6 rounded-full bg-error flex items-center justify-center"
+                      animate={{ scale: [1, 1.2, 1] }}
+                      transition={{ duration: 1, repeat: Infinity }}
+                    >
+                      <Flame className="w-3.5 h-3.5 text-white" />
+                    </motion.div>
+                  </div>
+
+                  {/* Content */}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1">
+                      <h3 className="text-lg font-bold text-white dark:text-foreground">
+                        Climb the Leaderboard
+                      </h3>
+                      <Medal className="w-5 h-5 text-gold" />
+                    </div>
+                    <p className="text-white/70 dark:text-foreground/70 text-sm">
+                      Your score counts! See how you rank against other sales warriors and compete for the top spot.
+                    </p>
+                  </div>
+
+                  {/* Arrow */}
+                  <div className="flex-shrink-0">
+                    <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-gold/20 transition-colors">
+                      <ArrowRight className="w-5 h-5 text-white dark:text-foreground group-hover:translate-x-1 transition-transform" />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
           </motion.div>
 
           {/* Session info */}

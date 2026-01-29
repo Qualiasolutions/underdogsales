@@ -119,7 +119,7 @@ const TranscriptMessage = memo(({
     <div className={cn(
       'w-9 h-9 flex-shrink-0 rounded-xl flex items-center justify-center text-xs font-bold shadow-sm',
       entry.role === 'user'
-        ? 'bg-gradient-to-br from-navy to-navy-light text-white'
+        ? 'bg-gradient-to-br from-slate-800 to-slate-700 text-white'
         : 'bg-gradient-to-br from-gold/20 to-gold/10 text-gold-dark border border-gold/20'
     )}>
       {entry.role === 'user' ? 'You' : personaName.split(' ').map(n => n[0]).join('')}
@@ -127,7 +127,7 @@ const TranscriptMessage = memo(({
     <div className={cn(
       'flex-1 py-3 px-4 rounded-2xl text-sm leading-relaxed shadow-sm',
       entry.role === 'user'
-        ? 'bg-gradient-to-br from-navy to-navy-light text-white rounded-tr-md'
+        ? 'bg-gradient-to-br from-slate-800 to-slate-700 text-white rounded-tr-md'
         : 'bg-card border border-border text-foreground rounded-tl-md',
       isLatest && 'ring-2 ring-gold/30'
     )}>
@@ -252,12 +252,12 @@ const LoadingState = memo(({ title, subtitle, icon: Icon, iconVariant, steps, st
         <div className={cn(
           "absolute inset-3 rounded-full flex items-center justify-center",
           iconVariant === 'navy'
-            ? "bg-gradient-to-br from-navy to-navy-light shadow-navy"
+            ? "bg-gradient-to-br from-slate-800 to-slate-700 shadow-lg"
             : "bg-gradient-to-br from-gold to-gold-light shadow-gold"
         )}>
           <Icon className={cn(
             "w-8 h-8",
-            iconVariant === 'navy' ? 'text-white' : 'text-foreground animate-spin'
+            iconVariant === 'navy' ? 'text-white' : 'text-primary-foreground animate-spin'
           )} />
         </div>
       </div>
