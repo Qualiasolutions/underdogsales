@@ -11,14 +11,11 @@ import {
   LogIn,
   LogOut,
   ChevronDown,
-  BookOpen,
   Mic,
-  MessageSquare,
   LayoutDashboard,
   Settings,
   Trophy,
   Headphones,
-  Sparkles,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from './button'
@@ -30,15 +27,12 @@ interface HeaderProps {
   showNav?: boolean
 }
 
-// Nav links for logged-in users (no Home link - they're already in the app)
+// Nav links for logged-in users - simplified navigation
 const navLinks = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/practice', label: 'Practice', icon: Mic },
-  { href: '/create', label: 'Create', icon: Sparkles },
   { href: '/coach', label: 'Coach', icon: Headphones },
   { href: '/leaderboard', label: 'Leaderboard', icon: Trophy },
-  { href: '/chat', label: 'Chat', icon: MessageSquare },
-  { href: '/curriculum', label: 'Curriculum', icon: BookOpen },
 ]
 
 export function Header({ variant = 'default', showNav = true }: HeaderProps) {

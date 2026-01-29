@@ -298,6 +298,7 @@ export function VoicePractice({ onSessionEnd }: VoicePracticeProps) {
   const [error, setError] = useState<string | null>(null)
   const [callDuration, setCallDuration] = useState(0)
   const [isSaving, setIsSaving] = useState(false)
+  const [userIndustry, setUserIndustry] = useState<string | null | undefined>(undefined)
   const transcriptRef = useRef<HTMLDivElement>(null)
   const transcriptDataRef = useRef<TranscriptEntry[]>([])
   const timerRef = useRef<NodeJS.Timeout | null>(null)
@@ -306,6 +307,22 @@ export function VoicePractice({ onSessionEnd }: VoicePracticeProps) {
   const personas = getAllPersonas()
   const selectedPersona = getPersonaById(selectedPersonaId)
   const isActive = connectionStatus === 'connected'
+
+  // Fetch user's industry on mount
+  useEffect(() => {
+    async function fetchIndustry() {
+      try {
+        const res = await fetch('/api/user/industry')
+        if (res.ok) {
+          const data = await res.json()
+          setUserIndustry(data.industry)
+        }
+      } catch {
+        setUserIndustry(null)
+      }
+    }
+    fetchIndustry()
+  }, [])
 
   // Sync transcript data to ref for use in callbacks
   useEffect(() => {
@@ -514,6 +531,26 @@ export function VoicePractice({ onSessionEnd }: VoicePracticeProps) {
                     />
                   )}
                 </AnimatePresence>
+
+                {/* Industry Setup Prompt */}
+                {userIndustry === null && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="p-4 rounded-2xl border border-gold/20 bg-gold/5 flex items-center justify-between gap-4"
+                  >
+                    <div>
+                      <p className="font-medium text-sm">Customize your training</p>
+                      <p className="text-xs text-muted-foreground">Tell us your industry for relevant objections</p>
+                    </div>
+                    <button
+                      onClick={() => router.push('/create')}
+                      className="px-4 py-2 rounded-xl bg-gold text-primary-foreground text-sm font-medium hover:bg-gold/90 transition-colors whitespace-nowrap"
+                    >
+                      Set Up
+                    </button>
+                  </motion.div>
+                )}
 
                 {/* Page Title */}
                 <motion.div
