@@ -13,6 +13,8 @@ import {
   Target,
   Lightbulb,
   ArrowRight,
+  Briefcase,
+  AlertTriangle,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { ICPContext } from '@/app/api/icp/generate/route'
@@ -25,6 +27,62 @@ interface ICPConfirmationProps {
 type ChatMessage = {
   role: 'assistant' | 'user'
   content: string
+  icpData?: ICPContext
+}
+
+// Structured ICP display component
+function ICPDisplay({ ctx }: { ctx: ICPContext }) {
+  return (
+    <div className="space-y-4">
+      <p className="text-muted-foreground">Based on your profile, here's what I understand:</p>
+
+      {/* Company Section */}
+      <div className="rounded-xl bg-muted/30 p-4 space-y-2">
+        <div className="flex items-center gap-2">
+          <Building2 className="w-4 h-4 text-gold" />
+          <span className="font-semibold text-foreground">You work for {ctx.company}</span>
+        </div>
+        <p className="text-sm text-muted-foreground pl-6">{ctx.companyDescription}</p>
+      </div>
+
+      {/* Target Role Section */}
+      <div className="rounded-xl bg-muted/30 p-4 space-y-3">
+        <div className="flex items-center gap-2">
+          <Users className="w-4 h-4 text-gold" />
+          <span className="font-semibold text-foreground">You're selling to {ctx.targetRole}s</span>
+        </div>
+        <p className="text-sm text-muted-foreground pl-6">They typically face:</p>
+        <ul className="space-y-2 pl-6">
+          {ctx.painPoints.map((point, i) => (
+            <li key={i} className="flex items-start gap-2 text-sm">
+              <AlertTriangle className="w-3.5 h-3.5 text-warning mt-0.5 flex-shrink-0" />
+              <span className="text-foreground">{point}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* Value Props Section */}
+      <div className="rounded-xl bg-muted/30 p-4 space-y-3">
+        <div className="flex items-center gap-2">
+          <Lightbulb className="w-4 h-4 text-gold" />
+          <span className="font-semibold text-foreground">Key value props to emphasize</span>
+        </div>
+        <ul className="space-y-2 pl-6">
+          {ctx.valueProps.map((prop, i) => (
+            <li key={i} className="flex items-start gap-2 text-sm">
+              <Check className="w-3.5 h-3.5 text-success mt-0.5 flex-shrink-0" />
+              <span className="text-foreground">{prop}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <p className="text-sm text-muted-foreground pt-2">
+        Does this look right? Type any corrections or confirm to start practicing.
+      </p>
+    </div>
+  )
 }
 
 export function ICPConfirmation({ onConfirm, onSkip }: ICPConfirmationProps) {
@@ -65,7 +123,8 @@ export function ICPConfirmation({ onConfirm, onSkip }: ICPConfirmationProps) {
           setMessages([
             {
               role: 'assistant',
-              content: formatICPMessage(profileData.icpContext),
+              content: '',
+              icpData: profileData.icpContext,
             },
           ])
           setIsLoading(false)
@@ -89,7 +148,8 @@ export function ICPConfirmation({ onConfirm, onSkip }: ICPConfirmationProps) {
         setMessages([
           {
             role: 'assistant',
-            content: formatICPMessage(icpData.icpContext),
+            content: '',
+            icpData: icpData.icpContext,
           },
         ])
       } catch (error) {
@@ -107,21 +167,6 @@ export function ICPConfirmation({ onConfirm, onSkip }: ICPConfirmationProps) {
 
     loadICP()
   }, [])
-
-  const formatICPMessage = (ctx: ICPContext): string => {
-    return `Based on your profile, here's what I understand:
-
-**You work for ${ctx.company}**
-${ctx.companyDescription}
-
-**You're selling to ${ctx.targetRole}s** who typically face:
-${ctx.painPoints.map((p) => `• ${p}`).join('\n')}
-
-**Key value props to emphasize:**
-${ctx.valueProps.map((v) => `• ${v}`).join('\n')}
-
-Does this look right? You can type any corrections or just confirm to start practicing.`
-  }
 
   const handleSend = useCallback(async () => {
     if (!input.trim() || isRefining || !profile) return
@@ -197,7 +242,8 @@ Please update the ICP context based on their feedback. Respond with a friendly a
       setMessages([
         {
           role: 'assistant',
-          content: formatICPMessage(icpData.icpContext),
+          content: '',
+          icpData: icpData.icpContext,
         },
       ])
     } catch (error) {
@@ -217,7 +263,7 @@ Please update the ICP context based on their feedback. Respond with a friendly a
       >
         <div className="rounded-3xl border border-border bg-card p-8">
           <div className="w-16 h-16 rounded-2xl bg-gold/10 mx-auto mb-6 flex items-center justify-center">
-            <Building2 className="w-8 h-8 text-gold" />
+            <Briefcase className="w-8 h-8 text-gold" />
           </div>
           <h2 className="text-xl font-semibold mb-2">Quick Setup Needed</h2>
           <p className="text-muted-foreground text-sm mb-6">
@@ -280,7 +326,7 @@ Please update the ICP context based on their feedback. Respond with a friendly a
       {/* Chat Container */}
       <div className="rounded-3xl border border-border bg-card overflow-hidden">
         {/* Messages */}
-        <div className="max-h-[400px] overflow-y-auto p-6 space-y-4">
+        <div className="max-h-[500px] overflow-y-auto p-6 space-y-4">
           {messages.map((msg, i) => (
             <motion.div
               key={i}
@@ -309,9 +355,11 @@ Please update the ICP context based on their feedback. Respond with a friendly a
                     : 'bg-muted/50'
                 )}
               >
-                <div className="prose prose-sm dark:prose-invert max-w-none whitespace-pre-wrap">
-                  {msg.content}
-                </div>
+                {msg.icpData ? (
+                  <ICPDisplay ctx={msg.icpData} />
+                ) : (
+                  <p className="whitespace-pre-wrap">{msg.content}</p>
+                )}
               </div>
             </motion.div>
           ))}
