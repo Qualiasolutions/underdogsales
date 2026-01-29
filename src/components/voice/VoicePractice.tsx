@@ -31,6 +31,7 @@ import {
   startRetellSession,
   stopRetellSession,
   muteRetellSession,
+  destroyRetellSession,
 } from '@/lib/retell/client'
 import { getAllPersonas, getPersonaById } from '@/config/personas'
 import { savePracticeSession } from '@/lib/actions/practice-session'
@@ -351,6 +352,14 @@ export function VoicePractice({ onSessionEnd }: VoicePracticeProps) {
       if (timerRef.current) clearInterval(timerRef.current)
     }
   }, [isActive])
+
+  // Cleanup: Stop voice session when navigating away
+  useEffect(() => {
+    return () => {
+      // Destroy the session on unmount to stop audio
+      destroyRetellSession()
+    }
+  }, [])
 
   const formatDuration = (seconds: number) => {
     const mins = Math.floor(seconds / 60)

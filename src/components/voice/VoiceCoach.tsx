@@ -28,6 +28,7 @@ import {
   startRetellSession,
   stopRetellSession,
   muteRetellSession,
+  destroyRetellSession,
 } from '@/lib/retell/client'
 import { GIULIO_COACH, COACHING_MODES, type CoachingMode } from '@/config/coach'
 import type { TranscriptEntry } from '@/types'
@@ -260,6 +261,14 @@ export function VoiceCoach() {
       if (timerRef.current) clearInterval(timerRef.current)
     }
   }, [isActive])
+
+  // Cleanup: Stop voice session when navigating away
+  useEffect(() => {
+    return () => {
+      // Destroy the session on unmount to stop audio
+      destroyRetellSession()
+    }
+  }, [])
 
   const formatDuration = (seconds: number) => {
     const mins = Math.floor(seconds / 60)
