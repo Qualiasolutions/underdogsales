@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getUser } from '@/lib/supabase/server'
 import { getAdminClient } from '@/lib/supabase/admin'
-import { analyzeTranscript, type ScoringResult } from '@/lib/scoring/engine'
+import { analyzeTranscriptWithAI, type AIScoringResult } from '@/lib/scoring/ai-engine'
 import type { TranscriptEntry, CallAnalysis } from '@/types'
 import type { Json } from '@/lib/supabase/types'
 import { ScoreRequestSchema, validateInput } from '@/lib/validations'
@@ -72,9 +72,9 @@ export async function POST(request: NextRequest) {
     }
 
     try {
-      // Run scoring engine
+      // Run AI-powered scoring engine (Cold Calling Wiki methodology)
       const transcript = callUpload.transcript as unknown as TranscriptEntry[]
-      const scoringResult: ScoringResult = analyzeTranscript({
+      const scoringResult: AIScoringResult = await analyzeTranscriptWithAI({
         transcript,
         durationSeconds: callUpload.duration_seconds || 0,
         scenarioType: 'cold_call',

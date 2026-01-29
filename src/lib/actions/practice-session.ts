@@ -2,7 +2,7 @@
 
 import { getUser } from '@/lib/supabase/server'
 import { getAdminClient } from '@/lib/supabase/admin'
-import { analyzeTranscript } from '@/lib/scoring/engine'
+import { analyzeTranscriptWithAI } from '@/lib/scoring/ai-engine'
 import { supabaseCircuit, CircuitOpenError } from '@/lib/circuit-breaker'
 import { logger } from '@/lib/logger'
 import type { TranscriptEntry, ScoreDimension, CallAnalysis } from '@/types'
@@ -78,8 +78,8 @@ export async function savePracticeSession(
       return { success: false, error: 'No transcript to save' }
     }
 
-    // Run scoring analysis
-    const scoringResult = analyzeTranscript({
+    // Run AI-powered scoring analysis (Cold Calling Wiki methodology)
+    const scoringResult = await analyzeTranscriptWithAI({
       transcript: input.transcript,
       durationSeconds: input.durationSeconds,
       scenarioType: input.scenarioType,
