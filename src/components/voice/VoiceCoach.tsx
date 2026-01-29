@@ -19,6 +19,7 @@ import {
   User,
   type LucideIcon,
 } from 'lucide-react'
+import Image from 'next/image'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -105,14 +106,19 @@ const TranscriptMessage = memo(({
       entry.role === 'user' ? 'flex-row-reverse' : ''
     )}
   >
-    <div className={cn(
-      'w-9 h-9 flex-shrink-0 rounded-xl flex items-center justify-center text-xs font-bold shadow-sm',
-      entry.role === 'user'
-        ? 'bg-gradient-to-br from-navy to-navy-light text-white'
-        : 'bg-gradient-to-br from-gold/20 to-gold/10 text-gold-dark border border-gold/20'
-    )}>
-      {entry.role === 'user' ? 'You' : 'GS'}
-    </div>
+    {entry.role === 'user' ? (
+      <div className="w-9 h-9 flex-shrink-0 rounded-xl flex items-center justify-center text-xs font-bold shadow-sm bg-gradient-to-br from-navy to-navy-light text-white">
+        You
+      </div>
+    ) : (
+      <Image
+        src="/coach.webp"
+        alt="Giulio"
+        width={36}
+        height={36}
+        className="w-9 h-9 flex-shrink-0 rounded-xl object-cover shadow-sm"
+      />
+    )}
     <div className={cn(
       'flex-1 py-3 px-4 rounded-2xl text-sm leading-relaxed shadow-sm',
       entry.role === 'user'
@@ -378,9 +384,13 @@ export function VoiceCoach() {
                 >
                   <Card variant="elevated" className="p-6">
                     <div className="flex items-center gap-4 mb-6">
-                      <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-gold to-gold-light flex items-center justify-center text-navy text-2xl font-bold shadow-gold">
-                        GS
-                      </div>
+                      <Image
+                        src="/coach.webp"
+                        alt={GIULIO_COACH.name}
+                        width={80}
+                        height={80}
+                        className="w-20 h-20 rounded-2xl object-cover shadow-gold"
+                      />
                       <div>
                         <h2 className="font-bold text-navy text-xl">{GIULIO_COACH.name}</h2>
                         <p className="text-sm text-muted-foreground">{GIULIO_COACH.title}</p>
@@ -486,9 +496,13 @@ export function VoiceCoach() {
                       animate={{ rotate: 360 }}
                       transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
                     />
-                    <div className="absolute inset-3 rounded-full bg-gradient-to-br from-gold to-gold-light flex items-center justify-center shadow-gold text-navy font-bold text-lg">
-                      GS
-                    </div>
+                    <Image
+                      src="/coach.webp"
+                      alt="Giulio"
+                      width={72}
+                      height={72}
+                      className="absolute inset-3 rounded-full object-cover shadow-gold"
+                    />
                   </div>
 
                   <h2 className="text-xl font-bold text-navy mb-2">
@@ -540,9 +554,13 @@ export function VoiceCoach() {
                           animate={{ scale: 1, opacity: 1 }}
                           className="relative w-24 h-24 mx-auto mb-6"
                         >
-                          <div className="w-full h-full rounded-2xl bg-gradient-to-br from-gold to-gold-light flex items-center justify-center text-navy text-2xl font-bold border border-white/10 shadow-gold">
-                            GS
-                          </div>
+                          <Image
+                            src="/coach.webp"
+                            alt={GIULIO_COACH.name}
+                            width={96}
+                            height={96}
+                            className="w-full h-full rounded-2xl object-cover border border-white/10 shadow-gold"
+                          />
                           <motion.div
                             className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-success border-2 border-navy flex items-center justify-center"
                             animate={{ scale: [1, 1.2, 1] }}

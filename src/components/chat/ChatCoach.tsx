@@ -153,9 +153,13 @@ export function ChatCoach() {
                 {/* Coach Card */}
                 <Card variant="elevated" className="p-6 max-w-md w-full">
                   <div className="flex items-center gap-4 mb-6">
-                    <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-gold to-gold-light flex items-center justify-center text-navy text-xl font-bold shadow-gold">
-                      GS
-                    </div>
+                    <Image
+                      src="/coach.webp"
+                      alt={GIULIO_COACH.name}
+                      width={64}
+                      height={64}
+                      className="w-16 h-16 rounded-2xl object-cover shadow-gold"
+                    />
                     <div>
                       <h2 className="font-bold text-navy text-lg">{GIULIO_COACH.name}</h2>
                       <p className="text-sm text-muted-foreground">{GIULIO_COACH.title}</p>
@@ -234,14 +238,19 @@ export function ChatCoach() {
                         message.role === 'user' ? 'flex-row-reverse' : ''
                       )}
                     >
-                      <div className={cn(
-                        'w-9 h-9 flex-shrink-0 rounded-xl flex items-center justify-center text-xs font-bold shadow-sm',
-                        message.role === 'user'
-                          ? 'bg-gradient-to-br from-navy to-navy-light text-white'
-                          : 'bg-gradient-to-br from-gold/20 to-gold/10 text-gold-dark border border-gold/20'
-                      )}>
-                        {message.role === 'user' ? 'You' : 'GS'}
-                      </div>
+                      {message.role === 'user' ? (
+                        <div className="w-9 h-9 flex-shrink-0 rounded-xl flex items-center justify-center text-xs font-bold shadow-sm bg-gradient-to-br from-navy to-navy-light text-white">
+                          You
+                        </div>
+                      ) : (
+                        <Image
+                          src="/coach.webp"
+                          alt={GIULIO_COACH.name}
+                          width={36}
+                          height={36}
+                          className="w-9 h-9 flex-shrink-0 rounded-xl object-cover shadow-sm"
+                        />
+                      )}
                       <div className={cn(
                         'max-w-[80%] py-3 px-4 rounded-2xl text-sm leading-relaxed shadow-sm',
                         message.role === 'user'
@@ -259,9 +268,13 @@ export function ChatCoach() {
                       animate={{ opacity: 1, y: 0 }}
                       className="flex gap-3"
                     >
-                      <div className="w-9 h-9 flex-shrink-0 rounded-xl bg-gradient-to-br from-gold/20 to-gold/10 text-gold-dark border border-gold/20 flex items-center justify-center text-xs font-bold">
-                        GS
-                      </div>
+                      <Image
+                        src="/coach.webp"
+                        alt={GIULIO_COACH.name}
+                        width={36}
+                        height={36}
+                        className="w-9 h-9 flex-shrink-0 rounded-xl object-cover shadow-sm"
+                      />
                       <div className="py-3 px-4 rounded-2xl rounded-tl-md bg-white border border-border">
                         <Loader2 className="w-5 h-5 animate-spin text-gold" />
                       </div>
