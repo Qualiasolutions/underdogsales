@@ -111,13 +111,15 @@ const TranscriptMessage = memo(({
         You
       </div>
     ) : (
-      <Image
-        src="/coach.png"
-        alt="Giulio"
-        width={36}
-        height={36}
-        className="w-9 h-9 flex-shrink-0 rounded-xl object-cover shadow-sm"
-      />
+      <div className="w-9 h-9 flex-shrink-0 rounded-xl overflow-hidden bg-gradient-to-br from-gold/30 to-gold/10 border border-gold/20">
+        <Image
+          src="/coach.png"
+          alt="Giulio"
+          width={36}
+          height={36}
+          className="w-full h-full object-contain"
+        />
+      </div>
     )}
     <div className={cn(
       'flex-1 py-3 px-4 rounded-2xl text-sm leading-relaxed shadow-sm',
@@ -384,13 +386,15 @@ export function VoiceCoach() {
                 >
                   <Card variant="elevated" className="p-6">
                     <div className="flex items-center gap-4 mb-6">
-                      <Image
-                        src="/coach.png"
-                        alt={GIULIO_COACH.name}
-                        width={80}
-                        height={80}
-                        className="w-20 h-20 rounded-2xl object-cover shadow-gold"
-                      />
+                      <div className="w-20 h-20 rounded-2xl overflow-hidden bg-gradient-to-br from-gold/30 to-gold/10 border border-gold/20 shadow-gold">
+                        <Image
+                          src="/coach.png"
+                          alt={GIULIO_COACH.name}
+                          width={80}
+                          height={80}
+                          className="w-full h-full object-contain"
+                        />
+                      </div>
                       <div>
                         <h2 className="font-bold text-navy text-xl">{GIULIO_COACH.name}</h2>
                         <p className="text-sm text-muted-foreground">{GIULIO_COACH.title}</p>
@@ -496,13 +500,15 @@ export function VoiceCoach() {
                       animate={{ rotate: 360 }}
                       transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
                     />
-                    <Image
-                      src="/coach.png"
-                      alt="Giulio"
-                      width={72}
-                      height={72}
-                      className="absolute inset-3 rounded-full object-cover shadow-gold"
-                    />
+                    <div className="absolute inset-3 rounded-full overflow-hidden bg-gradient-to-br from-gold/30 to-gold/10">
+                      <Image
+                        src="/coach.png"
+                        alt="Giulio"
+                        width={72}
+                        height={72}
+                        className="w-full h-full object-contain"
+                      />
+                    </div>
                   </div>
 
                   <h2 className="text-xl font-bold text-navy mb-2">
@@ -554,13 +560,15 @@ export function VoiceCoach() {
                           animate={{ scale: 1, opacity: 1 }}
                           className="relative w-24 h-24 mx-auto mb-6"
                         >
-                          <Image
-                            src="/coach.png"
-                            alt={GIULIO_COACH.name}
-                            width={96}
-                            height={96}
-                            className="w-full h-full rounded-2xl object-cover border border-white/10 shadow-gold"
-                          />
+                          <div className="w-full h-full rounded-2xl overflow-hidden bg-gradient-to-br from-gold/30 to-gold/10 border border-white/10 shadow-gold">
+                            <Image
+                              src="/coach.png"
+                              alt={GIULIO_COACH.name}
+                              width={96}
+                              height={96}
+                              className="w-full h-full object-contain"
+                            />
+                          </div>
                           <motion.div
                             className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-success border-2 border-navy flex items-center justify-center"
                             animate={{ scale: [1, 1.2, 1] }}
