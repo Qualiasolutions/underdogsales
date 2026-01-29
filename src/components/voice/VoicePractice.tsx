@@ -32,10 +32,13 @@ import {
 } from '@/lib/retell/client'
 import { getAllPersonas, getPersonaById } from '@/config/personas'
 import { savePracticeSession } from '@/lib/actions/practice-session'
+import { ICPConfirmation } from './ICPConfirmation'
 import type { TranscriptEntry } from '@/types'
+import type { ICPContext } from '@/app/api/icp/generate/route'
 
 type ScenarioType = 'cold_call' | 'objection' | 'closing' | 'gatekeeper'
 type ConnectionStatus = 'idle' | 'connecting' | 'connected' | 'error'
+type PracticeStep = 'icp_confirmation' | 'persona_selection' | 'practicing'
 
 interface VoicePracticeProps {
   onSessionEnd?: (transcript: TranscriptEntry[]) => void
@@ -289,6 +292,8 @@ LoadingState.displayName = 'LoadingState'
 
 export function VoicePractice({ onSessionEnd }: VoicePracticeProps) {
   const router = useRouter()
+  const [practiceStep, setPracticeStep] = useState<PracticeStep>('icp_confirmation')
+  const [icpContext, setIcpContext] = useState<ICPContext | null>(null)
   const [connectionStatus, setConnectionStatus] = useState<ConnectionStatus>('idle')
   const [isMuted, setIsMuted] = useState(false)
   const [selectedPersonaId, setSelectedPersonaId] = useState<string>('skeptical_cfo')
@@ -298,7 +303,6 @@ export function VoicePractice({ onSessionEnd }: VoicePracticeProps) {
   const [error, setError] = useState<string | null>(null)
   const [callDuration, setCallDuration] = useState(0)
   const [isSaving, setIsSaving] = useState(false)
-  const [userIndustry, setUserIndustry] = useState<string | null | undefined>(undefined)
   const transcriptRef = useRef<HTMLDivElement>(null)
   const transcriptDataRef = useRef<TranscriptEntry[]>([])
   const timerRef = useRef<NodeJS.Timeout | null>(null)
@@ -308,20 +312,14 @@ export function VoicePractice({ onSessionEnd }: VoicePracticeProps) {
   const selectedPersona = getPersonaById(selectedPersonaId)
   const isActive = connectionStatus === 'connected'
 
-  // Fetch user's industry on mount
-  useEffect(() => {
-    async function fetchIndustry() {
-      try {
-        const res = await fetch('/api/user/industry')
-        if (res.ok) {
-          const data = await res.json()
-          setUserIndustry(data.industry)
-        }
-      } catch {
-        setUserIndustry(null)
-      }
-    }
-    fetchIndustry()
+  // Handle ICP confirmation
+  const handleICPConfirm = useCallback((context: ICPContext) => {
+    setIcpContext(context)
+    setPracticeStep('persona_selection')
+  }, [])
+
+  const handleICPSkip = useCallback(() => {
+    setPracticeStep('persona_selection')
   }, [])
 
   // Sync transcript data to ref for use in callbacks
@@ -511,8 +509,24 @@ export function VoicePractice({ onSessionEnd }: VoicePracticeProps) {
       <main className="pt-24 pb-16 px-4 sm:px-6">
         <div className="max-w-5xl mx-auto">
           <AnimatePresence mode="wait">
-            {/* Setup View */}
-            {!isActive && connectionStatus !== 'connecting' && !isSaving && (
+            {/* ICP Confirmation Step */}
+            {practiceStep === 'icp_confirmation' && !isActive && connectionStatus !== 'connecting' && !isSaving && (
+              <motion.div
+                key="icp"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                <ICPConfirmation
+                  onConfirm={handleICPConfirm}
+                  onSkip={handleICPSkip}
+                />
+              </motion.div>
+            )}
+
+            {/* Persona Selection View */}
+            {practiceStep === 'persona_selection' && !isActive && connectionStatus !== 'connecting' && !isSaving && (
               <motion.div
                 key="setup"
                 initial={{ opacity: 0 }}
@@ -532,23 +546,25 @@ export function VoicePractice({ onSessionEnd }: VoicePracticeProps) {
                   )}
                 </AnimatePresence>
 
-                {/* Industry Setup Prompt */}
-                {userIndustry === null && (
+                {/* ICP Context Banner */}
+                {icpContext && (
                   <motion.div
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="p-4 rounded-2xl border border-gold/20 bg-gold/5 flex items-center justify-between gap-4"
+                    className="p-4 rounded-2xl border border-gold/20 bg-gold/5"
                   >
-                    <div>
-                      <p className="font-medium text-sm">Customize your training</p>
-                      <p className="text-xs text-muted-foreground">Tell us your industry for relevant objections</p>
+                    <div className="flex items-center justify-between gap-4">
+                      <div>
+                        <p className="font-medium text-sm">Training customized for {icpContext.targetRole}s</p>
+                        <p className="text-xs text-muted-foreground">Selling {icpContext.company} solutions</p>
+                      </div>
+                      <button
+                        onClick={() => setPracticeStep('icp_confirmation')}
+                        className="px-3 py-1.5 rounded-lg text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
+                      >
+                        Edit
+                      </button>
                     </div>
-                    <button
-                      onClick={() => router.push('/create')}
-                      className="px-4 py-2 rounded-xl bg-gold text-primary-foreground text-sm font-medium hover:bg-gold/90 transition-colors whitespace-nowrap"
-                    >
-                      Set Up
-                    </button>
                   </motion.div>
                 )}
 

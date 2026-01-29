@@ -384,6 +384,8 @@ export type Database = {
           name: string
           org_id: string | null
           role: string | null
+          target_role: string | null
+          icp_context: Json | null
         }
         Insert: {
           company?: string | null
@@ -395,6 +397,8 @@ export type Database = {
           name: string
           org_id?: string | null
           role?: string | null
+          target_role?: string | null
+          icp_context?: Json | null
         }
         Update: {
           company?: string | null
@@ -406,6 +410,8 @@ export type Database = {
           name?: string
           org_id?: string | null
           role?: string | null
+          target_role?: string | null
+          icp_context?: Json | null
         }
         Relationships: [
           {
