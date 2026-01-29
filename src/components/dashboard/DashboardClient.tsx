@@ -3,9 +3,8 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import dynamic from 'next/dynamic'
-import { motion } from 'motion/react'
-import { Mic, FileAudio, Loader2, BarChart3 } from 'lucide-react'
-import Link from 'next/link'
+import { motion, AnimatePresence } from 'motion/react'
+import { Mic, FileAudio, Loader2, BarChart3, TrendingUp, Clock, Target } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { getUserPracticeSessions } from '@/lib/actions/practice-session'
@@ -13,32 +12,26 @@ import { getUserCallUploads } from '@/lib/actions/call-analysis'
 import { SessionHistoryCard } from './SessionHistoryCard'
 import { CallHistoryCard } from './CallHistoryCard'
 import { Header } from '@/components/ui/header'
+import { Footer } from '@/components/ui/footer'
 import { EmptyState } from '@/components/ui/empty-state'
 import { CurriculumProgressCard } from './progress/CurriculumProgressCard'
 import type { CallUpload, ScoreDimension } from '@/types'
 
-// Lazy load chart components (Recharts is 8MB - defer until Progress tab viewed)
+// Lazy load chart components
 const ScoreTrendChart = dynamic(
   () => import('./progress/ScoreTrendChart').then(mod => ({ default: mod.ScoreTrendChart })),
-  {
-    loading: () => <ChartSkeleton />,
-    ssr: false
-  }
+  { loading: () => <ChartSkeleton />, ssr: false }
 )
 
 const DimensionRadarChart = dynamic(
   () => import('./progress/DimensionRadarChart').then(mod => ({ default: mod.DimensionRadarChart })),
-  {
-    loading: () => <ChartSkeleton />,
-    ssr: false
-  }
+  { loading: () => <ChartSkeleton />, ssr: false }
 )
 
-// Loading skeleton for charts
 function ChartSkeleton() {
   return (
-    <div className="h-64 flex items-center justify-center bg-muted/30 rounded-lg animate-pulse">
-      <BarChart3 className="w-8 h-8 text-muted-foreground/50" />
+    <div className="h-64 flex items-center justify-center rounded-xl bg-muted/50">
+      <div className="w-8 h-8 border-2 border-muted-foreground/20 border-t-muted-foreground/60 rounded-full animate-spin" />
     </div>
   )
 }
@@ -69,6 +62,43 @@ interface DashboardClientProps {
   initialCurriculumProgress: ModuleProgress[]
 }
 
+// Quick stats component
+function QuickStats({ sessions }: { sessions: PracticeSession[] }) {
+  const totalSessions = sessions.length
+  const avgScore = sessions.length > 0
+    ? (sessions.reduce((sum, s) => sum + s.overall_score, 0) / sessions.length).toFixed(1)
+    : '—'
+  const totalMinutes = Math.round(sessions.reduce((sum, s) => sum + s.duration_seconds, 0) / 60)
+
+  const stats = [
+    { label: 'Sessions', value: totalSessions, icon: Target, color: 'text-emerald-500' },
+    { label: 'Avg Score', value: avgScore, icon: TrendingUp, color: 'text-gold' },
+    { label: 'Minutes', value: totalMinutes, icon: Clock, color: 'text-blue-500' },
+  ]
+
+  return (
+    <div className="grid grid-cols-3 gap-3 mb-8">
+      {stats.map((stat, i) => (
+        <motion.div
+          key={stat.label}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: i * 0.05 }}
+          className="relative overflow-hidden rounded-2xl border border-border/50 bg-card/50 backdrop-blur-sm p-4"
+        >
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-2xl font-semibold tracking-tight text-foreground">{stat.value}</p>
+              <p className="text-xs text-muted-foreground mt-0.5">{stat.label}</p>
+            </div>
+            <stat.icon className={cn('w-5 h-5', stat.color)} />
+          </div>
+        </motion.div>
+      ))}
+    </div>
+  )
+}
+
 export function DashboardClient({
   initialSessions,
   initialSessionsHasMore,
@@ -80,31 +110,21 @@ export function DashboardClient({
 }: DashboardClientProps) {
   const router = useRouter()
 
-  // State for practice sessions
   const [sessions, setSessions] = useState(initialSessions)
   const [sessionsHasMore, setSessionsHasMore] = useState(initialSessionsHasMore)
   const [sessionsLoading, setSessionsLoading] = useState(false)
   const [sessionsOffset, setSessionsOffset] = useState(0)
 
-  // State for call uploads
   const [calls, setCalls] = useState(initialCalls)
   const [callsHasMore, setCallsHasMore] = useState(initialCallsHasMore)
   const [callsLoading, setCallsLoading] = useState(false)
   const [callsOffset, setCallsOffset] = useState(0)
 
-  // Tab state
   const [activeTab, setActiveTab] = useState<'practice' | 'calls' | 'progress'>('practice')
 
-  // Navigation handlers
-  const handleSessionClick = (sessionId: string) => {
-    router.push(`/practice/results/${sessionId}`)
-  }
+  const handleSessionClick = (sessionId: string) => router.push(`/practice/results/${sessionId}`)
+  const handleCallClick = (callId: string) => router.push(`/analyze/${callId}`)
 
-  const handleCallClick = (callId: string) => {
-    router.push(`/analyze/${callId}`)
-  }
-
-  // Load more handlers
   const loadMoreSessions = async () => {
     setSessionsLoading(true)
     const newOffset = sessionsOffset + 10
@@ -125,185 +145,181 @@ export function DashboardClient({
     setCallsLoading(false)
   }
 
+  const tabs = [
+    { id: 'practice' as const, label: 'Practice', icon: Mic },
+    { id: 'calls' as const, label: 'Calls', icon: FileAudio },
+    { id: 'progress' as const, label: 'Progress', icon: BarChart3 },
+  ]
+
   return (
     <>
       <Header />
-      <main className="min-h-screen bg-background pt-16">
-        <div className="max-w-7xl mx-auto px-6 py-8">
+      <main className="min-h-screen bg-background pt-20">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
           {/* Header */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="mb-8"
           >
-            <h1 className="text-3xl font-bold text-foreground">Your Activity</h1>
-            <p className="text-muted-foreground mt-1">
-              Track your practice sessions and call analyses
+            <h1 className="text-2xl font-semibold tracking-tight text-foreground">Dashboard</h1>
+            <p className="text-sm text-muted-foreground mt-1">
+              Your practice activity and progress
             </p>
           </motion.div>
 
-          {/* Tabs */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0.1 }}
-            className="mt-8"
-          >
-            <div className="flex items-center gap-1 p-1 bg-muted rounded-lg w-fit">
-              <button
-                onClick={() => setActiveTab('practice')}
-                className={cn(
-                  'px-4 py-2 rounded-md text-sm font-medium transition-colors',
-                  activeTab === 'practice'
-                    ? 'bg-card text-foreground shadow-sm'
-                    : 'text-muted-foreground hover:text-foreground'
-                )}
-              >
-                <Mic className="w-4 h-4 inline mr-2" />
-                Practice Sessions
-              </button>
-              <button
-                onClick={() => setActiveTab('calls')}
-                className={cn(
-                  'px-4 py-2 rounded-md text-sm font-medium transition-colors',
-                  activeTab === 'calls'
-                    ? 'bg-card text-foreground shadow-sm'
-                    : 'text-muted-foreground hover:text-foreground'
-                )}
-              >
-                <FileAudio className="w-4 h-4 inline mr-2" />
-                Call Analyses
-              </button>
-              <button
-                onClick={() => setActiveTab('progress')}
-                className={cn(
-                  'px-4 py-2 rounded-md text-sm font-medium transition-colors',
-                  activeTab === 'progress'
-                    ? 'bg-card text-foreground shadow-sm'
-                    : 'text-muted-foreground hover:text-foreground'
-                )}
-              >
-                <BarChart3 className="w-4 h-4 inline mr-2" />
-                Progress
-              </button>
+          {/* Quick Stats */}
+          <QuickStats sessions={sessions} />
+
+          {/* Tab Navigation */}
+          <div className="mb-6">
+            <div className="inline-flex items-center p-1 rounded-xl bg-muted/50 border border-border/50">
+              {tabs.map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={cn(
+                    'relative flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200',
+                    activeTab === tab.id
+                      ? 'text-foreground'
+                      : 'text-muted-foreground hover:text-foreground'
+                  )}
+                >
+                  {activeTab === tab.id && (
+                    <motion.div
+                      layoutId="activeTab"
+                      className="absolute inset-0 bg-background border border-border/80 rounded-lg shadow-sm"
+                      transition={{ type: 'spring', stiffness: 500, damping: 35 }}
+                    />
+                  )}
+                  <span className="relative z-10 flex items-center gap-2">
+                    <tab.icon className="w-4 h-4" />
+                    <span className="hidden sm:inline">{tab.label}</span>
+                  </span>
+                </button>
+              ))}
             </div>
-          </motion.div>
+          </div>
 
           {/* Content */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0.2 }}
-            className="mt-6"
-          >
-            {activeTab === 'practice' && (
-              <div className="space-y-3">
-                {sessions.length === 0 ? (
-                  <EmptyState
-                    icon={<Mic className="w-8 h-8" />}
-                    title="No practice sessions yet"
-                    description="Start your first practice session to build your history and track your progress over time."
-                    illustration="conversation"
-                    action={{
-                      label: 'Start Practicing',
-                      href: '/practice',
-                    }}
-                  />
-                ) : (
-                  <>
-                    {sessions.map((session, index) => (
-                      <SessionHistoryCard
-                        key={session.id}
-                        session={session}
-                        index={index}
-                        onClick={() => handleSessionClick(session.id)}
-                      />
-                    ))}
-                    {sessionsHasMore && (
-                      <Button
-                        variant="outline"
-                        onClick={loadMoreSessions}
-                        disabled={sessionsLoading}
-                        className="w-full mt-4"
-                      >
-                        {sessionsLoading ? (
-                          <Loader2 className="w-4 h-4 animate-spin" />
-                        ) : (
-                          'Load More'
-                        )}
-                      </Button>
-                    )}
-                  </>
-                )}
-              </div>
-            )}
-
-            {activeTab === 'calls' && (
-              <div className="space-y-3">
-                {calls.length === 0 ? (
-                  <EmptyState
-                    icon={<FileAudio className="w-8 h-8" />}
-                    title="No call analyses yet"
-                    description="Upload your real call recordings to get detailed feedback and track your improvement."
-                    illustration="upload"
-                    action={{
-                      label: 'Upload a Call',
-                      href: '/analyze',
-                    }}
-                  />
-                ) : (
-                  <>
-                    {calls.map((call, index) => (
-                      <CallHistoryCard
-                        key={call.id}
-                        call={call}
-                        index={index}
-                        onClick={() => handleCallClick(call.id)}
-                      />
-                    ))}
-                    {callsHasMore && (
-                      <Button
-                        variant="outline"
-                        onClick={loadMoreCalls}
-                        disabled={callsLoading}
-                        className="w-full mt-4"
-                      >
-                        {callsLoading ? (
-                          <Loader2 className="w-4 h-4 animate-spin" />
-                        ) : (
-                          'Load More'
-                        )}
-                      </Button>
-                    )}
-                  </>
-                )}
-              </div>
-            )}
-
-            {activeTab === 'progress' && (
-              <div className="space-y-8">
-                {/* Curriculum Progress */}
-                <div className="bg-card rounded-2xl p-6 shadow-sm border">
-                  <h2 className="text-lg font-semibold text-foreground mb-4">Curriculum Progress</h2>
-                  <CurriculumProgressCard progress={initialCurriculumProgress} />
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeTab}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.2 }}
+            >
+              {activeTab === 'practice' && (
+                <div className="space-y-2">
+                  {sessions.length === 0 ? (
+                    <EmptyState
+                      icon={<Mic className="w-6 h-6" />}
+                      title="No practice sessions"
+                      description="Start practicing to track your progress"
+                      illustration="conversation"
+                      action={{ label: 'Start Practice', href: '/practice' }}
+                    />
+                  ) : (
+                    <>
+                      {sessions.map((session, index) => (
+                        <SessionHistoryCard
+                          key={session.id}
+                          session={session}
+                          index={index}
+                          onClick={() => handleSessionClick(session.id)}
+                        />
+                      ))}
+                      {sessionsHasMore && (
+                        <Button
+                          variant="ghost"
+                          onClick={loadMoreSessions}
+                          disabled={sessionsLoading}
+                          className="w-full mt-2 text-muted-foreground hover:text-foreground"
+                        >
+                          {sessionsLoading ? (
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                          ) : (
+                            'Load more'
+                          )}
+                        </Button>
+                      )}
+                    </>
+                  )}
                 </div>
+              )}
 
-                {/* Performance Charts - 2 column grid on lg */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  <div className="bg-card rounded-2xl p-6 shadow-sm border">
-                    <h2 className="text-lg font-semibold text-foreground mb-4">Score Trend</h2>
-                    <ScoreTrendChart data={initialScoreTrends} />
-                  </div>
-                  <div className="bg-card rounded-2xl p-6 shadow-sm border">
-                    <h2 className="text-lg font-semibold text-foreground mb-4">Skills Breakdown</h2>
-                    <DimensionRadarChart data={initialDimensionAverages} />
+              {activeTab === 'calls' && (
+                <div className="space-y-2">
+                  {calls.length === 0 ? (
+                    <EmptyState
+                      icon={<FileAudio className="w-6 h-6" />}
+                      title="No call analyses"
+                      description="Upload recordings for AI feedback"
+                      illustration="upload"
+                      action={{ label: 'Upload Call', href: '/analyze' }}
+                    />
+                  ) : (
+                    <>
+                      {calls.map((call, index) => (
+                        <CallHistoryCard
+                          key={call.id}
+                          call={call}
+                          index={index}
+                          onClick={() => handleCallClick(call.id)}
+                        />
+                      ))}
+                      {callsHasMore && (
+                        <Button
+                          variant="ghost"
+                          onClick={loadMoreCalls}
+                          disabled={callsLoading}
+                          className="w-full mt-2 text-muted-foreground hover:text-foreground"
+                        >
+                          {callsLoading ? (
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                          ) : (
+                            'Load more'
+                          )}
+                        </Button>
+                      )}
+                    </>
+                  )}
+                </div>
+              )}
+
+              {activeTab === 'progress' && (
+                <div className="space-y-6">
+                  {/* Curriculum */}
+                  <section>
+                    <h2 className="text-sm font-medium text-muted-foreground mb-3">Curriculum</h2>
+                    <div className="rounded-2xl border border-border/50 bg-card/50 backdrop-blur-sm p-5">
+                      <CurriculumProgressCard progress={initialCurriculumProgress} />
+                    </div>
+                  </section>
+
+                  {/* Charts */}
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    <section>
+                      <h2 className="text-sm font-medium text-muted-foreground mb-3">Score Trend</h2>
+                      <div className="rounded-2xl border border-border/50 bg-card/50 backdrop-blur-sm p-5">
+                        <ScoreTrendChart data={initialScoreTrends} />
+                      </div>
+                    </section>
+                    <section>
+                      <h2 className="text-sm font-medium text-muted-foreground mb-3">Skills</h2>
+                      <div className="rounded-2xl border border-border/50 bg-card/50 backdrop-blur-sm p-5">
+                        <DimensionRadarChart data={initialDimensionAverages} />
+                      </div>
+                    </section>
                   </div>
                 </div>
-              </div>
-            )}
-          </motion.div>
+              )}
+            </motion.div>
+          </AnimatePresence>
         </div>
       </main>
+      <Footer />
     </>
   )
 }

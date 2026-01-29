@@ -24,6 +24,7 @@ import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Header } from '@/components/ui/header'
+import { Footer } from '@/components/ui/footer'
 import {
   startRetellSession,
   stopRetellSession,
@@ -689,6 +690,7 @@ export function VoiceCoach() {
           )}
         </div>
       </main>
+      <Footer />
     </div>
   )
 }

@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 import { FileAudio, ArrowLeft, RefreshCw } from 'lucide-react'
 import * as Sentry from '@sentry/nextjs'
 import { Header } from '@/components/ui/header'
+import { Footer } from '@/components/ui/footer'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { UploadZone } from './UploadZone'
@@ -388,6 +389,7 @@ export function CallAnalyzer() {
           </AnimatePresence>
         </div>
       </main>
+      <Footer />
     </div>
   )
 }

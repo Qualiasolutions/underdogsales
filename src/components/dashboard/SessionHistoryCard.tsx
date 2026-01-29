@@ -1,11 +1,9 @@
 'use client'
 
 import { motion } from 'motion/react'
-import { Mic, Clock, ChevronRight, Calendar } from 'lucide-react'
+import { ChevronRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { getPersonaById } from '@/config/personas'
-import { getScoreColor } from '@/config/rubric'
-import { Badge } from '@/components/ui/badge'
 
 interface SessionHistoryCardProps {
   session: {
@@ -20,80 +18,60 @@ interface SessionHistoryCardProps {
   onClick: () => void
 }
 
-export function SessionHistoryCard({
-  session,
-  index,
-  onClick,
-}: SessionHistoryCardProps) {
+export function SessionHistoryCard({ session, index, onClick }: SessionHistoryCardProps) {
   const persona = getPersonaById(session.persona_id)
-  const personaName = persona?.name || 'Unknown Persona'
+  const personaName = persona?.name || 'Unknown'
 
   const formatDuration = (seconds: number) => {
     const mins = Math.floor(seconds / 60)
-    const secs = seconds % 60
-    return `${mins}m ${secs}s`
+    return `${mins}m`
   }
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString)
-    return date.toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-    })
+    const now = new Date()
+    const diffDays = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24))
+
+    if (diffDays === 0) return 'Today'
+    if (diffDays === 1) return 'Yesterday'
+    if (diffDays < 7) return `${diffDays}d ago`
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
   }
 
   const formatScenarioType = (type: string) => {
-    return type
-      .split('_')
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' ')
+    return type.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')
   }
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.05 }}
-      className={cn(
-        'bg-card rounded-xl border border-border p-4 cursor-pointer transition-all',
-        'hover:shadow-md hover:border-navy/20'
-      )}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ delay: index * 0.03 }}
       onClick={onClick}
+      className="group flex items-center gap-4 p-4 rounded-xl border border-transparent hover:border-border/50 hover:bg-muted/30 cursor-pointer transition-all duration-200"
     >
-      <div className="flex items-center gap-4">
-        {/* Icon */}
-        <div className="w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center flex-shrink-0">
-          <Mic className="w-6 h-6 text-emerald-600" />
-        </div>
+      {/* Score indicator */}
+      <div className={cn(
+        'w-10 h-10 rounded-xl flex items-center justify-center text-sm font-semibold',
+        session.overall_score >= 7 ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' :
+        session.overall_score >= 5 ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400' :
+        'bg-muted text-muted-foreground'
+      )}>
+        {session.overall_score > 0 ? session.overall_score.toFixed(1) : '—'}
+      </div>
 
-        {/* Info */}
-        <div className="flex-1 min-w-0">
-          <p className="font-medium text-foreground truncate">{personaName}</p>
-          <div className="flex items-center gap-3 text-sm text-muted-foreground mt-1 flex-wrap">
-            <Badge variant="default" className="text-xs">
-              {formatScenarioType(session.scenario_type)}
-            </Badge>
-            <span className="flex items-center gap-1">
-              <Clock className="w-3.5 h-3.5" />
-              {formatDuration(session.duration_seconds)}
-            </span>
-            <span className="flex items-center gap-1">
-              <Calendar className="w-3.5 h-3.5" />
-              {formatDate(session.created_at)}
-            </span>
-          </div>
-        </div>
+      {/* Info */}
+      <div className="flex-1 min-w-0">
+        <p className="font-medium text-foreground text-sm">{personaName}</p>
+        <p className="text-xs text-muted-foreground mt-0.5">
+          {formatScenarioType(session.scenario_type)} · {formatDuration(session.duration_seconds)}
+        </p>
+      </div>
 
-        {/* Score */}
-        <div className="flex items-center gap-2">
-          {session.overall_score > 0 && (
-            <span className={cn('font-bold text-lg', getScoreColor(session.overall_score))}>
-              {session.overall_score.toFixed(1)}
-            </span>
-          )}
-          <ChevronRight className="w-5 h-5 text-muted-foreground" />
-        </div>
+      {/* Date & Arrow */}
+      <div className="flex items-center gap-3">
+        <span className="text-xs text-muted-foreground">{formatDate(session.created_at)}</span>
+        <ChevronRight className="w-4 h-4 text-muted-foreground/50 group-hover:text-muted-foreground transition-colors" />
       </div>
     </motion.div>
   )

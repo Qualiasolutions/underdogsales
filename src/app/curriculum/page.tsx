@@ -6,6 +6,7 @@ import { BookOpen, ArrowLeft, Bell } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Header } from '@/components/ui/header'
+import { Footer } from '@/components/ui/footer'
 import { Badge } from '@/components/ui/badge'
 
 export default function CurriculumPage() {
@@ -92,6 +93,7 @@ export default function CurriculumPage() {
           </motion.div>
         </div>
       </main>
+      <Footer />
     </div>
   )
 }

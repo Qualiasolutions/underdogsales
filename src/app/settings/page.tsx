@@ -4,6 +4,7 @@ import { Settings } from 'lucide-react'
 import { getUser } from '@/lib/supabase/server'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
 import { Header } from '@/components/ui/header'
+import { Footer } from '@/components/ui/footer'
 import { SettingsForm } from './settings-form'
 
 export const metadata: Metadata = {
@@ -51,6 +52,7 @@ export default async function SettingsPage() {
           <SettingsForm user={user} userName={userData?.name} />
         </div>
       </main>
+      <Footer />
     </div>
   )
 }
