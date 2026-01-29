@@ -279,7 +279,7 @@ export default function Home() {
                       <div className="flex items-center gap-4 mb-8">
                         <div className="w-16 h-16 rounded-2xl overflow-hidden border-2 border-gold">
                           <Image
-                            src="/coach.webp"
+                            src="/coach.png"
                             alt="AI Sales Coach"
                             width={64}
                             height={64}

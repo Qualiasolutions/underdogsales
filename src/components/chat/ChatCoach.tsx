@@ -154,7 +154,7 @@ export function ChatCoach() {
                 <Card variant="elevated" className="p-6 max-w-md w-full">
                   <div className="flex items-center gap-4 mb-6">
                     <Image
-                      src="/coach.webp"
+                      src="/coach.png"
                       alt={GIULIO_COACH.name}
                       width={64}
                       height={64}
@@ -244,7 +244,7 @@ export function ChatCoach() {
                         </div>
                       ) : (
                         <Image
-                          src="/coach.webp"
+                          src="/coach.png"
                           alt={GIULIO_COACH.name}
                           width={36}
                           height={36}
@@ -269,7 +269,7 @@ export function ChatCoach() {
                       className="flex gap-3"
                     >
                       <Image
-                        src="/coach.webp"
+                        src="/coach.png"
                         alt={GIULIO_COACH.name}
                         width={36}
                         height={36}

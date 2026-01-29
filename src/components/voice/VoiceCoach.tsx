@@ -112,7 +112,7 @@ const TranscriptMessage = memo(({
       </div>
     ) : (
       <Image
-        src="/coach.webp"
+        src="/coach.png"
         alt="Giulio"
         width={36}
         height={36}
@@ -385,7 +385,7 @@ export function VoiceCoach() {
                   <Card variant="elevated" className="p-6">
                     <div className="flex items-center gap-4 mb-6">
                       <Image
-                        src="/coach.webp"
+                        src="/coach.png"
                         alt={GIULIO_COACH.name}
                         width={80}
                         height={80}
@@ -497,7 +497,7 @@ export function VoiceCoach() {
                       transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
                     />
                     <Image
-                      src="/coach.webp"
+                      src="/coach.png"
                       alt="Giulio"
                       width={72}
                       height={72}
@@ -555,7 +555,7 @@ export function VoiceCoach() {
                           className="relative w-24 h-24 mx-auto mb-6"
                         >
                           <Image
-                            src="/coach.webp"
+                            src="/coach.png"
                             alt={GIULIO_COACH.name}
                             width={96}
                             height={96}
