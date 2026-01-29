@@ -96,7 +96,7 @@ npm run test:e2e     # E2E tests (Playwright)
 
 ## Production URLs
 
-- **App**: https://under-eight.vercel.app
+- **App**: https://underdogsales.vercel.app
 - **Sentry**: https://qualia-solutions.sentry.io (project: under)
 - **Supabase**: Dashboard → qualia-solutions org
 
