@@ -16,6 +16,7 @@ import {
   MessageSquare,
   Home,
   LayoutDashboard,
+  Settings,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from './button'
@@ -146,7 +147,15 @@ export function Header({ variant = 'default', showNav = true }: HeaderProps) {
                                 Signed in
                               </p>
                             </div>
-                            <div className="p-2">
+                            <div className="p-2 space-y-1">
+                              <Link
+                                href="/settings"
+                                onClick={() => setProfileMenuOpen(false)}
+                                className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-foreground hover:bg-muted transition-colors"
+                              >
+                                <Settings className="w-4 h-4" />
+                                Settings
+                              </Link>
                               <button
                                 onClick={() => {
                                   setProfileMenuOpen(false)
@@ -243,6 +252,19 @@ export function Header({ variant = 'default', showNav = true }: HeaderProps) {
                           </p>
                         </div>
                       </div>
+                      <Link
+                        href="/settings"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="block"
+                      >
+                        <Button
+                          variant="ghost"
+                          className="w-full justify-start"
+                        >
+                          <Settings className="w-4 h-4" />
+                          Settings
+                        </Button>
+                      </Link>
                       <Button
                         variant="ghost"
                         className="w-full justify-start text-error hover:bg-error/5"
