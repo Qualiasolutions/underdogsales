@@ -10,14 +10,14 @@ export default function PersonasPage() {
     <div>
       <Link
         href="/admin/content"
-        className="inline-flex items-center text-muted-foreground hover:text-navy mb-6 transition-colors"
+        className="inline-flex items-center text-muted-foreground hover:text-foreground mb-6 transition-colors"
       >
         <ArrowLeft className="w-4 h-4 mr-2" />
         Back to Content
       </Link>
 
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-navy">AI Personas</h1>
+        <h1 className="text-2xl font-bold text-foreground">AI Personas</h1>
         <span className="text-muted-foreground">{personas.length} personas</span>
       </div>
 

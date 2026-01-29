@@ -36,9 +36,9 @@ export default async function SettingsPage() {
           <div className="mb-8">
             <div className="flex items-center gap-3 mb-2">
               <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-gold to-gold-light flex items-center justify-center">
-                <Settings className="w-5 h-5 text-navy" />
+                <Settings className="w-5 h-5 text-foreground" />
               </div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-navy">
+              <h1 className="text-2xl sm:text-3xl font-bold text-foreground">
                 Account Settings
               </h1>
             </div>

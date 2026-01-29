@@ -27,18 +27,18 @@ function WarmthIndicator({ value }: { value: number }) {
           style={{ width: `${percentage}%` }}
         />
       </div>
-      <span className="text-xs font-medium text-navy">{percentage}%</span>
+      <span className="text-xs font-medium text-foreground">{percentage}%</span>
     </div>
   )
 }
 
 export function PersonaCard({ persona, prompt, className }: PersonaCardProps) {
   return (
-    <div className={cn('bg-white rounded-xl border shadow-sm p-6', className)}>
+    <div className={cn('bg-card rounded-xl border shadow-sm p-6', className)}>
       {/* Header */}
       <div className="flex items-start justify-between mb-4">
         <div>
-          <h3 className="text-lg font-semibold text-navy">{persona.name}</h3>
+          <h3 className="text-lg font-semibold text-foreground">{persona.name}</h3>
           <p className="text-sm text-muted-foreground">{persona.role}</p>
         </div>
         <WarmthIndicator value={persona.warmth} />
@@ -75,7 +75,7 @@ export function PersonaCard({ persona, prompt, className }: PersonaCardProps) {
       {/* Prompt preview (if provided) */}
       {prompt && (
         <details className="mt-4">
-          <summary className="text-sm text-navy cursor-pointer hover:text-navy/80 transition-colors">
+          <summary className="text-sm text-foreground cursor-pointer hover:text-foreground/80 transition-colors">
             View System Prompt
           </summary>
           <pre className="mt-2 p-4 bg-muted rounded text-xs overflow-x-auto whitespace-pre-wrap max-h-64 overflow-y-auto">

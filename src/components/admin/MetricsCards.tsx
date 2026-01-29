@@ -17,13 +17,13 @@ interface MetricCardProps {
 
 function MetricCard({ icon, iconBg, value, label }: MetricCardProps) {
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+    <div className="bg-card rounded-xl shadow-sm border border-border p-6">
       <div className="flex items-center gap-4">
         <div className={`w-12 h-12 rounded-full flex items-center justify-center ${iconBg}`}>
           {icon}
         </div>
         <div>
-          <p className="text-2xl font-bold text-navy">{formatter.format(value)}</p>
+          <p className="text-2xl font-bold text-foreground">{formatter.format(value)}</p>
           <p className="text-sm text-gray-500">{label}</p>
         </div>
       </div>
@@ -35,7 +35,7 @@ export function MetricsCards({ totalSessions, totalCalls, activeUsers }: Metrics
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
       <MetricCard
-        icon={<MessageSquare className="w-6 h-6 text-navy" />}
+        icon={<MessageSquare className="w-6 h-6 text-foreground" />}
         iconBg="bg-navy/10"
         value={totalSessions}
         label="Practice Sessions"

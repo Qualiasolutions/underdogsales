@@ -250,7 +250,7 @@ export function CallAnalyzer() {
                   animate={{ opacity: 1, y: 0 }}
                   className="text-center"
                 >
-                  <h1 className="text-3xl sm:text-4xl font-bold text-navy tracking-tight mb-3">
+                  <h1 className="text-3xl sm:text-4xl font-bold text-foreground tracking-tight mb-3">
                     Call <span className="text-gradient-gold">Analysis</span>
                   </h1>
                   <p className="text-muted-foreground max-w-md mx-auto">
@@ -322,7 +322,7 @@ export function CallAnalyzer() {
                   transition={{ delay: 0.2 }}
                 >
                   <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-lg font-semibold text-navy">
+                    <h2 className="text-lg font-semibold text-foreground">
                       Recent Analyses
                     </h2>
                     <Button
@@ -354,7 +354,7 @@ export function CallAnalyzer() {
               >
                 <Card variant="elevated" className="w-full max-w-lg p-8">
                   <div className="text-center mb-8">
-                    <h2 className="text-2xl font-bold text-navy mb-2">
+                    <h2 className="text-2xl font-bold text-foreground mb-2">
                       Analyzing Your Call
                     </h2>
                     <p className="text-muted-foreground">

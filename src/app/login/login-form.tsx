@@ -29,14 +29,14 @@ export const LoginForm = () => {
   }
 
   return (
-    <div className="min-h-screen bg-white flex flex-col">
+    <div className="min-h-screen bg-background flex flex-col">
       {/* Header */}
       <header className="py-6 px-6">
         <Link href="/" className="flex items-center gap-3 w-fit">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-gold to-gold-light flex items-center justify-center">
-            <Mic className="w-5 h-5 text-navy" />
+            <Mic className="w-5 h-5 text-primary-foreground" />
           </div>
-          <span className="font-bold text-xl text-navy font-[family-name:var(--font-maven-pro)]">
+          <span className="font-bold text-xl text-foreground font-[family-name:var(--font-maven-pro)]">
             Underdog AI
           </span>
         </Link>
@@ -48,7 +48,7 @@ export const LoginForm = () => {
           <Card variant="elevated" className="p-8">
             {/* Title */}
             <div className="text-center mb-8">
-              <h1 className="text-2xl font-bold text-navy mb-2 font-[family-name:var(--font-maven-pro)]">
+              <h1 className="text-2xl font-bold text-foreground mb-2 font-[family-name:var(--font-maven-pro)]">
                 Welcome Back
               </h1>
               <p className="text-muted-foreground text-sm">
@@ -67,7 +67,7 @@ export const LoginForm = () => {
             <form action={handleSubmit} className="space-y-5">
               {/* Email */}
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-navy mb-2">
+                <label htmlFor="email" className="block text-sm font-medium text-foreground mb-2">
                   Email
                 </label>
                 <div className="relative">
@@ -79,14 +79,14 @@ export const LoginForm = () => {
                     required
                     autoComplete="email"
                     placeholder="you@example.com"
-                    className="w-full h-12 pl-12 pr-4 rounded-xl border-2 border-border bg-white text-navy placeholder:text-muted-foreground focus:border-gold focus:outline-none transition-colors"
+                    className="w-full h-12 pl-12 pr-4 rounded-xl border-2 border-border bg-background text-foreground placeholder:text-muted-foreground focus:border-gold focus:outline-none transition-colors"
                   />
                 </div>
               </div>
 
               {/* Password */}
               <div>
-                <label htmlFor="password" className="block text-sm font-medium text-navy mb-2">
+                <label htmlFor="password" className="block text-sm font-medium text-foreground mb-2">
                   Password
                 </label>
                 <div className="relative">
@@ -98,7 +98,7 @@ export const LoginForm = () => {
                     required
                     autoComplete="current-password"
                     placeholder="Enter your password"
-                    className="w-full h-12 pl-12 pr-4 rounded-xl border-2 border-border bg-white text-navy placeholder:text-muted-foreground focus:border-gold focus:outline-none transition-colors"
+                    className="w-full h-12 pl-12 pr-4 rounded-xl border-2 border-border bg-background text-foreground placeholder:text-muted-foreground focus:border-gold focus:outline-none transition-colors"
                   />
                 </div>
               </div>

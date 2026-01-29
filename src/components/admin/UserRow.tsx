@@ -22,7 +22,7 @@ function getScoreColorClass(score: number): string {
   if (score >= 7) return 'text-green-600 bg-green-50'
   if (score >= 5) return 'text-yellow-600 bg-yellow-50'
   if (score > 0) return 'text-red-600 bg-red-50'
-  return 'text-muted-foreground bg-gray-50'
+  return 'text-muted-foreground bg-muted'
 }
 
 export function UserRow({ user }: UserRowProps) {
@@ -31,12 +31,12 @@ export function UserRow({ user }: UserRowProps) {
       href={`/admin/users/${user.id}`}
       className={cn(
         'table-row',
-        'hover:bg-gray-50 transition-colors cursor-pointer',
+        'hover:bg-muted transition-colors cursor-pointer',
         'group'
       )}
     >
       <td className="px-4 py-4">
-        <div className="font-medium text-navy">{user.name || 'No name'}</div>
+        <div className="font-medium text-foreground">{user.name || 'No name'}</div>
       </td>
       <td className="px-4 py-4 text-muted-foreground">
         {user.email}

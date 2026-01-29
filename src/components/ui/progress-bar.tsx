@@ -100,8 +100,8 @@ export function MultiStepProgress({
                 <motion.div
                   className={cn(
                     'w-10 h-10 rounded-full flex items-center justify-center font-semibold text-sm transition-colors',
-                    isCompleted && variant === 'gold' && 'bg-gold text-navy',
-                    isCompleted && variant === 'default' && 'bg-navy text-white dark:bg-gold dark:text-navy',
+                    isCompleted && variant === 'gold' && 'bg-gold text-foreground',
+                    isCompleted && variant === 'default' && 'bg-navy text-white dark:bg-gold dark:text-foreground',
                     isCurrent && 'bg-gold/20 text-gold-dark border-2 border-gold',
                     !isCompleted && !isCurrent && 'bg-muted text-muted-foreground'
                   )}

@@ -31,7 +31,7 @@ export function CurriculumProgressCard({ progress, className }: CurriculumProgre
       <CurriculumStats completed={completedCount} total={TOTAL_MODULES} />
 
       <div className="pt-2">
-        <h3 className="text-sm font-medium text-navy mb-3">Module Progress</h3>
+        <h3 className="text-sm font-medium text-foreground mb-3">Module Progress</h3>
         <ModuleBreakdown progress={progress} />
       </div>
     </div>

@@ -16,16 +16,16 @@ function ContentCard({ title, description, count, countLabel, href, icon: Icon }
   return (
     <Link
       href={href}
-      className="block bg-white rounded-xl border shadow-sm p-6 hover:shadow-md hover:border-navy/20 transition-all"
+      className="block bg-card rounded-xl border shadow-sm p-6 hover:shadow-md hover:border-navy/20 transition-all"
     >
       <div className="flex items-start gap-4">
         <div className="p-3 bg-navy/5 rounded-lg">
-          <Icon className="w-6 h-6 text-navy" />
+          <Icon className="w-6 h-6 text-foreground" />
         </div>
         <div className="flex-1">
-          <h2 className="text-lg font-semibold text-navy">{title}</h2>
+          <h2 className="text-lg font-semibold text-foreground">{title}</h2>
           <p className="text-sm text-muted-foreground mt-1">{description}</p>
-          <p className="text-sm font-medium text-navy mt-3">
+          <p className="text-sm font-medium text-foreground mt-3">
             {count} {countLabel}
           </p>
         </div>
@@ -37,7 +37,7 @@ function ContentCard({ title, description, count, countLabel, href, icon: Icon }
 export default function ContentManagementPage() {
   return (
     <div>
-      <h1 className="text-2xl font-bold text-navy mb-2">Content Management</h1>
+      <h1 className="text-2xl font-bold text-foreground mb-2">Content Management</h1>
       <p className="text-muted-foreground mb-8">
         View platform content configuration. Content is currently read-only.
       </p>

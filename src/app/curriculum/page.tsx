@@ -31,7 +31,7 @@ export default function CurriculumPage() {
             </Badge>
 
             {/* Title */}
-            <h1 className="text-4xl sm:text-5xl font-bold text-navy tracking-tight mb-4">
+            <h1 className="text-4xl sm:text-5xl font-bold text-foreground tracking-tight mb-4">
               12-Module <span className="text-gradient-gold">Curriculum</span>
             </h1>
 
@@ -43,7 +43,7 @@ export default function CurriculumPage() {
 
             {/* Preview Card */}
             <Card variant="elevated" className="p-8 mb-8 text-left">
-              <h2 className="font-bold text-navy mb-4">What&apos;s Included:</h2>
+              <h2 className="font-bold text-foreground mb-4">What&apos;s Included:</h2>
               <ul className="space-y-3">
                 {[
                   'The Underdog Mindset - Reframe rejection as opportunity',

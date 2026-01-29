@@ -20,7 +20,7 @@ export default function PrivacyPage() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6">
           <ScrollReveal>
             <div className="mb-12">
-              <h1 className="text-3xl sm:text-4xl font-bold text-navy mb-4">
+              <h1 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
                 Privacy Policy
               </h1>
               <p className="text-muted-foreground">
@@ -32,7 +32,7 @@ export default function PrivacyPage() {
           <div className="prose prose-slate dark:prose-invert max-w-none space-y-8">
             <ScrollReveal delay={0.1}>
               <section>
-                <h2 className="text-2xl font-semibold text-navy mb-4">1. Introduction</h2>
+                <h2 className="text-2xl font-semibold text-foreground mb-4">1. Introduction</h2>
                 <p className="text-foreground/80 leading-relaxed">
                   Qualia Solutions (&quot;we,&quot; &quot;us,&quot; or &quot;our&quot;) operates Underdog Sales, an AI-powered sales coaching platform.
                   This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our Service.
@@ -46,9 +46,9 @@ export default function PrivacyPage() {
 
             <ScrollReveal delay={0.15}>
               <section>
-                <h2 className="text-2xl font-semibold text-navy mb-4">2. Information We Collect</h2>
+                <h2 className="text-2xl font-semibold text-foreground mb-4">2. Information We Collect</h2>
 
-                <h3 className="text-xl font-medium text-navy mt-6 mb-3">2.1 Information You Provide</h3>
+                <h3 className="text-xl font-medium text-foreground mt-6 mb-3">2.1 Information You Provide</h3>
                 <ul className="list-disc pl-6 space-y-2 text-foreground/80">
                   <li><strong>Account Information:</strong> Name, email address, and password when you create an account</li>
                   <li><strong>Profile Information:</strong> Any additional information you add to your profile</li>
@@ -57,7 +57,7 @@ export default function PrivacyPage() {
                   <li><strong>Payment Information:</strong> Billing details processed through secure third-party payment processors</li>
                 </ul>
 
-                <h3 className="text-xl font-medium text-navy mt-6 mb-3">2.2 Information Collected Automatically</h3>
+                <h3 className="text-xl font-medium text-foreground mt-6 mb-3">2.2 Information Collected Automatically</h3>
                 <ul className="list-disc pl-6 space-y-2 text-foreground/80">
                   <li><strong>Device Information:</strong> Browser type, operating system, device identifiers</li>
                   <li><strong>Usage Data:</strong> Pages visited, features used, session duration, and interaction patterns</li>
@@ -69,7 +69,7 @@ export default function PrivacyPage() {
 
             <ScrollReveal delay={0.2}>
               <section>
-                <h2 className="text-2xl font-semibold text-navy mb-4">3. How We Use Your Information</h2>
+                <h2 className="text-2xl font-semibold text-foreground mb-4">3. How We Use Your Information</h2>
                 <p className="text-foreground/80 leading-relaxed">We use collected information to:</p>
                 <ul className="list-disc pl-6 mt-4 space-y-2 text-foreground/80">
                   <li>Provide, maintain, and improve our AI coaching services</li>
@@ -87,7 +87,7 @@ export default function PrivacyPage() {
 
             <ScrollReveal delay={0.25}>
               <section>
-                <h2 className="text-2xl font-semibold text-navy mb-4">4. AI and Data Processing</h2>
+                <h2 className="text-2xl font-semibold text-foreground mb-4">4. AI and Data Processing</h2>
                 <p className="text-foreground/80 leading-relaxed">
                   Our Service uses artificial intelligence to analyze your voice recordings, provide coaching feedback,
                   and personalize your learning experience. This involves:
@@ -106,10 +106,10 @@ export default function PrivacyPage() {
 
             <ScrollReveal delay={0.3}>
               <section>
-                <h2 className="text-2xl font-semibold text-navy mb-4">5. Data Sharing and Disclosure</h2>
+                <h2 className="text-2xl font-semibold text-foreground mb-4">5. Data Sharing and Disclosure</h2>
                 <p className="text-foreground/80 leading-relaxed">We may share your information with:</p>
 
-                <h3 className="text-xl font-medium text-navy mt-6 mb-3">5.1 Service Providers</h3>
+                <h3 className="text-xl font-medium text-foreground mt-6 mb-3">5.1 Service Providers</h3>
                 <p className="text-foreground/80 leading-relaxed">
                   Third-party vendors who help us operate our Service, including:
                 </p>
@@ -121,13 +121,13 @@ export default function PrivacyPage() {
                   <li>Error monitoring services (e.g., Sentry) for platform reliability</li>
                 </ul>
 
-                <h3 className="text-xl font-medium text-navy mt-6 mb-3">5.2 Legal Requirements</h3>
+                <h3 className="text-xl font-medium text-foreground mt-6 mb-3">5.2 Legal Requirements</h3>
                 <p className="text-foreground/80 leading-relaxed">
                   We may disclose information when required by law, court order, or government request,
                   or when necessary to protect our rights, property, or safety.
                 </p>
 
-                <h3 className="text-xl font-medium text-navy mt-6 mb-3">5.3 Business Transfers</h3>
+                <h3 className="text-xl font-medium text-foreground mt-6 mb-3">5.3 Business Transfers</h3>
                 <p className="text-foreground/80 leading-relaxed">
                   In the event of a merger, acquisition, or sale of assets, your information may be transferred
                   as part of the transaction. We will notify you of any such change.
@@ -137,7 +137,7 @@ export default function PrivacyPage() {
 
             <ScrollReveal delay={0.35}>
               <section>
-                <h2 className="text-2xl font-semibold text-navy mb-4">6. Data Retention</h2>
+                <h2 className="text-2xl font-semibold text-foreground mb-4">6. Data Retention</h2>
                 <p className="text-foreground/80 leading-relaxed">
                   We retain your data for as long as necessary to provide the Service and fulfill the purposes
                   outlined in this policy. Specifically:
@@ -157,9 +157,9 @@ export default function PrivacyPage() {
 
             <ScrollReveal delay={0.4}>
               <section>
-                <h2 className="text-2xl font-semibold text-navy mb-4">7. Your Rights</h2>
+                <h2 className="text-2xl font-semibold text-foreground mb-4">7. Your Rights</h2>
 
-                <h3 className="text-xl font-medium text-navy mt-6 mb-3">7.1 GDPR Rights (EU/EEA Residents)</h3>
+                <h3 className="text-xl font-medium text-foreground mt-6 mb-3">7.1 GDPR Rights (EU/EEA Residents)</h3>
                 <p className="text-foreground/80 leading-relaxed">Under GDPR, you have the right to:</p>
                 <ul className="list-disc pl-6 mt-2 space-y-2 text-foreground/80">
                   <li><strong>Access:</strong> Request a copy of your personal data</li>
@@ -171,7 +171,7 @@ export default function PrivacyPage() {
                   <li><strong>Withdraw Consent:</strong> Withdraw consent at any time</li>
                 </ul>
 
-                <h3 className="text-xl font-medium text-navy mt-6 mb-3">7.2 CCPA/CPRA Rights (California Residents)</h3>
+                <h3 className="text-xl font-medium text-foreground mt-6 mb-3">7.2 CCPA/CPRA Rights (California Residents)</h3>
                 <p className="text-foreground/80 leading-relaxed">Under CCPA/CPRA, you have the right to:</p>
                 <ul className="list-disc pl-6 mt-2 space-y-2 text-foreground/80">
                   <li>Know what personal information is collected, used, shared, or sold</li>
@@ -190,7 +190,7 @@ export default function PrivacyPage() {
 
             <ScrollReveal delay={0.45}>
               <section>
-                <h2 className="text-2xl font-semibold text-navy mb-4">8. Cookies and Tracking</h2>
+                <h2 className="text-2xl font-semibold text-foreground mb-4">8. Cookies and Tracking</h2>
                 <p className="text-foreground/80 leading-relaxed">We use the following types of cookies:</p>
                 <ul className="list-disc pl-6 mt-4 space-y-2 text-foreground/80">
                   <li><strong>Essential Cookies:</strong> Required for the Service to function (authentication, security)</li>
@@ -205,7 +205,7 @@ export default function PrivacyPage() {
 
             <ScrollReveal delay={0.5}>
               <section>
-                <h2 className="text-2xl font-semibold text-navy mb-4">9. Data Security</h2>
+                <h2 className="text-2xl font-semibold text-foreground mb-4">9. Data Security</h2>
                 <p className="text-foreground/80 leading-relaxed">
                   We implement appropriate technical and organizational measures to protect your data, including:
                 </p>
@@ -224,7 +224,7 @@ export default function PrivacyPage() {
 
             <ScrollReveal delay={0.55}>
               <section>
-                <h2 className="text-2xl font-semibold text-navy mb-4">10. International Data Transfers</h2>
+                <h2 className="text-2xl font-semibold text-foreground mb-4">10. International Data Transfers</h2>
                 <p className="text-foreground/80 leading-relaxed">
                   Your data may be transferred to and processed in countries other than your country of residence,
                   including the United States, where our service providers operate. We ensure appropriate safeguards
@@ -235,7 +235,7 @@ export default function PrivacyPage() {
 
             <ScrollReveal delay={0.6}>
               <section>
-                <h2 className="text-2xl font-semibold text-navy mb-4">11. Children&apos;s Privacy</h2>
+                <h2 className="text-2xl font-semibold text-foreground mb-4">11. Children&apos;s Privacy</h2>
                 <p className="text-foreground/80 leading-relaxed">
                   The Service is not intended for users under 18 years of age. We do not knowingly collect personal
                   information from children. If we learn we have collected data from a child, we will delete it promptly.
@@ -245,7 +245,7 @@ export default function PrivacyPage() {
 
             <ScrollReveal delay={0.65}>
               <section>
-                <h2 className="text-2xl font-semibold text-navy mb-4">12. Changes to This Policy</h2>
+                <h2 className="text-2xl font-semibold text-foreground mb-4">12. Changes to This Policy</h2>
                 <p className="text-foreground/80 leading-relaxed">
                   We may update this Privacy Policy from time to time. We will notify you of material changes by
                   posting the new policy on this page and updating the &quot;Last updated&quot; date. For significant changes,
@@ -256,7 +256,7 @@ export default function PrivacyPage() {
 
             <ScrollReveal delay={0.7}>
               <section>
-                <h2 className="text-2xl font-semibold text-navy mb-4">13. Contact Us</h2>
+                <h2 className="text-2xl font-semibold text-foreground mb-4">13. Contact Us</h2>
                 <p className="text-foreground/80 leading-relaxed">
                   If you have questions about this Privacy Policy or want to exercise your data rights, contact us:
                 </p>
@@ -287,9 +287,9 @@ export default function PrivacyPage() {
             />
           </Link>
           <div className="flex items-center gap-6 text-sm text-muted-foreground">
-            <Link href="/terms" className="hover:text-navy transition-colors">Terms</Link>
-            <Link href="/support" className="hover:text-navy transition-colors">Support</Link>
-            <Link href="/" className="hover:text-navy transition-colors">Back to Home</Link>
+            <Link href="/terms" className="hover:text-foreground transition-colors">Terms</Link>
+            <Link href="/support" className="hover:text-foreground transition-colors">Support</Link>
+            <Link href="/" className="hover:text-foreground transition-colors">Back to Home</Link>
           </div>
         </div>
       </footer>

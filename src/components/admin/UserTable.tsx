@@ -19,7 +19,7 @@ export function UserTable({ users, className }: UserTableProps) {
   return (
     <div className={cn('overflow-x-auto', className)}>
       <table className="w-full">
-        <thead className="bg-gray-50 border-b">
+        <thead className="bg-muted border-b">
           <tr>
             <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">
               User

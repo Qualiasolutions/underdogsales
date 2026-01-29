@@ -18,8 +18,8 @@ interface UsageChartsProps {
 export function UsageCharts({ data }: UsageChartsProps) {
   if (data.length === 0) {
     return (
-      <div className="bg-white rounded-xl p-6 shadow-sm border">
-        <h3 className="font-semibold text-navy mb-4">Activity Trend</h3>
+      <div className="bg-card rounded-xl p-6 shadow-sm border">
+        <h3 className="font-semibold text-foreground mb-4">Activity Trend</h3>
         <div className="flex items-center justify-center h-[300px]">
           <p className="text-muted-foreground text-center">
             No activity data yet.
@@ -30,8 +30,8 @@ export function UsageCharts({ data }: UsageChartsProps) {
   }
 
   return (
-    <div className="bg-white rounded-xl p-6 shadow-sm border">
-      <h3 className="font-semibold text-navy mb-4">Activity Trend</h3>
+    <div className="bg-card rounded-xl p-6 shadow-sm border">
+      <h3 className="font-semibold text-foreground mb-4">Activity Trend</h3>
       <ResponsiveContainer width="100%" height={300}>
         <AreaChart data={data} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
           <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />

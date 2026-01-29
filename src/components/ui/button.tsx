@@ -11,15 +11,15 @@ const buttonVariants = cva(
     variants: {
       variant: {
         primary:
-          'bg-gold text-navy hover:bg-gold-dark shadow-md hover:shadow-gold',
+          'bg-gold text-foreground hover:bg-gold-dark shadow-md hover:shadow-gold',
         secondary:
           'bg-navy text-white hover:bg-navy-light shadow-md hover:shadow-navy',
         outline:
-          'border-2 border-navy text-navy bg-transparent hover:bg-navy hover:text-white',
+          'border-2 border-navy text-foreground bg-transparent hover:bg-navy hover:text-white',
         ghost:
-          'text-navy hover:bg-navy/5',
+          'text-foreground hover:bg-navy/5',
         gold:
-          'bg-gradient-to-r from-gold to-gold-light text-navy font-bold shadow-gold hover:shadow-gold-intense',
+          'bg-gradient-to-r from-gold to-gold-light text-foreground font-bold shadow-gold hover:shadow-gold-intense',
         navy:
           'bg-gradient-to-r from-navy to-navy-light text-white font-bold shadow-navy',
         success:
@@ -27,7 +27,7 @@ const buttonVariants = cva(
         danger:
           'bg-error text-white hover:bg-error/90 shadow-md',
         link:
-          'text-navy underline-offset-4 hover:underline',
+          'text-foreground underline-offset-4 hover:underline',
       },
       size: {
         sm: 'h-9 px-4 text-xs rounded-lg',
@@ -122,7 +122,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         {ripples.length > 0 && ripples.map((r) => (
           <span
             key={r.id}
-            className="absolute rounded-full bg-white/30 pointer-events-none animate-ripple"
+            className="absolute rounded-full bg-card/30 pointer-events-none animate-ripple"
             style={{
               left: r.x,
               top: r.y,

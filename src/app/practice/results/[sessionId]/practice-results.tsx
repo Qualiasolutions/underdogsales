@@ -128,7 +128,7 @@ function ScoreCircle({ score, size = 'lg' }: { score: number; size?: 'sm' | 'lg'
       {/* Score text */}
       <div className="absolute inset-0 flex flex-col items-center justify-center">
         <motion.span
-          className={cn('font-bold text-navy', size === 'lg' ? 'text-5xl' : 'text-2xl')}
+          className={cn('font-bold text-foreground', size === 'lg' ? 'text-5xl' : 'text-2xl')}
           initial={{ opacity: 0, scale: 0.5 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.8, type: 'spring', stiffness: 200 }}
@@ -176,7 +176,7 @@ function DimensionCard({
           {/* Header */}
           <div className="flex items-start justify-between mb-3">
             <div>
-              <h4 className="font-semibold text-navy">{DIMENSION_LABELS[dimension]}</h4>
+              <h4 className="font-semibold text-foreground">{DIMENSION_LABELS[dimension]}</h4>
               <p className="text-xs text-muted-foreground">Weight: {Math.round(weight * 100)}%</p>
             </div>
             <div className="flex items-center gap-2">
@@ -231,7 +231,7 @@ function DimensionCard({
                         <XCircle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
                       )}
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-navy capitalize">
+                        <p className="text-sm font-medium text-foreground capitalize">
                           {criterion.name.replace(/_/g, ' ')}
                         </p>
                         {criterion.note && (
@@ -290,7 +290,7 @@ function FeedbackList({
                 <Target className="w-5 h-5 text-amber-600" />
               )}
             </div>
-            <h3 className="text-lg font-semibold text-navy">{title}</h3>
+            <h3 className="text-lg font-semibold text-foreground">{title}</h3>
           </div>
 
           {/* List */}
@@ -357,7 +357,7 @@ function TranscriptMessage({
           'flex-1 py-3 px-4 rounded-2xl text-sm leading-relaxed',
           isUser
             ? 'bg-gradient-to-br from-navy to-navy-light text-white rounded-tr-md'
-            : 'bg-white border border-border text-navy rounded-tl-md'
+            : 'bg-card border border-border text-foreground rounded-tl-md'
         )}
       >
         {entry.content}
@@ -484,7 +484,7 @@ export function PracticeResults({ session, personaName, personaRole }: PracticeR
             transition={{ delay: 0.5 }}
             className="mb-8"
           >
-            <h2 className="text-xl font-bold text-navy mb-4">Score Breakdown</h2>
+            <h2 className="text-xl font-bold text-foreground mb-4">Score Breakdown</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {DIMENSION_ORDER.map((dimension, index) => {
                 const score = session.analysis.scores[dimension]
@@ -516,8 +516,8 @@ export function PracticeResults({ session, personaName, personaRole }: PracticeR
                 className="w-full px-6 py-4 flex items-center justify-between hover:bg-muted/50 transition-colors"
               >
                 <div className="flex items-center gap-3">
-                  <MessageSquare className="w-5 h-5 text-navy" />
-                  <h2 className="text-lg font-bold text-navy">Conversation Transcript</h2>
+                  <MessageSquare className="w-5 h-5 text-foreground" />
+                  <h2 className="text-lg font-bold text-foreground">Conversation Transcript</h2>
                   <Badge variant="outline">{session.transcript.length} messages</Badge>
                 </div>
                 <motion.div animate={{ rotate: showTranscript ? 180 : 0 }} transition={{ duration: 0.2 }}>

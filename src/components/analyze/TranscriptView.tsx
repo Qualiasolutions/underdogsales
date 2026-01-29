@@ -61,7 +61,7 @@ export function TranscriptView({ transcript }: TranscriptViewProps) {
                 'py-3 px-4 rounded-2xl text-sm leading-relaxed',
                 entry.role === 'user'
                   ? 'bg-gradient-to-br from-navy to-navy-light text-white rounded-tr-md'
-                  : 'bg-white border border-border text-navy rounded-tl-md'
+                  : 'bg-card border border-border text-foreground rounded-tl-md'
               )}
             >
               {entry.content}

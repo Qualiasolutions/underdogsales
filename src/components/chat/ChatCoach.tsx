@@ -159,7 +159,7 @@ export function ChatCoach() {
               >
                 {/* Page Title */}
                 <div className="text-center">
-                  <h1 className="text-3xl sm:text-4xl font-bold text-navy tracking-tight mb-3">
+                  <h1 className="text-3xl sm:text-4xl font-bold text-foreground tracking-tight mb-3">
                     Chat with <span className="text-gradient-gold">Giulio</span>
                   </h1>
                   <p className="text-muted-foreground max-w-md mx-auto">
@@ -172,7 +172,7 @@ export function ChatCoach() {
                   <div className="flex items-center gap-4 mb-6">
                     <CoachAvatar size="md" />
                     <div>
-                      <h2 className="font-bold text-navy text-lg">{GIULIO_COACH.name}</h2>
+                      <h2 className="font-bold text-foreground text-lg">{GIULIO_COACH.name}</h2>
                       <p className="text-sm text-muted-foreground">{GIULIO_COACH.title}</p>
                     </div>
                   </div>
@@ -194,18 +194,18 @@ export function ChatCoach() {
                             'p-4 rounded-xl text-left transition-all duration-200 border-2',
                             selectedMode === mode.id
                               ? 'border-gold bg-gold/5 shadow-md'
-                              : 'border-transparent bg-white hover:border-border hover:shadow-sm'
+                              : 'border-transparent bg-card hover:border-border hover:shadow-sm'
                           )}
                         >
                           <div className={cn(
                             'w-10 h-10 rounded-lg flex items-center justify-center mb-3 transition-colors',
                             selectedMode === mode.id
-                              ? 'bg-gradient-to-br from-gold to-gold-light text-navy'
-                              : 'bg-navy/5 text-navy/70'
+                              ? 'bg-gradient-to-br from-gold to-gold-light text-foreground'
+                              : 'bg-navy/5 text-foreground/70'
                           )}>
                             <Icon className="w-5 h-5" />
                           </div>
-                          <h3 className="text-sm font-bold text-navy mb-0.5">
+                          <h3 className="text-sm font-bold text-foreground mb-0.5">
                             {mode.label}
                           </h3>
                           <p className="text-xs text-muted-foreground">
@@ -260,7 +260,7 @@ export function ChatCoach() {
                         'max-w-[80%] py-3 px-4 rounded-2xl text-sm leading-relaxed shadow-sm',
                         message.role === 'user'
                           ? 'bg-gradient-to-br from-navy to-navy-light text-white rounded-tr-md'
-                          : 'bg-white border border-border text-navy rounded-tl-md'
+                          : 'bg-card border border-border text-foreground rounded-tl-md'
                       )}>
                         <Markdown content={message.content} />
                       </div>
@@ -274,7 +274,7 @@ export function ChatCoach() {
                       className="flex gap-3"
                     >
                       <CoachAvatar size="sm" />
-                      <div className="py-3 px-4 rounded-2xl rounded-tl-md bg-white border border-border">
+                      <div className="py-3 px-4 rounded-2xl rounded-tl-md bg-card border border-border">
                         <Loader2 className="w-5 h-5 animate-spin text-gold" />
                       </div>
                     </motion.div>
@@ -293,7 +293,7 @@ export function ChatCoach() {
                         onChange={(e) => setInput(e.target.value)}
                         onKeyDown={handleKeyDown}
                         placeholder="Type your message..."
-                        className="w-full px-4 py-3 rounded-xl border border-border bg-white focus:outline-none focus:ring-2 focus:ring-gold/50 resize-none text-sm"
+                        className="w-full px-4 py-3 rounded-xl border border-border bg-card focus:outline-none focus:ring-2 focus:ring-gold/50 resize-none text-sm"
                         rows={1}
                         disabled={isLoading}
                       />

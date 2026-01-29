@@ -36,7 +36,7 @@ export function ModuleCard({ module, progress, isLocked = false, onClick }: Modu
     if (isLocked) return 'bg-muted text-muted-foreground'
     if (isCompleted) return 'bg-success-light text-success'
     if (isStarted) return 'bg-gold/15 text-gold-dark'
-    return 'bg-navy/10 text-navy'
+    return 'bg-navy/10 text-foreground'
   }
 
   return (
@@ -54,7 +54,7 @@ export function ModuleCard({ module, progress, isLocked = false, onClick }: Modu
         <span
           className={cn(
             'inline-flex items-center justify-center w-8 h-8 rounded-lg font-bold text-sm',
-            isCompleted ? 'bg-success text-white' : 'bg-navy/10 text-navy'
+            isCompleted ? 'bg-success text-white' : 'bg-navy/10 text-foreground'
           )}
         >
           {module.id}
@@ -79,7 +79,7 @@ export function ModuleCard({ module, progress, isLocked = false, onClick }: Modu
         <h3
           className={cn(
             'text-lg font-bold transition-colors',
-            isLocked ? 'text-muted-foreground' : 'text-navy group-hover:text-navy-light'
+            isLocked ? 'text-muted-foreground' : 'text-foreground group-hover:text-foreground-light'
           )}
         >
           {module.name}
@@ -128,7 +128,7 @@ export function ModuleCard({ module, progress, isLocked = false, onClick }: Modu
       {/* Arrow indicator on hover */}
       {!isLocked && (
         <div className="absolute bottom-4 right-4 w-8 h-8 rounded-full bg-navy/5 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-x-2 group-hover:translate-x-0">
-          <svg className="w-4 h-4 text-navy" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg className="w-4 h-4 text-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
           </svg>
         </div>

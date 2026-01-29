@@ -136,7 +136,7 @@ export function DashboardClient({
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
           >
-            <h1 className="text-3xl font-bold text-navy">Your Activity</h1>
+            <h1 className="text-3xl font-bold text-foreground">Your Activity</h1>
             <p className="text-muted-foreground mt-1">
               Track your practice sessions and call analyses
             </p>
@@ -155,8 +155,8 @@ export function DashboardClient({
                 className={cn(
                   'px-4 py-2 rounded-md text-sm font-medium transition-colors',
                   activeTab === 'practice'
-                    ? 'bg-white text-navy shadow-sm'
-                    : 'text-muted-foreground hover:text-navy'
+                    ? 'bg-card text-foreground shadow-sm'
+                    : 'text-muted-foreground hover:text-foreground'
                 )}
               >
                 <Mic className="w-4 h-4 inline mr-2" />
@@ -167,8 +167,8 @@ export function DashboardClient({
                 className={cn(
                   'px-4 py-2 rounded-md text-sm font-medium transition-colors',
                   activeTab === 'calls'
-                    ? 'bg-white text-navy shadow-sm'
-                    : 'text-muted-foreground hover:text-navy'
+                    ? 'bg-card text-foreground shadow-sm'
+                    : 'text-muted-foreground hover:text-foreground'
                 )}
               >
                 <FileAudio className="w-4 h-4 inline mr-2" />
@@ -179,8 +179,8 @@ export function DashboardClient({
                 className={cn(
                   'px-4 py-2 rounded-md text-sm font-medium transition-colors',
                   activeTab === 'progress'
-                    ? 'bg-white text-navy shadow-sm'
-                    : 'text-muted-foreground hover:text-navy'
+                    ? 'bg-card text-foreground shadow-sm'
+                    : 'text-muted-foreground hover:text-foreground'
                 )}
               >
                 <BarChart3 className="w-4 h-4 inline mr-2" />
@@ -283,19 +283,19 @@ export function DashboardClient({
             {activeTab === 'progress' && (
               <div className="space-y-8">
                 {/* Curriculum Progress */}
-                <div className="bg-white rounded-2xl p-6 shadow-sm border">
-                  <h2 className="text-lg font-semibold text-navy mb-4">Curriculum Progress</h2>
+                <div className="bg-card rounded-2xl p-6 shadow-sm border">
+                  <h2 className="text-lg font-semibold text-foreground mb-4">Curriculum Progress</h2>
                   <CurriculumProgressCard progress={initialCurriculumProgress} />
                 </div>
 
                 {/* Performance Charts - 2 column grid on lg */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  <div className="bg-white rounded-2xl p-6 shadow-sm border">
-                    <h2 className="text-lg font-semibold text-navy mb-4">Score Trend</h2>
+                  <div className="bg-card rounded-2xl p-6 shadow-sm border">
+                    <h2 className="text-lg font-semibold text-foreground mb-4">Score Trend</h2>
                     <ScoreTrendChart data={initialScoreTrends} />
                   </div>
-                  <div className="bg-white rounded-2xl p-6 shadow-sm border">
-                    <h2 className="text-lg font-semibold text-navy mb-4">Skills Breakdown</h2>
+                  <div className="bg-card rounded-2xl p-6 shadow-sm border">
+                    <h2 className="text-lg font-semibold text-foreground mb-4">Skills Breakdown</h2>
                     <DimensionRadarChart data={initialDimensionAverages} />
                   </div>
                 </div>

@@ -32,14 +32,14 @@ export default function RubricPage() {
     <div>
       <Link
         href="/admin/content"
-        className="inline-flex items-center text-muted-foreground hover:text-navy mb-6 transition-colors"
+        className="inline-flex items-center text-muted-foreground hover:text-foreground mb-6 transition-colors"
       >
         <ArrowLeft className="w-4 h-4 mr-2" />
         Back to Content
       </Link>
 
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-navy">Scoring Rubric</h1>
+        <h1 className="text-2xl font-bold text-foreground">Scoring Rubric</h1>
         <p className="text-muted-foreground mt-1">
           Evaluation criteria for sales call performance analysis
         </p>
@@ -59,8 +59,8 @@ export default function RubricPage() {
       </div>
 
       {/* Weights Summary */}
-      <div className="bg-white rounded-xl border shadow-sm p-4 mb-6">
-        <h2 className="font-semibold text-navy mb-3">Dimension Weights</h2>
+      <div className="bg-card rounded-xl border shadow-sm p-4 mb-6">
+        <h2 className="font-semibold text-foreground mb-3">Dimension Weights</h2>
         <div className="flex flex-wrap gap-4">
           {SCORING_RUBRIC.map(d => (
             <div key={d.dimension} className="flex items-center gap-2">

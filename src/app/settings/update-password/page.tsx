@@ -18,9 +18,9 @@ export default function UpdatePasswordPage() {
           {/* Header */}
           <div className="text-center mb-8">
             <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-gold to-gold-light flex items-center justify-center mx-auto mb-4">
-              <Lock className="w-8 h-8 text-navy" />
+              <Lock className="w-8 h-8 text-foreground" />
             </div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-navy mb-2">
+            <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">
               Reset Your Password
             </h1>
             <p className="text-muted-foreground">

@@ -70,7 +70,7 @@ export function ModuleDetail({
             <p className="text-sm text-muted-foreground mb-1">
               Module {module.id} of {totalModules}
             </p>
-            <h1 className="text-2xl font-bold text-navy">{module.name}</h1>
+            <h1 className="text-2xl font-bold text-foreground">{module.name}</h1>
           </div>
           {isCompleted && <CompletionBadge />}
         </div>
@@ -80,14 +80,14 @@ export function ModuleDetail({
           <motion.section
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-white rounded-2xl border border-border p-6 shadow-sm"
+            className="bg-card rounded-2xl border border-border p-6 shadow-sm"
           >
             <div className="flex items-start gap-4">
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-gold/20 to-gold/5 flex items-center justify-center flex-shrink-0">
                 <BookOpen className="w-6 h-6 text-gold-dark" />
               </div>
               <div className="flex-1">
-                <h2 className="text-xl font-bold text-navy mb-2">{module.name}</h2>
+                <h2 className="text-xl font-bold text-foreground mb-2">{module.name}</h2>
                 <p className="text-muted-foreground mb-4">{module.description}</p>
                 <div className="flex flex-wrap gap-2">
                   {module.topics.map((topic) => (
@@ -105,7 +105,7 @@ export function ModuleDetail({
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="bg-white rounded-2xl border border-border p-6 shadow-sm"
+            className="bg-card rounded-2xl border border-border p-6 shadow-sm"
           >
             <div className="prose prose-navy max-w-none">
               {contentSections.map((section, index) => (
@@ -114,7 +114,7 @@ export function ModuleDetail({
                     // H2 headers
                     if (line.startsWith('## ')) {
                       return (
-                        <h2 key={lineIndex} className="text-lg font-bold text-navy mt-6 mb-3 first:mt-0">
+                        <h2 key={lineIndex} className="text-lg font-bold text-foreground mt-6 mb-3 first:mt-0">
                           {line.replace('## ', '')}
                         </h2>
                       )
@@ -126,7 +126,7 @@ export function ModuleDetail({
                         return (
                           <div key={lineIndex} className="flex gap-3 mb-2">
                             <span className="font-bold text-gold-dark">{match[1]}.</span>
-                            <p className="text-navy">
+                            <p className="text-foreground">
                               <strong>{match[2]}</strong>
                               {match[3]}
                             </p>
@@ -143,7 +143,7 @@ export function ModuleDetail({
                         return (
                           <div key={lineIndex} className="flex gap-2 mb-2 ml-4">
                             <span className="text-gold-dark">•</span>
-                            <p className="text-navy">
+                            <p className="text-foreground">
                               <strong>{boldMatch[1]}</strong>
                               {boldMatch[2] && `: ${boldMatch[2]}`}
                             </p>
@@ -177,7 +177,7 @@ export function ModuleDetail({
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="bg-white rounded-2xl border border-border p-6 shadow-sm"
+            className="bg-card rounded-2xl border border-border p-6 shadow-sm"
           >
             <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
               <div className="flex items-center gap-3">

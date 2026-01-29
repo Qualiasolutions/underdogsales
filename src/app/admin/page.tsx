@@ -15,11 +15,11 @@ interface StatCardProps {
 
 function StatCard({ title, value, icon: Icon, subtitle }: StatCardProps) {
   return (
-    <div className="bg-white rounded-xl p-6 shadow-sm border">
+    <div className="bg-card rounded-xl p-6 shadow-sm border">
       <div className="flex items-center justify-between">
         <div>
           <p className="text-sm font-medium text-muted-foreground">{title}</p>
-          <p className="text-3xl font-bold text-navy mt-1">{value}</p>
+          <p className="text-3xl font-bold text-foreground mt-1">{value}</p>
           {subtitle && (
             <p className="text-sm text-muted-foreground mt-1">{subtitle}</p>
           )}
@@ -44,17 +44,17 @@ function QuickLinkCard({ title, description, href, icon: Icon }: QuickLinkCardPr
     <Link
       href={href}
       className={cn(
-        'bg-white rounded-xl p-6 shadow-sm border',
+        'bg-card rounded-xl p-6 shadow-sm border',
         'hover:border-gold hover:shadow-md transition-all',
         'flex items-center justify-between group'
       )}
     >
       <div className="flex items-center gap-4">
         <div className="p-3 bg-navy/5 rounded-lg group-hover:bg-gold/10 transition-colors">
-          <Icon className="w-6 h-6 text-navy group-hover:text-gold transition-colors" />
+          <Icon className="w-6 h-6 text-foreground group-hover:text-gold transition-colors" />
         </div>
         <div>
-          <h3 className="font-semibold text-navy">{title}</h3>
+          <h3 className="font-semibold text-foreground">{title}</h3>
           <p className="text-sm text-muted-foreground">{description}</p>
         </div>
       </div>
@@ -75,7 +75,7 @@ export default async function AdminDashboard() {
 
   return (
     <div>
-      <h1 className="text-3xl font-bold text-navy mb-8">Admin Dashboard</h1>
+      <h1 className="text-3xl font-bold text-foreground mb-8">Admin Dashboard</h1>
 
       {/* Quick Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -100,7 +100,7 @@ export default async function AdminDashboard() {
       </div>
 
       {/* Quick Links */}
-      <h2 className="text-lg font-semibold text-navy mb-4">Quick Actions</h2>
+      <h2 className="text-lg font-semibold text-foreground mb-4">Quick Actions</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <QuickLinkCard
           title="User Management"

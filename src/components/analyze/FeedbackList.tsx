@@ -25,7 +25,7 @@ export function FeedbackList({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       className={cn(
-        'bg-white rounded-2xl border p-6',
+        'bg-card rounded-2xl border p-6',
         isStrengths ? 'border-emerald-200' : 'border-amber-200'
       )}
     >
@@ -43,7 +43,7 @@ export function FeedbackList({
             <Target className="w-5 h-5 text-amber-600" />
           )}
         </div>
-        <h3 className="text-lg font-semibold text-navy">{title}</h3>
+        <h3 className="text-lg font-semibold text-foreground">{title}</h3>
       </div>
 
       {/* List */}

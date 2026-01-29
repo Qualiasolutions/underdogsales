@@ -139,7 +139,7 @@ const TranscriptMessage = memo(({
       'flex-1 py-3 px-4 rounded-2xl text-sm leading-relaxed shadow-sm',
       entry.role === 'user'
         ? 'bg-gradient-to-br from-navy to-navy-light text-white rounded-tr-md'
-        : 'bg-white border border-border text-navy rounded-tl-md',
+        : 'bg-card border border-border text-foreground rounded-tl-md',
       isLatest && 'ring-2 ring-gold/30'
     )}>
       {entry.content}
@@ -191,7 +191,7 @@ const ErrorMessage = memo(({ error, onDismiss, onRetry }: {
             <AlertCircle className="w-5 h-5 text-error" />
           </div>
           <div className="flex-1">
-            <h3 className="font-bold text-navy mb-1">{details.title}</h3>
+            <h3 className="font-bold text-foreground mb-1">{details.title}</h3>
             <p className="text-sm text-muted-foreground mb-3">{details.message}</p>
             <ul className="space-y-1.5">
               {details.tips.map((tip, i) => (
@@ -207,7 +207,7 @@ const ErrorMessage = memo(({ error, onDismiss, onRetry }: {
       <div className="flex border-t border-error/10">
         <button
           onClick={onDismiss}
-          className="flex-1 py-3 text-sm font-medium text-muted-foreground hover:text-navy hover:bg-white/50 transition-colors"
+          className="flex-1 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-card/50 transition-colors"
         >
           Dismiss
         </button>
@@ -383,7 +383,7 @@ export function VoiceCoach() {
                   transition={{ delay: 0.1 }}
                   className="text-center"
                 >
-                  <h1 className="text-3xl sm:text-4xl font-bold text-navy tracking-tight mb-3">
+                  <h1 className="text-3xl sm:text-4xl font-bold text-foreground tracking-tight mb-3">
                     Coach <span className="text-gradient-gold">Giulio</span>
                   </h1>
                   <p className="text-muted-foreground max-w-md mx-auto">
@@ -401,7 +401,7 @@ export function VoiceCoach() {
                     <div className="flex items-center gap-4 mb-6">
                       <CoachAvatar size="lg" className="shadow-gold" />
                       <div>
-                        <h2 className="font-bold text-navy text-xl">{GIULIO_COACH.name}</h2>
+                        <h2 className="font-bold text-foreground text-xl">{GIULIO_COACH.name}</h2>
                         <p className="text-sm text-muted-foreground">{GIULIO_COACH.title}</p>
                       </div>
                     </div>
@@ -430,18 +430,18 @@ export function VoiceCoach() {
                             'p-4 rounded-xl text-left transition-all duration-200 border-2',
                             selectedMode === mode.id
                               ? 'border-gold bg-gold/5 shadow-md'
-                              : 'border-transparent bg-white hover:border-border hover:shadow-sm'
+                              : 'border-transparent bg-card hover:border-border hover:shadow-sm'
                           )}
                         >
                           <div className={cn(
                             'w-10 h-10 rounded-lg flex items-center justify-center mb-3 transition-colors',
                             selectedMode === mode.id
-                              ? 'bg-gradient-to-br from-gold to-gold-light text-navy'
-                              : 'bg-navy/5 text-navy/70'
+                              ? 'bg-gradient-to-br from-gold to-gold-light text-foreground'
+                              : 'bg-navy/5 text-foreground/70'
                           )}>
                             <Icon className="w-5 h-5" />
                           </div>
-                          <h3 className="text-sm font-bold text-navy mb-0.5">
+                          <h3 className="text-sm font-bold text-foreground mb-0.5">
                             {mode.label}
                           </h3>
                           <p className="text-xs text-muted-foreground">
@@ -508,7 +508,7 @@ export function VoiceCoach() {
                     </div>
                   </div>
 
-                  <h2 className="text-xl font-bold text-navy mb-2">
+                  <h2 className="text-xl font-bold text-foreground mb-2">
                     Connecting to Giulio...
                   </h2>
                   <p className="text-sm text-muted-foreground mb-6">
@@ -570,7 +570,7 @@ export function VoiceCoach() {
                         </h2>
                         <p className="text-white/60 text-sm mb-6">{GIULIO_COACH.title}</p>
 
-                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 text-white/90 mb-8">
+                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-card/10 text-white/90 mb-8">
                           <span className="relative flex h-2 w-2">
                             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-success opacity-75" />
                             <span className="relative inline-flex rounded-full h-2 w-2 bg-success" />
@@ -593,7 +593,7 @@ export function VoiceCoach() {
                               'w-14 h-14 rounded-xl flex items-center justify-center transition-all',
                               isMuted
                                 ? 'bg-error text-white shadow-lg shadow-error/30'
-                                : 'bg-white/10 text-white/80 hover:bg-white/20 hover:text-white'
+                                : 'bg-card/10 text-white/80 hover:bg-card/20 hover:text-white'
                             )}
                           >
                             {isMuted ? (
@@ -615,7 +615,7 @@ export function VoiceCoach() {
                           <motion.button
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
-                            className="w-14 h-14 rounded-xl bg-white/10 text-white/80 hover:bg-white/20 hover:text-white flex items-center justify-center transition-all"
+                            className="w-14 h-14 rounded-xl bg-card/10 text-white/80 hover:bg-card/20 hover:text-white flex items-center justify-center transition-all"
                           >
                             <Volume2 className="w-6 h-6" />
                           </motion.button>
@@ -629,7 +629,7 @@ export function VoiceCoach() {
                   <Card variant="elevated" className="h-full">
                     <div className="px-6 py-4 border-b border-border flex items-center justify-between">
                       <div>
-                        <h3 className="font-bold text-navy">Live Transcript</h3>
+                        <h3 className="font-bold text-foreground">Live Transcript</h3>
                         <p className="text-xs text-muted-foreground">
                           {transcript.length} {transcript.length === 1 ? 'message' : 'messages'}
                         </p>

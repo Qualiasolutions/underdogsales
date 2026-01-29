@@ -52,7 +52,7 @@ export function CurriculumHub({ modules, progress }: CurriculumHubProps) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
-          className="bg-white rounded-2xl border border-border p-6 shadow-sm"
+          className="bg-card rounded-2xl border border-border p-6 shadow-sm"
         >
           <OverallProgressBar completed={completedCount} total={modules.length} />
           <div className="mt-6">
@@ -62,7 +62,7 @@ export function CurriculumHub({ modules, progress }: CurriculumHubProps) {
 
         {/* Module grid */}
         <section>
-          <h2 className="text-lg font-bold text-navy mb-4">Course Modules</h2>
+          <h2 className="text-lg font-bold text-foreground mb-4">Course Modules</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {modules.map((module, index) => (
               <motion.div
@@ -92,7 +92,7 @@ export function CurriculumHub({ modules, progress }: CurriculumHubProps) {
             <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gold/20 flex items-center justify-center">
               <span className="text-3xl">🏆</span>
             </div>
-            <h3 className="text-xl font-bold text-navy mb-2">Congratulations!</h3>
+            <h3 className="text-xl font-bold text-foreground mb-2">Congratulations!</h3>
             <p className="text-muted-foreground mb-4">
               You've completed the entire Underdog Methodology curriculum. Now it's time to put your
               skills into practice!

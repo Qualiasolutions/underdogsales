@@ -31,7 +31,7 @@ export function ScoreBreakdown({ analysis, overallScore }: ScoreBreakdownProps) 
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-white rounded-3xl border border-border p-8 shadow-sm"
+        className="bg-card rounded-3xl border border-border p-8 shadow-sm"
       >
         <div className="flex flex-col md:flex-row items-center gap-8">
           {/* Score Circle */}
@@ -80,7 +80,7 @@ export function ScoreBreakdown({ analysis, overallScore }: ScoreBreakdownProps) 
               {/* Score text */}
               <div className="absolute inset-0 flex flex-col items-center justify-center">
                 <motion.span
-                  className="text-4xl font-bold text-navy"
+                  className="text-4xl font-bold text-foreground"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.5 }}
@@ -118,7 +118,7 @@ export function ScoreBreakdown({ analysis, overallScore }: ScoreBreakdownProps) 
 
       {/* Dimension Breakdown */}
       <div>
-        <h3 className="text-xl font-bold text-navy mb-4">Score Breakdown</h3>
+        <h3 className="text-xl font-bold text-foreground mb-4">Score Breakdown</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {DIMENSION_ORDER.map((dimension, index) => {
             const score = analysis.scores[dimension]

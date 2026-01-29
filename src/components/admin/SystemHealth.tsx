@@ -52,8 +52,8 @@ export async function SystemHealth() {
   const { health, circuitBreakers, error } = await getSystemHealth()
 
   return (
-    <div className="bg-white rounded-xl p-6 shadow-sm border">
-      <h3 className="font-semibold text-navy mb-4">System Health</h3>
+    <div className="bg-card rounded-xl p-6 shadow-sm border">
+      <h3 className="font-semibold text-foreground mb-4">System Health</h3>
 
       {error && !health && (
         <div className="bg-red-50 border border-red-200 rounded-lg p-3 mb-4">

@@ -88,9 +88,9 @@ export default function SupportPage() {
           <ScrollReveal>
             <div className="text-center mb-12">
               <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-gold to-gold-light flex items-center justify-center mx-auto mb-6">
-                <HelpCircle className="w-8 h-8 text-navy" />
+                <HelpCircle className="w-8 h-8 text-foreground" />
               </div>
-              <h1 className="text-3xl sm:text-4xl font-bold text-navy mb-4">
+              <h1 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
                 How Can We Help?
               </h1>
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
@@ -109,7 +109,7 @@ export default function SupportPage() {
                       <Mail className="w-6 h-6 text-gold" />
                     </div>
                     <div className="flex-1">
-                      <h3 className="text-lg font-semibold text-navy mb-2">Email Support</h3>
+                      <h3 className="text-lg font-semibold text-foreground mb-2">Email Support</h3>
                       <p className="text-muted-foreground mb-4">
                         Get help from our team. We typically respond within 24 hours on business days.
                       </p>
@@ -132,7 +132,7 @@ export default function SupportPage() {
                       <MessageCircle className="w-6 h-6 text-gold" />
                     </div>
                     <div className="flex-1">
-                      <h3 className="text-lg font-semibold text-navy mb-2">AI Sales Coach</h3>
+                      <h3 className="text-lg font-semibold text-foreground mb-2">AI Sales Coach</h3>
                       <p className="text-muted-foreground mb-4">
                         Have a sales question? Chat with our AI coach for instant guidance and tips.
                       </p>
@@ -153,7 +153,7 @@ export default function SupportPage() {
           {/* FAQs */}
           <ScrollReveal delay={0.2}>
             <div className="mb-16">
-              <h2 className="text-2xl font-bold text-navy mb-8 text-center">
+              <h2 className="text-2xl font-bold text-foreground mb-8 text-center">
                 Frequently Asked Questions
               </h2>
               <div className="grid gap-4">
@@ -163,10 +163,10 @@ export default function SupportPage() {
                       <CardContent className="pt-6">
                         <div className="flex items-start gap-4">
                           <div className="w-10 h-10 rounded-lg bg-navy/5 flex items-center justify-center flex-shrink-0">
-                            <faq.icon className="w-5 h-5 text-navy" />
+                            <faq.icon className="w-5 h-5 text-foreground" />
                           </div>
                           <div>
-                            <h3 className="text-lg font-semibold text-navy mb-2">
+                            <h3 className="text-lg font-semibold text-foreground mb-2">
                               {faq.question}
                             </h3>
                             <p className="text-foreground/70 leading-relaxed">
@@ -185,7 +185,7 @@ export default function SupportPage() {
           {/* Resources */}
           <ScrollReveal delay={0.3}>
             <div className="mb-16">
-              <h2 className="text-2xl font-bold text-navy mb-8 text-center">
+              <h2 className="text-2xl font-bold text-foreground mb-8 text-center">
                 Helpful Resources
               </h2>
               <div className="grid sm:grid-cols-3 gap-6">
@@ -195,9 +195,9 @@ export default function SupportPage() {
                       <Card variant="interactive" hover className="h-full">
                         <CardContent className="pt-6 text-center">
                           <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-gold to-gold-light flex items-center justify-center mx-auto mb-4">
-                            <resource.icon className="w-6 h-6 text-navy" />
+                            <resource.icon className="w-6 h-6 text-foreground" />
                           </div>
-                          <h3 className="text-lg font-semibold text-navy mb-2">
+                          <h3 className="text-lg font-semibold text-foreground mb-2">
                             {resource.title}
                           </h3>
                           <p className="text-muted-foreground text-sm">
@@ -216,7 +216,7 @@ export default function SupportPage() {
           <ScrollReveal delay={0.4}>
             <Card variant="gradient" className="text-center">
               <CardContent className="py-12">
-                <h2 className="text-2xl font-bold text-navy mb-4">
+                <h2 className="text-2xl font-bold text-foreground mb-4">
                   Still Need Help?
                 </h2>
                 <p className="text-muted-foreground mb-6 max-w-lg mx-auto">
@@ -256,9 +256,9 @@ export default function SupportPage() {
             />
           </Link>
           <div className="flex items-center gap-6 text-sm text-muted-foreground">
-            <Link href="/privacy" className="hover:text-navy transition-colors">Privacy</Link>
-            <Link href="/terms" className="hover:text-navy transition-colors">Terms</Link>
-            <Link href="/" className="hover:text-navy transition-colors">Back to Home</Link>
+            <Link href="/privacy" className="hover:text-foreground transition-colors">Privacy</Link>
+            <Link href="/terms" className="hover:text-foreground transition-colors">Terms</Link>
+            <Link href="/" className="hover:text-foreground transition-colors">Back to Home</Link>
           </div>
         </div>
       </footer>

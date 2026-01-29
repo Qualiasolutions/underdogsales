@@ -99,7 +99,7 @@ export function AnalysisResults({ callId }: AnalysisResultsProps) {
             <div className="w-16 h-16 rounded-2xl bg-red-100 flex items-center justify-center mb-4">
               <AlertCircle className="w-8 h-8 text-red-600" />
             </div>
-            <h2 className="text-xl font-bold text-navy mb-2">
+            <h2 className="text-xl font-bold text-foreground mb-2">
               {error || 'Analysis not found'}
             </h2>
             <p className="text-muted-foreground mb-6">
@@ -129,7 +129,7 @@ export function AnalysisResults({ callId }: AnalysisResultsProps) {
                 <div className="w-16 h-16 rounded-2xl bg-red-100 flex items-center justify-center mb-4">
                   <AlertCircle className="w-8 h-8 text-red-600" />
                 </div>
-                <h2 className="text-xl font-bold text-navy mb-2">
+                <h2 className="text-xl font-bold text-foreground mb-2">
                   Analysis Failed
                 </h2>
                 <p className="text-muted-foreground mb-6">
@@ -139,7 +139,7 @@ export function AnalysisResults({ callId }: AnalysisResultsProps) {
             ) : (
               <>
                 <Loader2 className="w-12 h-12 text-gold animate-spin mb-4" />
-                <h2 className="text-xl font-bold text-navy mb-2">
+                <h2 className="text-xl font-bold text-foreground mb-2">
                   Processing Your Call
                 </h2>
                 <p className="text-muted-foreground mb-6">
@@ -175,7 +175,7 @@ export function AnalysisResults({ callId }: AnalysisResultsProps) {
           >
             <Link
               href="/analyze"
-              className="inline-flex items-center text-sm text-muted-foreground hover:text-navy transition-colors"
+              className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground transition-colors"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back to Call Analysis
@@ -197,7 +197,7 @@ export function AnalysisResults({ callId }: AnalysisResultsProps) {
 
                 {/* Info */}
                 <div className="flex-1 min-w-0">
-                  <h1 className="text-xl font-bold text-navy truncate">
+                  <h1 className="text-xl font-bold text-foreground truncate">
                     {callData.original_filename || 'Call Recording'}
                   </h1>
                   <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground mt-1">
@@ -238,8 +238,8 @@ export function AnalysisResults({ callId }: AnalysisResultsProps) {
                 className={cn(
                   'px-4 py-2 rounded-lg text-sm font-medium transition-all',
                   activeTab === 'analysis'
-                    ? 'bg-white text-navy shadow-sm'
-                    : 'text-muted-foreground hover:text-navy'
+                    ? 'bg-card text-foreground shadow-sm'
+                    : 'text-muted-foreground hover:text-foreground'
                 )}
               >
                 Analysis
@@ -249,8 +249,8 @@ export function AnalysisResults({ callId }: AnalysisResultsProps) {
                 className={cn(
                   'px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2',
                   activeTab === 'transcript'
-                    ? 'bg-white text-navy shadow-sm'
-                    : 'text-muted-foreground hover:text-navy'
+                    ? 'bg-card text-foreground shadow-sm'
+                    : 'text-muted-foreground hover:text-foreground'
                 )}
               >
                 <MessageSquare className="w-4 h-4" />
@@ -283,7 +283,7 @@ export function AnalysisResults({ callId }: AnalysisResultsProps) {
                 exit={{ opacity: 0, y: -10 }}
               >
                 <Card variant="elevated" className="p-6">
-                  <h2 className="text-lg font-bold text-navy mb-4">
+                  <h2 className="text-lg font-bold text-foreground mb-4">
                     Call Transcript
                   </h2>
                   <TranscriptView transcript={callData.transcript} />

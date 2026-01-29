@@ -153,7 +153,7 @@ export function UploadZone({
               <Upload className="w-8 h-8 text-gold" />
             </div>
             <div>
-              <p className="text-lg font-semibold text-navy">
+              <p className="text-lg font-semibold text-foreground">
                 Drop your call recording here
               </p>
               <p className="text-sm text-muted-foreground mt-1">
@@ -173,7 +173,7 @@ export function UploadZone({
               <FileAudio className="w-7 h-7 text-emerald-600" />
             </div>
             <div className="flex-1 text-left min-w-0">
-              <p className="font-medium text-navy truncate">{file.name}</p>
+              <p className="font-medium text-foreground truncate">{file.name}</p>
               <p className="text-sm text-muted-foreground">
                 {formatFileSize(file.size)}
               </p>
@@ -199,7 +199,7 @@ export function UploadZone({
               <Loader2 className="w-8 h-8 text-gold animate-spin" />
             </div>
             <div>
-              <p className="text-lg font-semibold text-navy">Uploading...</p>
+              <p className="text-lg font-semibold text-foreground">Uploading...</p>
               <p className="text-sm text-muted-foreground mt-1">
                 {Math.round(progress)}%
               </p>

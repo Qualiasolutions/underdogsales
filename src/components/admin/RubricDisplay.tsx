@@ -34,7 +34,7 @@ function formatCriterionName(name: string): string {
 function getWeightColor(weight: number): string {
   if (weight >= 0.3) return 'text-green-600 bg-green-50'
   if (weight >= 0.2) return 'text-blue-600 bg-blue-50'
-  return 'text-gray-600 bg-gray-50'
+  return 'text-gray-600 bg-muted'
 }
 
 export function RubricDisplay({ rubric, className }: RubricDisplayProps) {
@@ -43,19 +43,19 @@ export function RubricDisplay({ rubric, className }: RubricDisplayProps) {
       {rubric.map(dimension => (
         <div
           key={dimension.dimension}
-          className="bg-white rounded-xl border shadow-sm overflow-hidden"
+          className="bg-card rounded-xl border shadow-sm overflow-hidden"
         >
           {/* Dimension Header */}
           <div className="p-4 bg-muted/50 flex items-center justify-between border-b">
             <div>
-              <h3 className="font-semibold text-navy">
+              <h3 className="font-semibold text-foreground">
                 {dimensionLabels[dimension.dimension] || dimension.dimension}
               </h3>
               <p className="text-xs text-muted-foreground mt-0.5">
                 {dimensionDescriptions[dimension.dimension]}
               </p>
             </div>
-            <span className="text-sm font-medium text-navy bg-white px-3 py-1 rounded-full border">
+            <span className="text-sm font-medium text-foreground bg-card px-3 py-1 rounded-full border">
               {Math.round(dimension.weight * 100)}% weight
             </span>
           </div>
@@ -77,7 +77,7 @@ export function RubricDisplay({ rubric, className }: RubricDisplayProps) {
                     className="border-b last:border-0 hover:bg-muted/30 transition-colors"
                   >
                     <td className="py-3 pr-4">
-                      <span className="font-medium text-navy">
+                      <span className="font-medium text-foreground">
                         {formatCriterionName(criterion.name)}
                       </span>
                       {/* Show description on mobile */}

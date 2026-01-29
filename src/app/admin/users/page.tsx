@@ -44,7 +44,7 @@ export default async function UsersPage({ searchParams }: Props) {
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-navy">Users</h1>
+        <h1 className="text-2xl font-bold text-foreground">Users</h1>
         {showingCount > 0 && (
           <span className="text-muted-foreground">
             Showing {fromIndex}-{toIndex}
@@ -57,7 +57,7 @@ export default async function UsersPage({ searchParams }: Props) {
         placeholder="Search by name or email..."
       />
 
-      <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
+      <div className="bg-card rounded-xl shadow-sm border overflow-hidden">
         <UserTable users={users} />
       </div>
 

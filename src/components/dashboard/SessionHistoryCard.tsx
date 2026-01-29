@@ -56,7 +56,7 @@ export function SessionHistoryCard({
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.05 }}
       className={cn(
-        'bg-white rounded-xl border border-border p-4 cursor-pointer transition-all',
+        'bg-card rounded-xl border border-border p-4 cursor-pointer transition-all',
         'hover:shadow-md hover:border-navy/20'
       )}
       onClick={onClick}
@@ -69,7 +69,7 @@ export function SessionHistoryCard({
 
         {/* Info */}
         <div className="flex-1 min-w-0">
-          <p className="font-medium text-navy truncate">{personaName}</p>
+          <p className="font-medium text-foreground truncate">{personaName}</p>
           <div className="flex items-center gap-3 text-sm text-muted-foreground mt-1 flex-wrap">
             <Badge variant="default" className="text-xs">
               {formatScenarioType(session.scenario_type)}

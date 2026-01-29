@@ -22,11 +22,11 @@ export function OverallProgressBar({ completed, total, className }: OverallProgr
           ) : (
             <Star className="w-5 h-5 text-gold" />
           )}
-          <span className="text-sm font-medium text-navy">
+          <span className="text-sm font-medium text-foreground">
             {percentage === 100 ? 'Curriculum Complete!' : 'Your Progress'}
           </span>
         </div>
-        <span className="text-sm font-bold text-navy">
+        <span className="text-sm font-bold text-foreground">
           {completed} / {total} modules
         </span>
       </div>
@@ -101,7 +101,7 @@ export function ModuleProgressRing({ progress, size = 'md', className }: ModuleP
           </linearGradient>
         </defs>
       </svg>
-      <span className="absolute text-xs font-bold text-navy">{Math.round(progress)}%</span>
+      <span className="absolute text-xs font-bold text-foreground">{Math.round(progress)}%</span>
     </div>
   )
 }
@@ -139,11 +139,11 @@ export function CurriculumStats({ completed, total, className }: CurriculumStats
   return (
     <div className={cn('grid grid-cols-3 gap-4', className)}>
       <div className="text-center p-4 bg-muted rounded-xl">
-        <p className="text-2xl font-bold text-navy">{completed}</p>
+        <p className="text-2xl font-bold text-foreground">{completed}</p>
         <p className="text-xs text-muted-foreground">Completed</p>
       </div>
       <div className="text-center p-4 bg-muted rounded-xl">
-        <p className="text-2xl font-bold text-navy">{total - completed}</p>
+        <p className="text-2xl font-bold text-foreground">{total - completed}</p>
         <p className="text-xs text-muted-foreground">Remaining</p>
       </div>
       <div className="text-center p-4 bg-gold/10 rounded-xl">

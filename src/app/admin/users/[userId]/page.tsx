@@ -23,7 +23,7 @@ export default async function UserDetailPage({ params }: Props) {
     <div>
       <Link
         href="/admin/users"
-        className="inline-flex items-center text-muted-foreground hover:text-navy mb-6 transition-colors"
+        className="inline-flex items-center text-muted-foreground hover:text-foreground mb-6 transition-colors"
       >
         <ArrowLeft className="w-4 h-4 mr-2" />
         Back to Users

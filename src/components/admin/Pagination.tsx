@@ -51,7 +51,7 @@ export function Pagination({ currentPage, hasMore, className }: PaginationProps)
             href={createPageUrl(currentPage - 1)}
             className={cn(
               'inline-flex items-center gap-1 px-4 py-2 rounded-lg',
-              'bg-white border hover:bg-gray-50 transition-colors'
+              'bg-card border hover:bg-muted transition-colors'
             )}
           >
             <ChevronLeft className="w-4 h-4" />
@@ -74,7 +74,7 @@ export function Pagination({ currentPage, hasMore, className }: PaginationProps)
             href={createPageUrl(currentPage + 1)}
             className={cn(
               'inline-flex items-center gap-1 px-4 py-2 rounded-lg',
-              'bg-white border hover:bg-gray-50 transition-colors'
+              'bg-card border hover:bg-muted transition-colors'
             )}
           >
             Next

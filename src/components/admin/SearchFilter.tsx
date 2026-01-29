@@ -79,7 +79,7 @@ export function SearchFilter({
           placeholder={placeholder}
           className={cn(
             'w-full pl-10 pr-10 py-3 rounded-lg border',
-            'bg-white focus:outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold',
+            'bg-card focus:outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold',
             'placeholder:text-muted-foreground'
           )}
         />

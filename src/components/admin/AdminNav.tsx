@@ -41,8 +41,8 @@ export function AdminNav() {
               className={cn(
                 'flex items-center gap-3 px-4 py-3 rounded-lg transition-colors',
                 active
-                  ? 'bg-gold text-navy font-semibold'
-                  : 'text-white/80 hover:bg-white/10 hover:text-white'
+                  ? 'bg-gold text-foreground font-semibold'
+                  : 'text-white/80 hover:bg-card/10 hover:text-white'
               )}
             >
               <Icon className="w-5 h-5" />
@@ -56,7 +56,7 @@ export function AdminNav() {
       <div className="p-4 border-t border-white/10">
         <Link
           href="/"
-          className="flex items-center gap-3 px-4 py-3 rounded-lg text-white/60 hover:bg-white/10 hover:text-white transition-colors"
+          className="flex items-center gap-3 px-4 py-3 rounded-lg text-white/60 hover:bg-card/10 hover:text-white transition-colors"
         >
           <Home className="w-5 h-5" />
           Back to App

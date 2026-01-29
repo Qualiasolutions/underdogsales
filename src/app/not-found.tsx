@@ -14,14 +14,14 @@ export default function NotFound() {
       <div className="flex gap-4">
         <Link
           href="/"
-          className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 bg-gold text-navy hover:bg-gold-dark shadow-md hover:shadow-gold h-11 px-6 rounded-xl"
+          className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 bg-gold text-foreground hover:bg-gold-dark shadow-md hover:shadow-gold h-11 px-6 rounded-xl"
         >
           <Home className="h-4 w-4" />
           Go home
         </Link>
         <Link
           href="/practice"
-          className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 border-2 border-navy text-navy bg-transparent hover:bg-navy hover:text-white h-11 px-6 rounded-xl"
+          className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 border-2 border-navy text-foreground bg-transparent hover:bg-navy hover:text-white h-11 px-6 rounded-xl"
         >
           <ArrowLeft className="h-4 w-4" />
           Go to practice

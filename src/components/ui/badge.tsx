@@ -9,14 +9,14 @@ const badgeVariants = cva(
   {
     variants: {
       variant: {
-        default: 'bg-navy/10 text-navy',
+        default: 'bg-navy/10 text-foreground',
         gold: 'bg-gold/15 text-gold-dark',
         navy: 'bg-navy text-white',
         success: 'bg-success-light text-success',
         warning: 'bg-warning-light text-warning',
         error: 'bg-error-light text-error',
-        outline: 'border-2 border-navy/20 text-navy bg-transparent',
-        gradient: 'bg-gradient-to-r from-gold to-gold-light text-navy',
+        outline: 'border-2 border-navy/20 text-foreground bg-transparent',
+        gradient: 'bg-gradient-to-r from-gold to-gold-light text-foreground',
       },
       size: {
         sm: 'px-2 py-0.5 text-xs rounded-md',
@@ -52,7 +52,7 @@ const Badge = forwardRef<HTMLSpanElement, BadgeProps>(
           variant === 'warning' && 'bg-warning',
           variant === 'error' && 'bg-error',
           variant === 'gold' && 'bg-gold-dark',
-          variant === 'navy' && 'bg-white',
+          variant === 'navy' && 'bg-card',
           (!variant || variant === 'default' || variant === 'outline') && 'bg-navy',
           pulse && 'animate-pulse'
         )} />

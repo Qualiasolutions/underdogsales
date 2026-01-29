@@ -9,6 +9,7 @@ import {
   MicOff,
   Phone,
   PhoneOff,
+  PhoneCall,
   Volume2,
   AlertCircle,
   Check,
@@ -16,11 +17,10 @@ import {
   Wifi,
   WifiOff,
   Zap,
-  PhoneCall,
+  Loader2,
   Shield,
   Target,
   DoorOpen,
-  Loader2,
   type LucideIcon,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -139,7 +139,7 @@ const TranscriptMessage = memo(({
       'flex-1 py-3 px-4 rounded-2xl text-sm leading-relaxed shadow-sm',
       entry.role === 'user'
         ? 'bg-gradient-to-br from-navy to-navy-light text-white rounded-tr-md'
-        : 'bg-white border border-border text-navy rounded-tl-md',
+        : 'bg-card border border-border text-foreground rounded-tl-md',
       isLatest && 'ring-2 ring-gold/30'
     )}>
       {entry.content}
@@ -199,7 +199,7 @@ const ErrorMessage = memo(({ error, onDismiss, onRetry }: {
             <AlertCircle className="w-5 h-5 text-error" />
           </div>
           <div className="flex-1">
-            <h3 className="font-bold text-navy mb-1">{details.title}</h3>
+            <h3 className="font-bold text-foreground mb-1">{details.title}</h3>
             <p className="text-sm text-muted-foreground mb-3">{details.message}</p>
             <ul className="space-y-1.5">
               {details.tips.map((tip, i) => (
@@ -215,7 +215,7 @@ const ErrorMessage = memo(({ error, onDismiss, onRetry }: {
       <div className="flex border-t border-error/10">
         <button
           onClick={onDismiss}
-          className="flex-1 py-3 text-sm font-medium text-muted-foreground hover:text-navy hover:bg-white/50 transition-colors"
+          className="flex-1 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-card/50 transition-colors"
         >
           Dismiss
         </button>
@@ -268,11 +268,11 @@ const LoadingState = memo(({ title, subtitle, icon: Icon, iconVariant, steps, st
         )}>
           <Icon className={cn(
             "w-8 h-8",
-            iconVariant === 'navy' ? 'text-white' : 'text-navy animate-spin'
+            iconVariant === 'navy' ? 'text-white' : 'text-foreground animate-spin'
           )} />
         </div>
       </div>
-      <h2 className="text-xl font-bold text-navy mb-2">{title}</h2>
+      <h2 className="text-xl font-bold text-foreground mb-2">{title}</h2>
       <p className="text-sm text-muted-foreground mb-6">{subtitle}</p>
       <div className="space-y-2 text-left">
         {steps.map((step, i) => (
@@ -532,7 +532,7 @@ export function VoicePractice({ onSessionEnd }: VoicePracticeProps) {
                   transition={{ delay: 0.1 }}
                   className="text-center"
                 >
-                  <h1 className="text-3xl sm:text-4xl font-bold text-navy tracking-tight mb-3">
+                  <h1 className="text-3xl sm:text-4xl font-bold text-foreground tracking-tight mb-3">
                     Choose Your <span className="text-gradient-gold">Challenge</span>
                   </h1>
                   <p className="text-muted-foreground max-w-md mx-auto">
@@ -581,7 +581,7 @@ export function VoicePractice({ onSessionEnd }: VoicePracticeProps) {
                                   exit={{ scale: 0 }}
                                   className="absolute top-3 right-3 w-6 h-6 rounded-full bg-gradient-to-br from-gold to-gold-dark flex items-center justify-center shadow-gold"
                                 >
-                                  <Check className="w-3.5 h-3.5 text-navy" strokeWidth={3} />
+                                  <Check className="w-3.5 h-3.5 text-foreground" strokeWidth={3} />
                                 </motion.div>
                               )}
                             </AnimatePresence>
@@ -592,13 +592,13 @@ export function VoicePractice({ onSessionEnd }: VoicePracticeProps) {
                                 <div className={cn(
                                   'w-14 h-14 rounded-xl flex items-center justify-center text-lg font-bold transition-all duration-300',
                                   isSelected
-                                    ? 'bg-gradient-to-br from-gold to-gold-light text-navy shadow-gold'
-                                    : 'bg-gradient-to-br from-navy/10 to-navy/5 text-navy'
+                                    ? 'bg-gradient-to-br from-gold to-gold-light text-foreground shadow-gold'
+                                    : 'bg-gradient-to-br from-navy/10 to-navy/5 text-foreground'
                                 )}>
                                   {persona.name.split(' ').map(n => n[0]).join('')}
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                  <h3 className="font-bold text-navy truncate">{persona.name}</h3>
+                                  <h3 className="font-bold text-foreground truncate">{persona.name}</h3>
                                   <p className="text-sm text-muted-foreground truncate">{persona.role}</p>
                                 </div>
                               </div>
@@ -618,49 +618,6 @@ export function VoicePractice({ onSessionEnd }: VoicePracticeProps) {
                             </CardContent>
                           </Card>
                         </motion.div>
-                      )
-                    })}
-                  </div>
-                </section>
-
-                {/* Scenario Selection */}
-                <section>
-                  <h2 className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4">
-                    Select Scenario
-                  </h2>
-
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                    {scenarios.map((scenario, index) => {
-                      const Icon = scenario.icon
-                      return (
-                        <motion.button
-                          key={scenario.id}
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: 0.2 + index * 0.05 }}
-                          onClick={() => setSelectedScenario(scenario.id)}
-                          className={cn(
-                            'p-4 rounded-xl text-left transition-all duration-200 border-2',
-                            selectedScenario === scenario.id
-                              ? 'border-navy bg-navy/5 shadow-md'
-                              : 'border-transparent bg-white hover:border-border hover:shadow-sm'
-                          )}
-                        >
-                          <div className={cn(
-                            'w-10 h-10 rounded-lg flex items-center justify-center mb-3 transition-colors',
-                            selectedScenario === scenario.id
-                              ? 'bg-gradient-to-br from-gold to-gold-light text-navy'
-                              : 'bg-navy/5 text-navy/70'
-                          )}>
-                            <Icon className="w-5 h-5" />
-                          </div>
-                          <h3 className="text-sm font-bold text-navy mb-0.5">
-                            {scenario.label}
-                          </h3>
-                          <p className="text-xs text-muted-foreground">
-                            {scenario.description}
-                          </p>
-                        </motion.button>
                       )
                     })}
                   </div>
@@ -760,7 +717,7 @@ export function VoicePractice({ onSessionEnd }: VoicePracticeProps) {
                         <p className="text-white/60 text-sm mb-6">{selectedPersona?.role}</p>
 
                         {/* Timer */}
-                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 text-white/90 mb-8">
+                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-card/10 text-white/90 mb-8">
                           <span className="relative flex h-2 w-2">
                             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-success opacity-75" />
                             <span className="relative inline-flex rounded-full h-2 w-2 bg-success" />
@@ -785,7 +742,7 @@ export function VoicePractice({ onSessionEnd }: VoicePracticeProps) {
                               'w-14 h-14 rounded-xl flex items-center justify-center transition-all',
                               isMuted
                                 ? 'bg-error text-white shadow-lg shadow-error/30'
-                                : 'bg-white/10 text-white/80 hover:bg-white/20 hover:text-white'
+                                : 'bg-card/10 text-white/80 hover:bg-card/20 hover:text-white'
                             )}
                           >
                             {isMuted ? (
@@ -807,7 +764,7 @@ export function VoicePractice({ onSessionEnd }: VoicePracticeProps) {
                           <motion.button
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
-                            className="w-14 h-14 rounded-xl bg-white/10 text-white/80 hover:bg-white/20 hover:text-white flex items-center justify-center transition-all"
+                            className="w-14 h-14 rounded-xl bg-card/10 text-white/80 hover:bg-card/20 hover:text-white flex items-center justify-center transition-all"
                           >
                             <Volume2 className="w-6 h-6" />
                           </motion.button>
@@ -822,7 +779,7 @@ export function VoicePractice({ onSessionEnd }: VoicePracticeProps) {
                   <Card variant="elevated" className="h-full">
                     <div className="px-6 py-4 border-b border-border flex items-center justify-between">
                       <div>
-                        <h3 className="font-bold text-navy">Live Transcript</h3>
+                        <h3 className="font-bold text-foreground">Live Transcript</h3>
                         <p className="text-xs text-muted-foreground">
                           {transcript.length} {transcript.length === 1 ? 'message' : 'messages'}
                         </p>

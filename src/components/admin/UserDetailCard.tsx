@@ -39,21 +39,21 @@ function getScoreBgColor(score: number): string {
   if (score >= 7) return 'bg-green-50 border-green-200'
   if (score >= 5) return 'bg-yellow-50 border-yellow-200'
   if (score > 0) return 'bg-red-50 border-red-200'
-  return 'bg-gray-50 border-gray-200'
+  return 'bg-muted border-border'
 }
 
 export function UserDetailCard({ user, sessions }: UserDetailCardProps) {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="bg-white rounded-xl p-6 shadow-sm border">
+      <div className="bg-card rounded-xl p-6 shadow-sm border">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-4">
             <div className="w-16 h-16 bg-navy/10 rounded-full flex items-center justify-center">
-              <User className="w-8 h-8 text-navy" />
+              <User className="w-8 h-8 text-foreground" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-navy">
+              <h1 className="text-2xl font-bold text-foreground">
                 {user.name || 'No name'}
               </h1>
               <div className="flex items-center gap-2 text-muted-foreground mt-1">
@@ -72,26 +72,26 @@ export function UserDetailCard({ user, sessions }: UserDetailCardProps) {
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-white rounded-xl p-5 shadow-sm border">
+        <div className="bg-card rounded-xl p-5 shadow-sm border">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-blue-50 rounded-lg">
               <Activity className="w-5 h-5 text-blue-600" />
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Total Sessions</p>
-              <p className="text-xl font-bold text-navy">{user.session_count}</p>
+              <p className="text-xl font-bold text-foreground">{user.session_count}</p>
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-xl p-5 shadow-sm border">
+        <div className="bg-card rounded-xl p-5 shadow-sm border">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-green-50 rounded-lg">
               <Target className="w-5 h-5 text-green-600" />
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Average Score</p>
-              <p className="text-xl font-bold text-navy">
+              <p className="text-xl font-bold text-foreground">
                 {user.average_score > 0 ? (
                   <span className={getScoreColor(user.average_score)}>
                     {user.average_score.toFixed(1)}
@@ -104,14 +104,14 @@ export function UserDetailCard({ user, sessions }: UserDetailCardProps) {
           </div>
         </div>
 
-        <div className="bg-white rounded-xl p-5 shadow-sm border">
+        <div className="bg-card rounded-xl p-5 shadow-sm border">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-purple-50 rounded-lg">
               <Calendar className="w-5 h-5 text-purple-600" />
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Member Since</p>
-              <p className="text-xl font-bold text-navy">
+              <p className="text-xl font-bold text-foreground">
                 {formatDate(user.created_at)}
               </p>
             </div>
@@ -120,9 +120,9 @@ export function UserDetailCard({ user, sessions }: UserDetailCardProps) {
       </div>
 
       {/* Session History */}
-      <div className="bg-white rounded-xl shadow-sm border">
+      <div className="bg-card rounded-xl shadow-sm border">
         <div className="p-6 border-b">
-          <h2 className="text-lg font-semibold text-navy">Session History</h2>
+          <h2 className="text-lg font-semibold text-foreground">Session History</h2>
         </div>
 
         {sessions.length === 0 ? (
@@ -138,7 +138,7 @@ export function UserDetailCard({ user, sessions }: UserDetailCardProps) {
                 <div key={session.id} className="p-6">
                   <div className="flex items-start justify-between mb-4">
                     <div>
-                      <h3 className="font-medium text-navy">
+                      <h3 className="font-medium text-foreground">
                         {getPersonaName(session.persona_id)}
                       </h3>
                       <p className="text-sm text-muted-foreground mt-1">

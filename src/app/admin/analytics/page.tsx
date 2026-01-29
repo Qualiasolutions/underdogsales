@@ -19,7 +19,7 @@ export default async function AnalyticsPage() {
 
   if (!metrics) {
     return (
-      <div className="bg-gray-50 border border-gray-200 rounded-xl p-6">
+      <div className="bg-muted border border-border rounded-xl p-6">
         <p className="text-gray-600">No analytics data available.</p>
       </div>
     )
@@ -28,7 +28,7 @@ export default async function AnalyticsPage() {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-navy">Analytics</h1>
+        <h1 className="text-2xl font-bold text-foreground">Analytics</h1>
         <p className="text-gray-500 mt-1">Platform usage and system health</p>
       </div>
 

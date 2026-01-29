@@ -18,7 +18,7 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
       bordered: 'bg-card border-2 border-navy/10 dark:border-gold/10',
       glass: 'glass',
       gradient: 'bg-gradient-to-br from-card to-muted border border-border',
-      navy: 'bg-navy text-white dark:bg-gold dark:text-navy',
+      navy: 'bg-navy text-white dark:bg-gold dark:text-foreground',
       premium: 'bg-card border border-border/50 shadow-sm card-glow gradient-border',
       // New variants
       interactive: 'bg-card border border-border hover-gradient-border press-effect',

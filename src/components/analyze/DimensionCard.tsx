@@ -31,7 +31,7 @@ export function DimensionCard({ dimension, score, weight }: DimensionCardProps) 
   return (
     <motion.div
       className={cn(
-        'bg-white rounded-2xl border border-border p-5 transition-shadow cursor-pointer',
+        'bg-card rounded-2xl border border-border p-5 transition-shadow cursor-pointer',
         'hover:shadow-md'
       )}
       onClick={() => setIsExpanded(!isExpanded)}
@@ -40,7 +40,7 @@ export function DimensionCard({ dimension, score, weight }: DimensionCardProps) 
       {/* Header */}
       <div className="flex items-start justify-between mb-3">
         <div>
-          <h4 className="font-semibold text-navy">
+          <h4 className="font-semibold text-foreground">
             {DIMENSION_LABELS[dimension]}
           </h4>
           <p className="text-xs text-muted-foreground">
@@ -106,7 +106,7 @@ export function DimensionCard({ dimension, score, weight }: DimensionCardProps) 
                     <XCircle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
                   )}
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-navy capitalize">
+                    <p className="text-sm font-medium text-foreground capitalize">
                       {criterion.name.replace(/_/g, ' ')}
                     </p>
                     {criterion.note && (

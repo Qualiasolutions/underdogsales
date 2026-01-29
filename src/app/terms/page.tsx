@@ -20,7 +20,7 @@ export default function TermsPage() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6">
           <ScrollReveal>
             <div className="mb-12">
-              <h1 className="text-3xl sm:text-4xl font-bold text-navy mb-4">
+              <h1 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
                 Terms of Service
               </h1>
               <p className="text-muted-foreground">
@@ -32,7 +32,7 @@ export default function TermsPage() {
           <div className="prose prose-slate dark:prose-invert max-w-none space-y-8">
             <ScrollReveal delay={0.1}>
               <section>
-                <h2 className="text-2xl font-semibold text-navy mb-4">1. Agreement to Terms</h2>
+                <h2 className="text-2xl font-semibold text-foreground mb-4">1. Agreement to Terms</h2>
                 <p className="text-foreground/80 leading-relaxed">
                   By accessing or using Underdog Sales (&quot;the Service&quot;), operated by Qualia Solutions (&quot;we,&quot; &quot;us,&quot; or &quot;our&quot;),
                   you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use our Service.
@@ -46,7 +46,7 @@ export default function TermsPage() {
 
             <ScrollReveal delay={0.15}>
               <section>
-                <h2 className="text-2xl font-semibold text-navy mb-4">2. Eligibility</h2>
+                <h2 className="text-2xl font-semibold text-foreground mb-4">2. Eligibility</h2>
                 <p className="text-foreground/80 leading-relaxed">
                   You must be at least 18 years old and capable of forming a binding contract to use this Service.
                   By using the Service, you represent and warrant that you meet these eligibility requirements.
@@ -56,7 +56,7 @@ export default function TermsPage() {
 
             <ScrollReveal delay={0.2}>
               <section>
-                <h2 className="text-2xl font-semibold text-navy mb-4">3. Account Registration</h2>
+                <h2 className="text-2xl font-semibold text-foreground mb-4">3. Account Registration</h2>
                 <p className="text-foreground/80 leading-relaxed">
                   To access certain features, you must create an account. You agree to:
                 </p>
@@ -72,7 +72,7 @@ export default function TermsPage() {
 
             <ScrollReveal delay={0.25}>
               <section>
-                <h2 className="text-2xl font-semibold text-navy mb-4">4. Acceptable Use</h2>
+                <h2 className="text-2xl font-semibold text-foreground mb-4">4. Acceptable Use</h2>
                 <p className="text-foreground/80 leading-relaxed">
                   You agree not to:
                 </p>
@@ -91,7 +91,7 @@ export default function TermsPage() {
 
             <ScrollReveal delay={0.3}>
               <section>
-                <h2 className="text-2xl font-semibold text-navy mb-4">5. AI-Powered Services</h2>
+                <h2 className="text-2xl font-semibold text-foreground mb-4">5. AI-Powered Services</h2>
                 <p className="text-foreground/80 leading-relaxed">
                   Our Service uses artificial intelligence to provide coaching, feedback, and analysis. You acknowledge that:
                 </p>
@@ -107,7 +107,7 @@ export default function TermsPage() {
 
             <ScrollReveal delay={0.35}>
               <section>
-                <h2 className="text-2xl font-semibold text-navy mb-4">6. Voice Recording & Transcription</h2>
+                <h2 className="text-2xl font-semibold text-foreground mb-4">6. Voice Recording & Transcription</h2>
                 <p className="text-foreground/80 leading-relaxed">
                   Our practice sessions and call analysis features may record and transcribe audio. By using these features:
                 </p>
@@ -122,7 +122,7 @@ export default function TermsPage() {
 
             <ScrollReveal delay={0.4}>
               <section>
-                <h2 className="text-2xl font-semibold text-navy mb-4">7. Intellectual Property</h2>
+                <h2 className="text-2xl font-semibold text-foreground mb-4">7. Intellectual Property</h2>
                 <p className="text-foreground/80 leading-relaxed">
                   The Service and its original content, features, and functionality are owned by Qualia Solutions
                   and are protected by international copyright, trademark, and other intellectual property laws.
@@ -137,7 +137,7 @@ export default function TermsPage() {
 
             <ScrollReveal delay={0.45}>
               <section>
-                <h2 className="text-2xl font-semibold text-navy mb-4">8. Subscription & Payments</h2>
+                <h2 className="text-2xl font-semibold text-foreground mb-4">8. Subscription & Payments</h2>
                 <p className="text-foreground/80 leading-relaxed">
                   If you subscribe to a paid plan:
                 </p>
@@ -152,7 +152,7 @@ export default function TermsPage() {
 
             <ScrollReveal delay={0.5}>
               <section>
-                <h2 className="text-2xl font-semibold text-navy mb-4">9. Limitation of Liability</h2>
+                <h2 className="text-2xl font-semibold text-foreground mb-4">9. Limitation of Liability</h2>
                 <p className="text-foreground/80 leading-relaxed">
                   TO THE MAXIMUM EXTENT PERMITTED BY LAW, QUALIA SOLUTIONS SHALL NOT BE LIABLE FOR ANY INDIRECT,
                   INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, INCLUDING BUT NOT LIMITED TO LOSS OF
@@ -167,7 +167,7 @@ export default function TermsPage() {
 
             <ScrollReveal delay={0.55}>
               <section>
-                <h2 className="text-2xl font-semibold text-navy mb-4">10. Disclaimer of Warranties</h2>
+                <h2 className="text-2xl font-semibold text-foreground mb-4">10. Disclaimer of Warranties</h2>
                 <p className="text-foreground/80 leading-relaxed">
                   THE SERVICE IS PROVIDED &quot;AS IS&quot; AND &quot;AS AVAILABLE&quot; WITHOUT WARRANTIES OF ANY KIND,
                   EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO IMPLIED WARRANTIES OF MERCHANTABILITY,
@@ -178,7 +178,7 @@ export default function TermsPage() {
 
             <ScrollReveal delay={0.6}>
               <section>
-                <h2 className="text-2xl font-semibold text-navy mb-4">11. Termination</h2>
+                <h2 className="text-2xl font-semibold text-foreground mb-4">11. Termination</h2>
                 <p className="text-foreground/80 leading-relaxed">
                   We may terminate or suspend your account and access to the Service immediately, without prior
                   notice or liability, for any reason, including breach of these Terms. Upon termination, your
@@ -193,7 +193,7 @@ export default function TermsPage() {
 
             <ScrollReveal delay={0.65}>
               <section>
-                <h2 className="text-2xl font-semibold text-navy mb-4">12. Governing Law</h2>
+                <h2 className="text-2xl font-semibold text-foreground mb-4">12. Governing Law</h2>
                 <p className="text-foreground/80 leading-relaxed">
                   These Terms shall be governed by and construed in accordance with the laws of Cyprus,
                   without regard to its conflict of law provisions. Any disputes arising from these Terms
@@ -204,7 +204,7 @@ export default function TermsPage() {
 
             <ScrollReveal delay={0.7}>
               <section>
-                <h2 className="text-2xl font-semibold text-navy mb-4">13. Changes to Terms</h2>
+                <h2 className="text-2xl font-semibold text-foreground mb-4">13. Changes to Terms</h2>
                 <p className="text-foreground/80 leading-relaxed">
                   We reserve the right to modify or replace these Terms at any time. If we make material changes,
                   we will notify you by email or through the Service at least 30 days before the changes take effect.
@@ -215,7 +215,7 @@ export default function TermsPage() {
 
             <ScrollReveal delay={0.75}>
               <section>
-                <h2 className="text-2xl font-semibold text-navy mb-4">14. Contact Us</h2>
+                <h2 className="text-2xl font-semibold text-foreground mb-4">14. Contact Us</h2>
                 <p className="text-foreground/80 leading-relaxed">
                   If you have any questions about these Terms of Service, please contact us:
                 </p>
@@ -243,9 +243,9 @@ export default function TermsPage() {
             />
           </Link>
           <div className="flex items-center gap-6 text-sm text-muted-foreground">
-            <Link href="/privacy" className="hover:text-navy transition-colors">Privacy</Link>
-            <Link href="/support" className="hover:text-navy transition-colors">Support</Link>
-            <Link href="/" className="hover:text-navy transition-colors">Back to Home</Link>
+            <Link href="/privacy" className="hover:text-foreground transition-colors">Privacy</Link>
+            <Link href="/support" className="hover:text-foreground transition-colors">Support</Link>
+            <Link href="/" className="hover:text-foreground transition-colors">Back to Home</Link>
           </div>
         </div>
       </footer>

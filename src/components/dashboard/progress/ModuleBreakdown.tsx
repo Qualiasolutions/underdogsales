@@ -69,7 +69,7 @@ export function ModuleBreakdown({ progress, className }: ModuleBreakdownProps) {
                   <span
                     className={cn(
                       'font-medium text-sm truncate',
-                      isCompleted ? 'text-navy' : 'text-muted-foreground'
+                      isCompleted ? 'text-foreground' : 'text-muted-foreground'
                     )}
                   >
                     {module.name}
