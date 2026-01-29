@@ -11,6 +11,7 @@ import {
   Search,
   type LucideIcon,
 } from 'lucide-react'
+import Image from 'next/image'
 import { cn } from '@/lib/utils'
 import { Markdown } from '@/lib/markdown'
 import { Button } from '@/components/ui/button'
@@ -31,7 +32,6 @@ const modeIcons: Record<CoachingMode, LucideIcon> = {
   general: MessageCircle,
 }
 
-// Simple coach avatar component using native img
 function CoachAvatar({ size = 'md' }: { size?: 'sm' | 'md' | 'lg' }) {
   const sizeClasses = {
     sm: 'w-9 h-9',
@@ -39,10 +39,14 @@ function CoachAvatar({ size = 'md' }: { size?: 'sm' | 'md' | 'lg' }) {
     lg: 'w-20 h-20',
   }
 
+  const sizePx = { sm: 36, md: 64, lg: 80 }
+
   return (
-    <img
+    <Image
       src="/coach.png"
       alt={GIULIO_COACH.name}
+      width={sizePx[size]}
+      height={sizePx[size]}
       className={cn(
         sizeClasses[size],
         'rounded-xl border border-gold/20 bg-gradient-to-br from-gold/30 to-gold/10 object-contain flex-shrink-0'

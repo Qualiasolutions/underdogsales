@@ -19,6 +19,7 @@ import {
   User,
   type LucideIcon,
 } from 'lucide-react'
+import Image from 'next/image'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -34,7 +35,6 @@ import type { TranscriptEntry } from '@/types'
 
 type ConnectionStatus = 'idle' | 'connecting' | 'connected' | 'error'
 
-// Simple coach avatar component using native img
 function CoachAvatar({ size = 'md', className }: { size?: 'sm' | 'md' | 'lg' | 'xl'; className?: string }) {
   const sizeClasses = {
     sm: 'w-9 h-9',
@@ -43,10 +43,14 @@ function CoachAvatar({ size = 'md', className }: { size?: 'sm' | 'md' | 'lg' | '
     xl: 'w-24 h-24',
   }
 
+  const sizePx = { sm: 36, md: 64, lg: 80, xl: 96 }
+
   return (
-    <img
+    <Image
       src="/coach.png"
       alt={GIULIO_COACH.name}
+      width={sizePx[size]}
+      height={sizePx[size]}
       className={cn(
         sizeClasses[size],
         'rounded-xl border border-gold/20 bg-gradient-to-br from-gold/30 to-gold/10 object-contain',

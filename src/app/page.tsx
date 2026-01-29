@@ -176,7 +176,7 @@ export default function Home() {
                     <div className="relative">
                       {/* Coach Profile */}
                       <div className="flex items-center gap-4 mb-8">
-                        <img
+                        <Image
                           src="/coach.png"
                           alt="AI Sales Coach"
                           width={64}
