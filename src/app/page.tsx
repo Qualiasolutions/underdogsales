@@ -325,11 +325,11 @@ export default function Home() {
 
                 {/* Floating Badge */}
                 <motion.div
-                  className="absolute -top-4 -right-4"
+                  className="absolute -top-6 -right-6"
                   animate={{ y: [0, -10, 0] }}
                   transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
                 >
-                  <Badge variant="navy" size="lg">
+                  <Badge variant="gradient" size="lg" className="shadow-lg">
                     <Award className="w-4 h-4" />
                     Real-time Feedback
                   </Badge>
