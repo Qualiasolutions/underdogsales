@@ -153,13 +153,12 @@ export function ChatCoach() {
                 {/* Coach Card */}
                 <Card variant="elevated" className="p-6 max-w-md w-full">
                   <div className="flex items-center gap-4 mb-6">
-                    <div className="w-16 h-16 rounded-2xl overflow-hidden bg-gradient-to-br from-gold/30 to-gold/10 border border-gold/20">
+                    <div className="relative w-16 h-16 rounded-2xl overflow-hidden bg-gradient-to-br from-gold/30 to-gold/10 border border-gold/20">
                       <Image
                         src="/coach.png"
                         alt={GIULIO_COACH.name}
-                        width={64}
-                        height={64}
-                        className="w-full h-full object-contain"
+                        fill
+                        className="object-contain"
                       />
                     </div>
                     <div>
@@ -245,13 +244,12 @@ export function ChatCoach() {
                           You
                         </div>
                       ) : (
-                        <div className="w-9 h-9 flex-shrink-0 rounded-xl overflow-hidden bg-gradient-to-br from-gold/30 to-gold/10 border border-gold/20">
+                        <div className="relative w-9 h-9 flex-shrink-0 rounded-xl overflow-hidden bg-gradient-to-br from-gold/30 to-gold/10 border border-gold/20">
                           <Image
                             src="/coach.png"
                             alt={GIULIO_COACH.name}
-                            width={36}
-                            height={36}
-                            className="w-full h-full object-contain"
+                            fill
+                            className="object-contain"
                           />
                         </div>
                       )}
@@ -272,13 +270,12 @@ export function ChatCoach() {
                       animate={{ opacity: 1, y: 0 }}
                       className="flex gap-3"
                     >
-                      <div className="w-9 h-9 flex-shrink-0 rounded-xl overflow-hidden bg-gradient-to-br from-gold/30 to-gold/10 border border-gold/20">
+                      <div className="relative w-9 h-9 flex-shrink-0 rounded-xl overflow-hidden bg-gradient-to-br from-gold/30 to-gold/10 border border-gold/20">
                         <Image
                           src="/coach.png"
                           alt={GIULIO_COACH.name}
-                          width={36}
-                          height={36}
-                          className="w-full h-full object-contain"
+                          fill
+                          className="object-contain"
                         />
                       </div>
                       <div className="py-3 px-4 rounded-2xl rounded-tl-md bg-white border border-border">

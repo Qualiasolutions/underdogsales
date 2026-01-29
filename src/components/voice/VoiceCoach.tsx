@@ -112,13 +112,12 @@ const TranscriptMessage = memo(({
         You
       </div>
     ) : (
-      <div className="w-9 h-9 flex-shrink-0 rounded-xl overflow-hidden bg-gradient-to-br from-gold/30 to-gold/10 border border-gold/20">
+      <div className="relative w-9 h-9 flex-shrink-0 rounded-xl overflow-hidden bg-gradient-to-br from-gold/30 to-gold/10 border border-gold/20">
         <Image
           src="/coach.png"
           alt="Giulio"
-          width={36}
-          height={36}
-          className="w-full h-full object-contain"
+          fill
+          className="object-contain"
         />
       </div>
     )}
@@ -395,13 +394,12 @@ export function VoiceCoach() {
                 >
                   <Card variant="elevated" className="p-6">
                     <div className="flex items-center gap-4 mb-6">
-                      <div className="w-20 h-20 rounded-2xl overflow-hidden bg-gradient-to-br from-gold/30 to-gold/10 border border-gold/20 shadow-gold">
+                      <div className="relative w-20 h-20 rounded-2xl overflow-hidden bg-gradient-to-br from-gold/30 to-gold/10 border border-gold/20 shadow-gold">
                         <Image
                           src="/coach.png"
                           alt={GIULIO_COACH.name}
-                          width={80}
-                          height={80}
-                          className="w-full h-full object-contain"
+                          fill
+                          className="object-contain"
                         />
                       </div>
                       <div>
@@ -513,9 +511,8 @@ export function VoiceCoach() {
                       <Image
                         src="/coach.png"
                         alt="Giulio"
-                        width={72}
-                        height={72}
-                        className="w-full h-full object-contain"
+                        fill
+                        className="object-contain"
                       />
                     </div>
                   </div>
@@ -569,13 +566,12 @@ export function VoiceCoach() {
                           animate={{ scale: 1, opacity: 1 }}
                           className="relative w-24 h-24 mx-auto mb-6"
                         >
-                          <div className="w-full h-full rounded-2xl overflow-hidden bg-gradient-to-br from-gold/30 to-gold/10 border border-white/10 shadow-gold">
+                          <div className="relative w-full h-full rounded-2xl overflow-hidden bg-gradient-to-br from-gold/30 to-gold/10 border border-white/10 shadow-gold">
                             <Image
                               src="/coach.png"
                               alt={GIULIO_COACH.name}
-                              width={96}
-                              height={96}
-                              className="w-full h-full object-contain"
+                              fill
+                              className="object-contain"
                             />
                           </div>
                           <motion.div
