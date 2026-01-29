@@ -19,11 +19,11 @@ export default async function SettingsPage() {
     redirect('/login?redirect=/settings')
   }
 
-  // Get user name from public.users table
+  // Get user profile from public.users table
   const supabase = await createServerSupabaseClient()
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { data: userData } = await (supabase.from('users') as any)
-    .select('name')
+    .select('name, company, job_title')
     .eq('id', user.id)
     .single()
 
@@ -49,7 +49,12 @@ export default async function SettingsPage() {
           </div>
 
           {/* Settings Form */}
-          <SettingsForm user={user} userName={userData?.name} />
+          <SettingsForm
+            user={user}
+            userName={userData?.name}
+            userCompany={userData?.company}
+            userJobTitle={userData?.job_title}
+          />
         </div>
       </main>
       <Footer />

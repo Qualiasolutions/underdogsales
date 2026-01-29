@@ -3,7 +3,7 @@
 import { useState, useTransition } from 'react'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
-import { Mic, Mail, Lock, User, ArrowRight, CheckCircle } from 'lucide-react'
+import { Mic, Mail, Lock, User, ArrowRight, CheckCircle, Building2, Briefcase } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { FadeIn } from '@/components/ui/motion'
@@ -97,6 +97,45 @@ export const SignupForm = () => {
                     placeholder="Your name"
                     className="w-full h-12 pl-12 pr-4 rounded-xl border-2 border-border bg-background text-foreground placeholder:text-muted-foreground focus:border-gold focus:outline-none transition-colors"
                   />
+                </div>
+              </div>
+
+              {/* Company & Job Title Row */}
+              <div className="grid grid-cols-2 gap-3">
+                {/* Company */}
+                <div>
+                  <label htmlFor="company" className="block text-sm font-medium text-foreground mb-2">
+                    Company
+                  </label>
+                  <div className="relative">
+                    <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                    <input
+                      id="company"
+                      name="company"
+                      type="text"
+                      required
+                      placeholder="Your company"
+                      className="w-full h-12 pl-12 pr-4 rounded-xl border-2 border-border bg-background text-foreground placeholder:text-muted-foreground focus:border-gold focus:outline-none transition-colors"
+                    />
+                  </div>
+                </div>
+
+                {/* Job Title */}
+                <div>
+                  <label htmlFor="jobTitle" className="block text-sm font-medium text-foreground mb-2">
+                    Job Title
+                  </label>
+                  <div className="relative">
+                    <Briefcase className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                    <input
+                      id="jobTitle"
+                      name="jobTitle"
+                      type="text"
+                      required
+                      placeholder="Your role"
+                      className="w-full h-12 pl-12 pr-4 rounded-xl border-2 border-border bg-background text-foreground placeholder:text-muted-foreground focus:border-gold focus:outline-none transition-colors"
+                    />
+                  </div>
                 </div>
               </div>
 

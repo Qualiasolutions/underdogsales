@@ -3,15 +3,17 @@
 import { useState, useTransition } from 'react'
 import { User } from '@supabase/supabase-js'
 import { motion } from 'motion/react'
-import { User as UserIcon, Mail, Lock, Check, AlertCircle, Loader2 } from 'lucide-react'
+import { User as UserIcon, Mail, Lock, Check, AlertCircle, Loader2, Building2, Briefcase } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import { updateName, updateEmail, sendPasswordReset } from './actions'
+import { updateName, updateEmail, sendPasswordReset, updateWorkInfo } from './actions'
 
 interface SettingsFormProps {
   user: User
   userName?: string
+  userCompany?: string
+  userJobTitle?: string
 }
 
 interface FormState {
@@ -47,12 +49,14 @@ function StatusMessage({ error, success }: FormState) {
   return null
 }
 
-export function SettingsForm({ user, userName }: SettingsFormProps) {
+export function SettingsForm({ user, userName, userCompany, userJobTitle }: SettingsFormProps) {
   const [nameState, setNameState] = useState<FormState>({})
+  const [workState, setWorkState] = useState<FormState>({})
   const [emailState, setEmailState] = useState<FormState>({})
   const [passwordState, setPasswordState] = useState<FormState>({})
 
   const [isNamePending, startNameTransition] = useTransition()
+  const [isWorkPending, startWorkTransition] = useTransition()
   const [isEmailPending, startEmailTransition] = useTransition()
   const [isPasswordPending, startPasswordTransition] = useTransition()
 
@@ -64,6 +68,18 @@ export function SettingsForm({ user, userName }: SettingsFormProps) {
         setNameState({ error: result.error })
       } else if (result.success) {
         setNameState({ success: result.message })
+      }
+    })
+  }
+
+  const handleWorkSubmit = (formData: FormData) => {
+    setWorkState({})
+    startWorkTransition(async () => {
+      const result = await updateWorkInfo(formData)
+      if (result.error) {
+        setWorkState({ error: result.error })
+      } else if (result.success) {
+        setWorkState({ success: result.message })
       }
     })
   }
@@ -130,6 +146,56 @@ export function SettingsForm({ user, userName }: SettingsFormProps) {
                 </>
               ) : (
                 'Update Name'
+              )}
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
+
+      {/* Work Info Card */}
+      <Card variant="bordered">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Building2 className="w-5 h-5 text-gold" />
+            Work Information
+          </CardTitle>
+          <CardDescription>
+            Your company and role
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form action={handleWorkSubmit} className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <Input
+                name="company"
+                label="Company"
+                defaultValue={userCompany || ''}
+                placeholder="Your company"
+                leftIcon={<Building2 className="w-4 h-4" />}
+                disabled={isWorkPending}
+              />
+              <Input
+                name="jobTitle"
+                label="Job Title"
+                defaultValue={userJobTitle || ''}
+                placeholder="Your role"
+                leftIcon={<Briefcase className="w-4 h-4" />}
+                disabled={isWorkPending}
+              />
+            </div>
+            <StatusMessage {...workState} />
+            <Button
+              type="submit"
+              variant="primary"
+              disabled={isWorkPending}
+            >
+              {isWorkPending ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Saving...
+                </>
+              ) : (
+                'Update Work Info'
               )}
             </Button>
           </form>

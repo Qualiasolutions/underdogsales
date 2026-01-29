@@ -47,11 +47,13 @@ export const signup = async (formData: FormData): Promise<AuthResult> => {
 
   const name = formData.get('name') as string
   const email = formData.get('email') as string
+  const company = formData.get('company') as string
+  const jobTitle = formData.get('jobTitle') as string
   const password = formData.get('password') as string
   const confirmPassword = formData.get('confirmPassword') as string
 
   // Validation
-  if (!name || !email || !password) {
+  if (!name || !email || !password || !company || !jobTitle) {
     return { error: 'All fields are required' }
   }
 
@@ -70,7 +72,7 @@ export const signup = async (formData: FormData): Promise<AuthResult> => {
     email,
     password,
     options: {
-      data: { name },
+      data: { name, company, job_title: jobTitle },
       emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/auth/callback`,
     },
   })
@@ -92,6 +94,8 @@ export const signup = async (formData: FormData): Promise<AuthResult> => {
       id: data.user.id,
       email,
       name,
+      company,
+      job_title: jobTitle,
     })
 
     if (insertError && !insertError.message?.includes('duplicate')) {

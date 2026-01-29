@@ -63,6 +63,61 @@ export async function updateName(formData: FormData): Promise<ActionResult> {
 }
 
 /**
+ * Update user's work information (company and job title)
+ */
+export async function updateWorkInfo(formData: FormData): Promise<ActionResult> {
+  const headersList = await headers()
+  const ip = headersList.get('x-forwarded-for')?.split(',')[0] || 'unknown'
+  const rateLimitResult = checkRateLimit(`updateWorkInfo:${ip}`, RATE_LIMITS.signup)
+
+  if (!rateLimitResult.allowed) {
+    return { error: 'Too many requests. Please try again later.' }
+  }
+
+  const supabase = await createServerSupabaseClient()
+
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) {
+    return { error: 'You must be logged in to update your work info' }
+  }
+
+  const company = formData.get('company') as string
+  const jobTitle = formData.get('jobTitle') as string
+
+  if (!company || company.trim().length < 1) {
+    return { error: 'Company is required' }
+  }
+
+  if (!jobTitle || jobTitle.trim().length < 1) {
+    return { error: 'Job title is required' }
+  }
+
+  // Update auth user metadata
+  const { error: authError } = await supabase.auth.updateUser({
+    data: { company: company.trim(), job_title: jobTitle.trim() }
+  })
+
+  if (authError) {
+    logger.error('Failed to update auth user metadata', { error: authError.message, userId: user.id })
+    return { error: 'Failed to update work info. Please try again.' }
+  }
+
+  // Update public.users table
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { error: dbError } = await (supabase.from('users') as any)
+    .update({ company: company.trim(), job_title: jobTitle.trim() })
+    .eq('id', user.id)
+
+  if (dbError) {
+    logger.error('Failed to update users table', { error: dbError.message, userId: user.id })
+    // Don't return error - auth was updated successfully
+  }
+
+  revalidatePath('/settings')
+  return { success: true, message: 'Work information updated successfully' }
+}
+
+/**
  * Update user's email address
  * Sends a confirmation email to the new address
  */
