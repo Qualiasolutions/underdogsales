@@ -7,8 +7,10 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
+import { getAdminClient } from '@/lib/supabase/admin'
 import { logger } from '@/lib/logger'
 import { retellCircuit, CircuitOpenError } from '@/lib/circuit-breaker'
+import { getIndustryContext } from '@/config/industries'
 
 const RETELL_API_BASE = 'https://api.retellai.com'
 const RETELL_TIMEOUT_MS = 10000 // 10 second timeout for API calls
@@ -34,13 +36,28 @@ interface RetellWebCallResponse {
 async function createWebCall(
   apiKey: string,
   agentId: string,
-  metadata: Record<string, string | undefined>
+  metadata: Record<string, string | undefined>,
+  industryContext?: string
 ): Promise<RetellWebCallResponse> {
   // Create abort controller for timeout
   const controller = new AbortController()
   const timeoutId = setTimeout(() => controller.abort(), RETELL_TIMEOUT_MS)
 
   try {
+    // Build request body with optional dynamic variables for industry context
+    const requestBody: Record<string, unknown> = {
+      agent_id: agentId,
+      metadata,
+    }
+
+    // Inject industry context as dynamic variable if available
+    // This will be available in the Retell agent prompt as {{industry_context}}
+    if (industryContext) {
+      requestBody.retell_llm_dynamic_variables = {
+        industry_context: industryContext,
+      }
+    }
+
     const response = await fetch(`${RETELL_API_BASE}/v2/create-web-call`, {
       method: 'POST',
       headers: {
@@ -49,10 +66,7 @@ async function createWebCall(
         'Accept': 'application/json',
         'Accept-Encoding': 'gzip, deflate',
       },
-      body: JSON.stringify({
-        agent_id: agentId,
-        metadata,
-      }),
+      body: JSON.stringify(requestBody),
       signal: controller.signal,
     })
 
@@ -101,11 +115,22 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // Fetch user's industry for roleplay context
+    const adminClient = getAdminClient()
+    const { data: userData } = await adminClient
+      .from('users')
+      .select('industry')
+      .eq('id', user.id)
+      .single()
+
+    const industryContext = getIndustryContext(userData?.industry || null)
+
     logger.info('Registering Retell web call', {
       operation: 'retell_register',
       userId: user.id,
       agentId,
       metadata,
+      industry: userData?.industry || 'none',
     })
 
     // Create web call via direct API call with circuit breaker protection
@@ -113,7 +138,7 @@ export async function POST(request: NextRequest) {
       createWebCall(apiKey, agentId, {
         ...metadata,
         userId: user.id,
-      })
+      }, industryContext || undefined)
     )
 
     logger.info('Retell web call registered', {

@@ -375,25 +375,34 @@ export type Database = {
       }
       users: {
         Row: {
+          company: string | null
           created_at: string | null
           email: string
           id: string
+          industry: string | null
+          job_title: string | null
           name: string
           org_id: string | null
           role: string | null
         }
         Insert: {
+          company?: string | null
           created_at?: string | null
           email: string
           id?: string
+          industry?: string | null
+          job_title?: string | null
           name: string
           org_id?: string | null
           role?: string | null
         }
         Update: {
+          company?: string | null
           created_at?: string | null
           email?: string
           id?: string
+          industry?: string | null
+          job_title?: string | null
           name?: string
           org_id?: string | null
           role?: string | null

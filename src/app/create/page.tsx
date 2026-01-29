@@ -1,11 +1,11 @@
 import type { Metadata } from 'next'
-import { ICPBuilder } from './icp-builder'
+import { IndustrySelector } from './industry-selector'
 
 export const metadata: Metadata = {
-  title: 'Create Persona | Underdog AI Sales Coach',
-  description: 'Build a custom AI roleplay persona based on your ideal customer profile',
+  title: 'Select Your Industry | Underdog AI Sales Coach',
+  description: 'Choose your selling industry to customize roleplay scenarios with relevant objections and context',
 }
 
 export default function CreatePage() {
-  return <ICPBuilder />
+  return <IndustrySelector />
 }
