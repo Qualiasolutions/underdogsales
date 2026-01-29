@@ -18,6 +18,7 @@ import {
   Settings,
   Trophy,
   Headphones,
+  Sparkles,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from './button'
@@ -33,6 +34,7 @@ interface HeaderProps {
 const navLinks = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/practice', label: 'Practice', icon: Mic },
+  { href: '/create', label: 'Create', icon: Sparkles },
   { href: '/coach', label: 'Coach', icon: Headphones },
   { href: '/leaderboard', label: 'Leaderboard', icon: Trophy },
   { href: '/chat', label: 'Chat', icon: MessageSquare },
