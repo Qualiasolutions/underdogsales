@@ -94,7 +94,7 @@ export async function getAllUsers(
       query = query.or(`email.ilike.${searchTerm},name.ilike.${searchTerm}`)
     }
 
-    // Fetch limit + 1 for hasMore detection
+    // Fetch limit + 1 for hasMore detection - range() is inclusive so use limit (not limit-1)
     query = query.range(offset, offset + limit)
 
     const { data: usersData, error: usersError } = await query

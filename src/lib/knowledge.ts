@@ -29,15 +29,21 @@ interface SearchOptions {
     source?: string
 }
 
+// Module-level constant to avoid recreating on every search call
+const STOP_WORDS = new Set(['the', 'a', 'an', 'is', 'are', 'was', 'were', 'be', 'been', 'being', 'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'could', 'should', 'may', 'might', 'must', 'shall', 'can', 'need', 'dare', 'ought', 'used', 'to', 'of', 'in', 'for', 'on', 'with', 'at', 'by', 'from', 'as', 'into', 'through', 'during', 'before', 'after', 'above', 'below', 'between', 'under', 'again', 'further', 'then', 'once', 'here', 'there', 'when', 'where', 'why', 'how', 'all', 'each', 'few', 'more', 'most', 'other', 'some', 'such', 'no', 'nor', 'not', 'only', 'own', 'same', 'so', 'than', 'too', 'very', 'just', 'and', 'but', 'if', 'or', 'because', 'until', 'while', 'although', 'i', 'me', 'my', 'myself', 'we', 'our', 'ours', 'ourselves', 'you', 'your', 'yours', 'yourself', 'yourselves', 'he', 'him', 'his', 'himself', 'she', 'her', 'hers', 'herself', 'it', 'its', 'itself', 'they', 'them', 'their', 'theirs', 'themselves', 'what', 'which', 'who', 'whom', 'this', 'that', 'these', 'those', 'am', 'about', 'give', 'get', 'make', 'want', 'tell', 'show', 'help'])
+
+// Escape SQL LIKE special characters to prevent query manipulation
+function escapeLikePattern(term: string): string {
+    return term.replace(/[%_\\]/g, '\\$&')
+}
+
 // Extract keywords for text-based search
 function extractKeywords(query: string): string[] {
-    const stopWords = new Set(['the', 'a', 'an', 'is', 'are', 'was', 'were', 'be', 'been', 'being', 'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'could', 'should', 'may', 'might', 'must', 'shall', 'can', 'need', 'dare', 'ought', 'used', 'to', 'of', 'in', 'for', 'on', 'with', 'at', 'by', 'from', 'as', 'into', 'through', 'during', 'before', 'after', 'above', 'below', 'between', 'under', 'again', 'further', 'then', 'once', 'here', 'there', 'when', 'where', 'why', 'how', 'all', 'each', 'few', 'more', 'most', 'other', 'some', 'such', 'no', 'nor', 'not', 'only', 'own', 'same', 'so', 'than', 'too', 'very', 'just', 'and', 'but', 'if', 'or', 'because', 'until', 'while', 'although', 'i', 'me', 'my', 'myself', 'we', 'our', 'ours', 'ourselves', 'you', 'your', 'yours', 'yourself', 'yourselves', 'he', 'him', 'his', 'himself', 'she', 'her', 'hers', 'herself', 'it', 'its', 'itself', 'they', 'them', 'their', 'theirs', 'themselves', 'what', 'which', 'who', 'whom', 'this', 'that', 'these', 'those', 'am', 'about', 'give', 'get', 'make', 'want', 'tell', 'show', 'help'])
-
     return query
         .toLowerCase()
         .replace(/[^a-z0-9\s]/g, ' ')
         .split(/\s+/)
-        .filter(word => word.length > 2 && !stopWords.has(word))
+        .filter(word => word.length > 2 && !STOP_WORDS.has(word))
 }
 
 // Text-based search as primary method (vector search has schema issues)
@@ -89,9 +95,13 @@ async function textBasedSearch(
     const uniqueTerms = [...new Set(searchTerms)]
 
     // Build OR conditions for section_title and content search
+    // Escape SQL LIKE special characters to prevent query manipulation
     const conditions = uniqueTerms
         .slice(0, 10) // Limit to 10 terms
-        .map(term => `section_title.ilike.%${term}%,content.ilike.%${term}%`)
+        .map(term => {
+            const escaped = escapeLikePattern(term)
+            return `section_title.ilike.%${escaped}%,content.ilike.%${escaped}%`
+        })
         .join(',')
 
     // First, try to get canonical coldcallingwiki.com content

@@ -1,5 +1,7 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { getAdminClient } from '@/lib/supabase/admin'
+import { getUser } from '@/lib/supabase/server'
+import { isAdmin } from '@/config/admin'
 
 interface ServiceStatus {
   status: 'healthy' | 'unhealthy' | 'degraded'
@@ -10,6 +12,9 @@ interface ServiceStatus {
 interface HealthCheck {
   status: 'healthy' | 'unhealthy' | 'degraded'
   timestamp: string
+}
+
+interface DetailedHealthCheck extends HealthCheck {
   version: string
   uptime: number
   services: {
@@ -83,7 +88,22 @@ async function checkOpenRouter(): Promise<ServiceStatus> {
   }
 }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  // Check if user is admin for detailed health info
+  const user = await getUser()
+  const showDetails = user && isAdmin(user.email)
+
+  // If requesting detailed info via query param, require admin
+  const wantsDetails = request.nextUrl.searchParams.get('details') === 'true'
+
+  if (wantsDetails && !showDetails) {
+    // Return basic status only for non-admins
+    return NextResponse.json({
+      status: 'healthy',
+      timestamp: new Date().toISOString(),
+    } as HealthCheck)
+  }
+
   const [supabase, openrouter] = await Promise.all([
     checkSupabase(),
     checkOpenRouter(),
@@ -102,7 +122,18 @@ export async function GET() {
     overallStatus = 'degraded'
   }
 
-  const health: HealthCheck = {
+  // Return minimal info for public requests, detailed for admins
+  if (!showDetails) {
+    const basicHealth: HealthCheck = {
+      status: overallStatus,
+      timestamp: new Date().toISOString(),
+    }
+    const statusCode = overallStatus === 'healthy' ? 200 : overallStatus === 'degraded' ? 200 : 503
+    return NextResponse.json(basicHealth, { status: statusCode })
+  }
+
+  // Admin gets full details
+  const health: DetailedHealthCheck = {
     status: overallStatus,
     timestamp: new Date().toISOString(),
     version: process.env.npm_package_version || '0.1.0',

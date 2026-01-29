@@ -305,7 +305,7 @@ export async function getUserPracticeSessions(
       `)
       .eq('user_id', user.id)
       .order('created_at', { ascending: false })
-      .range(offset, offset + limit)
+      .range(offset, offset + limit - 1)  // range() is inclusive, so fetch exactly limit items
 
     if (error || !sessions) return { sessions: [], hasMore: false }
 
