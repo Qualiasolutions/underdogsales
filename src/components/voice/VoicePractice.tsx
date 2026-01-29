@@ -9,7 +9,6 @@ import {
   MicOff,
   Phone,
   PhoneOff,
-  PhoneCall,
   Volume2,
   AlertCircle,
   Check,
@@ -18,9 +17,6 @@ import {
   WifiOff,
   Zap,
   Loader2,
-  Shield,
-  Target,
-  DoorOpen,
   type LucideIcon,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -43,13 +39,6 @@ type ConnectionStatus = 'idle' | 'connecting' | 'connected' | 'error'
 interface VoicePracticeProps {
   onSessionEnd?: (transcript: TranscriptEntry[]) => void
 }
-
-const scenarios: { id: ScenarioType; label: string; description: string; icon: LucideIcon }[] = [
-  { id: 'cold_call', label: 'Cold Call', description: 'Full conversation flow', icon: PhoneCall },
-  { id: 'objection', label: 'Objections', description: 'Overcome resistance', icon: Shield },
-  { id: 'closing', label: 'Closing', description: 'Secure the next step', icon: Target },
-  { id: 'gatekeeper', label: 'Gatekeeper', description: 'Navigate barriers', icon: DoorOpen },
-]
 
 // Pre-calculated animation values for performance (avoids Math.random() in render)
 const BAR_HEIGHTS = [85, 60, 95, 45, 75, 55, 90, 40, 80, 65, 70, 50, 88, 58, 92, 48]
@@ -302,7 +291,7 @@ export function VoicePractice({ onSessionEnd }: VoicePracticeProps) {
   const [connectionStatus, setConnectionStatus] = useState<ConnectionStatus>('idle')
   const [isMuted, setIsMuted] = useState(false)
   const [selectedPersonaId, setSelectedPersonaId] = useState<string>('skeptical_cfo')
-  const [selectedScenario, setSelectedScenario] = useState<ScenarioType>('cold_call')
+  const selectedScenario: ScenarioType = 'cold_call' // Always use cold_call scenario
   const [transcript, setTranscript] = useState<TranscriptEntry[]>([])
   const [callId, setCallId] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
