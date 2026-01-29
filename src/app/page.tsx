@@ -1,9 +1,10 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
-import { motion, AnimatePresence } from 'motion/react'
+import { motion } from 'motion/react'
 import {
   Phone,
   Upload,
@@ -14,11 +15,7 @@ import {
   Target,
   TrendingUp,
   Award,
-  Menu,
-  X,
   LogIn,
-  LogOut,
-  User,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/components/providers/auth-provider'
@@ -37,8 +34,33 @@ import {
 } from '@/components/ui/motion'
 
 export default function Home() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const { user, loading, signOut } = useAuth()
+  const { user, loading } = useAuth()
+  const router = useRouter()
+
+  // Redirect logged-in users to dashboard
+  useEffect(() => {
+    if (!loading && user) {
+      router.replace('/dashboard')
+    }
+  }, [user, loading, router])
+
+  // Show loading spinner while checking auth or redirecting
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="w-8 h-8 border-4 border-gold border-t-transparent rounded-full animate-spin" />
+      </div>
+    )
+  }
+
+  // User is logged in - show loading while redirect happens
+  if (user) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="w-8 h-8 border-4 border-gold border-t-transparent rounded-full animate-spin" />
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -57,147 +79,24 @@ export default function Home() {
               />
             </Link>
 
-            {/* Desktop nav links - only show when logged in */}
-            {user && (
-              <div className="hidden md:flex items-center gap-8">
-                <Link href="/dashboard" className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors link-underline">
-                  Dashboard
-                </Link>
-                <Link href="/practice" className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors link-underline">
-                  Practice
-                </Link>
-                <Link href="/chat" className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors link-underline">
-                  Chat
-                </Link>
-                <Link href="/curriculum" className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors link-underline">
-                  Curriculum
-                </Link>
-              </div>
-            )}
-
+            {/* Sign in button - logged in users get redirected so no need to handle that case */}
             <div className="flex items-center gap-3">
-              {/* Auth buttons */}
-              {!loading && (
-                <>
-                  {user ? (
-                    <div className="hidden sm:flex items-center gap-3">
-                      <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-muted">
-                        <User className="w-4 h-4 text-foreground" />
-                        <span className="text-sm font-medium text-foreground truncate max-w-[120px]">
-                          {user.email?.split('@')[0]}
-                        </span>
-                      </div>
-                      <Button variant="ghost" size="sm" onClick={signOut}>
-                        <LogOut className="w-4 h-4" />
-                        Sign Out
-                      </Button>
-                    </div>
-                  ) : (
-                    <Link href="/login" className="hidden sm:block">
-                      <Button variant="primary" size="sm">
-                        <LogIn className="w-4 h-4" />
-                        Sign In
-                      </Button>
-                    </Link>
-                  )}
-                </>
-              )}
-
-              {/* Mobile menu button - only show when logged in */}
-              {user && (
-                <button
-                  className="md:hidden p-2 rounded-lg hover:bg-muted transition-colors"
-                  onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                  aria-label="Toggle menu"
-                >
-                  {mobileMenuOpen ? (
-                    <X className="w-6 h-6 text-foreground" />
-                  ) : (
-                    <Menu className="w-6 h-6 text-foreground" />
-                  )}
-                </button>
-              )}
-
-              {/* Mobile sign in button when logged out */}
-              {!loading && !user && (
-                <Link href="/login" className="sm:hidden">
-                  <Button variant="primary" size="sm">
-                    <LogIn className="w-4 h-4" />
-                    Sign In
-                  </Button>
-                </Link>
-              )}
+              <Link href="/login" className="hidden sm:block">
+                <Button variant="primary" size="sm">
+                  <LogIn className="w-4 h-4" />
+                  Sign In
+                </Button>
+              </Link>
+              <Link href="/login" className="sm:hidden">
+                <Button variant="primary" size="sm">
+                  <LogIn className="w-4 h-4" />
+                  Sign In
+                </Button>
+              </Link>
             </div>
           </div>
         </div>
 
-        {/* Mobile menu - only show when logged in */}
-        <AnimatePresence>
-          {mobileMenuOpen && user && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.2 }}
-              className="md:hidden border-t border-border/50 bg-background"
-            >
-              <div className="px-6 py-4 space-y-3">
-                <Link
-                  href="/dashboard"
-                  className="block py-2 text-sm font-medium text-foreground/70 hover:text-foreground transition-colors"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Dashboard
-                </Link>
-                <Link
-                  href="/practice"
-                  className="block py-2 text-sm font-medium text-foreground/70 hover:text-foreground transition-colors"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Practice
-                </Link>
-                <Link
-                  href="/chat"
-                  className="block py-2 text-sm font-medium text-foreground/70 hover:text-foreground transition-colors"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Chat
-                </Link>
-                <Link
-                  href="/curriculum"
-                  className="block py-2 text-sm font-medium text-foreground/70 hover:text-foreground transition-colors"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Curriculum
-                </Link>
-
-                {/* Mobile auth */}
-                <div className="pt-3 border-t border-border">
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-muted">
-                      <User className="w-4 h-4 text-foreground" />
-                      <span className="text-sm font-medium text-foreground">
-                        {user.email}
-                      </span>
-                    </div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="w-full"
-                      onClick={() => {
-                        signOut()
-                        setMobileMenuOpen(false)
-                      }}
-                    >
-                      <LogOut className="w-4 h-4" />
-                      Sign Out
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
       </nav>
 
       {/* Hero Section */}
