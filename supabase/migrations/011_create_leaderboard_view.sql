@@ -37,7 +37,6 @@ BEGIN
       AND rs.deleted_at IS NULL
     LEFT JOIN session_scores ss ON ss.session_id = rs.id
       AND ss.deleted_at IS NULL
-    WHERE u.deleted_at IS NULL
     GROUP BY u.id, u.name
     HAVING COUNT(DISTINCT rs.id) > 0
   ),
