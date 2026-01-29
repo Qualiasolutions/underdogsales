@@ -508,7 +508,7 @@ export default function Home() {
               <Link href="/terms" className="text-sm text-muted-foreground hover:text-navy transition-colors">
                 Terms
               </Link>
-              <Link href="mailto:support@underdogsales.com" className="text-sm text-muted-foreground hover:text-navy transition-colors">
+              <Link href="/support" className="text-sm text-muted-foreground hover:text-navy transition-colors">
                 Support
               </Link>
             </div>
