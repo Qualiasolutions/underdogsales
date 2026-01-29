@@ -14,7 +14,6 @@ import {
   BookOpen,
   Mic,
   MessageSquare,
-  Home,
   LayoutDashboard,
   Settings,
 } from 'lucide-react'
@@ -28,8 +27,8 @@ interface HeaderProps {
   showNav?: boolean
 }
 
+// Nav links for logged-in users (no Home link - they're already in the app)
 const navLinks = [
-  { href: '/', label: 'Home', icon: Home },
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/practice', label: 'Practice', icon: Mic },
   { href: '/chat', label: 'Chat', icon: MessageSquare },
@@ -70,8 +69,8 @@ export function Header({ variant = 'default', showNav = true }: HeaderProps) {
             />
           </Link>
 
-          {/* Desktop Navigation */}
-          {showNav && (
+          {/* Desktop Navigation - only show when logged in */}
+          {showNav && user && (
             <nav className="hidden md:flex items-center gap-1">
               {navLinks.map((link) => {
                 const Icon = link.icon
@@ -82,8 +81,8 @@ export function Header({ variant = 'default', showNav = true }: HeaderProps) {
                     className={cn(
                       'flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors',
                       isActive(link.href)
-                        ? 'bg-navy/5 text-navy'
-                        : 'text-muted-foreground hover:text-navy hover:bg-muted'
+                        ? 'bg-primary/10 text-foreground'
+                        : 'text-muted-foreground hover:text-foreground hover:bg-muted'
                     )}
                   >
                     <Icon className="w-4 h-4" />
@@ -109,11 +108,11 @@ export function Header({ variant = 'default', showNav = true }: HeaderProps) {
                       className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-muted transition-colors"
                     >
                       <div className="w-8 h-8 rounded-full bg-gradient-to-br from-gold to-gold-light flex items-center justify-center">
-                        <span className="text-xs font-bold text-navy">
+                        <span className="text-xs font-bold text-primary-foreground">
                           {user.email?.[0].toUpperCase()}
                         </span>
                       </div>
-                      <span className="text-sm font-medium text-navy max-w-[120px] truncate hidden lg:block">
+                      <span className="text-sm font-medium text-foreground max-w-[120px] truncate hidden lg:block">
                         {user.email?.split('@')[0]}
                       </span>
                       <ChevronDown
@@ -140,7 +139,7 @@ export function Header({ variant = 'default', showNav = true }: HeaderProps) {
                             className="absolute right-0 top-full mt-2 w-56 bg-card rounded-xl border border-border shadow-lg z-50 overflow-hidden"
                           >
                             <div className="p-3 border-b border-border">
-                              <p className="text-sm font-medium text-navy truncate">
+                              <p className="text-sm font-medium text-foreground truncate">
                                 {user.email}
                               </p>
                               <p className="text-xs text-muted-foreground">
@@ -183,25 +182,37 @@ export function Header({ variant = 'default', showNav = true }: HeaderProps) {
               </div>
             )}
 
-            {/* Mobile menu button */}
-            <button
-              className="md:hidden p-2 rounded-lg hover:bg-muted transition-colors"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              aria-label="Toggle menu"
-            >
-              {mobileMenuOpen ? (
-                <X className="w-6 h-6 text-navy" />
-              ) : (
-                <Menu className="w-6 h-6 text-navy" />
-              )}
-            </button>
+            {/* Mobile menu button - only show when logged in */}
+            {user && (
+              <button
+                className="md:hidden p-2 rounded-lg hover:bg-muted transition-colors"
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                aria-label="Toggle menu"
+              >
+                {mobileMenuOpen ? (
+                  <X className="w-6 h-6 text-foreground" />
+                ) : (
+                  <Menu className="w-6 h-6 text-foreground" />
+                )}
+              </button>
+            )}
+
+            {/* Mobile sign in button when logged out */}
+            {!loading && !user && (
+              <Link href="/login" className="sm:hidden">
+                <Button variant="primary" size="sm">
+                  <LogIn className="w-4 h-4" />
+                  Sign In
+                </Button>
+              </Link>
+            )}
           </div>
         </div>
       </div>
 
-      {/* Mobile menu */}
+      {/* Mobile menu - only show when logged in */}
       <AnimatePresence>
-        {mobileMenuOpen && (
+        {mobileMenuOpen && user && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
@@ -221,8 +232,8 @@ export function Header({ variant = 'default', showNav = true }: HeaderProps) {
                       className={cn(
                         'flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors',
                         isActive(link.href)
-                          ? 'bg-navy/5 text-navy'
-                          : 'text-muted-foreground hover:text-navy hover:bg-muted'
+                          ? 'bg-primary/10 text-foreground'
+                          : 'text-muted-foreground hover:text-foreground hover:bg-muted'
                       )}
                       onClick={() => setMobileMenuOpen(false)}
                     >
@@ -233,64 +244,49 @@ export function Header({ variant = 'default', showNav = true }: HeaderProps) {
                 })}
 
               {/* Mobile auth */}
-              {!loading && (
-                <div className="pt-4 border-t border-border">
-                  {user ? (
-                    <div className="space-y-3">
-                      <div className="flex items-center gap-3 px-4 py-3 rounded-lg bg-muted">
-                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-gold to-gold-light flex items-center justify-center">
-                          <span className="text-sm font-bold text-navy">
-                            {user.email?.[0].toUpperCase()}
-                          </span>
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-navy truncate">
-                            {user.email?.split('@')[0]}
-                          </p>
-                          <p className="text-xs text-muted-foreground truncate">
-                            {user.email}
-                          </p>
-                        </div>
-                      </div>
-                      <Link
-                        href="/settings"
-                        onClick={() => setMobileMenuOpen(false)}
-                        className="block"
-                      >
-                        <Button
-                          variant="ghost"
-                          className="w-full justify-start"
-                        >
-                          <Settings className="w-4 h-4" />
-                          Settings
-                        </Button>
-                      </Link>
-                      <Button
-                        variant="ghost"
-                        className="w-full justify-start text-error hover:bg-error/5"
-                        onClick={() => {
-                          signOut()
-                          setMobileMenuOpen(false)
-                        }}
-                      >
-                        <LogOut className="w-4 h-4" />
-                        Sign Out
-                      </Button>
+              <div className="pt-4 border-t border-border">
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3 px-4 py-3 rounded-lg bg-muted">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-gold to-gold-light flex items-center justify-center">
+                      <span className="text-sm font-bold text-primary-foreground">
+                        {user.email?.[0].toUpperCase()}
+                      </span>
                     </div>
-                  ) : (
-                    <Link
-                      href="/login"
-                      className="block"
-                      onClick={() => setMobileMenuOpen(false)}
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-foreground truncate">
+                        {user.email?.split('@')[0]}
+                      </p>
+                      <p className="text-xs text-muted-foreground truncate">
+                        {user.email}
+                      </p>
+                    </div>
+                  </div>
+                  <Link
+                    href="/settings"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="block"
+                  >
+                    <Button
+                      variant="ghost"
+                      className="w-full justify-start"
                     >
-                      <Button variant="primary" className="w-full">
-                        <LogIn className="w-4 h-4" />
-                        Sign In
-                      </Button>
-                    </Link>
-                  )}
+                      <Settings className="w-4 h-4" />
+                      Settings
+                    </Button>
+                  </Link>
+                  <Button
+                    variant="ghost"
+                    className="w-full justify-start text-error hover:bg-error/5"
+                    onClick={() => {
+                      signOut()
+                      setMobileMenuOpen(false)
+                    }}
+                  >
+                    <LogOut className="w-4 h-4" />
+                    Sign Out
+                  </Button>
                 </div>
-              )}
+              </div>
             </div>
           </motion.div>
         )}

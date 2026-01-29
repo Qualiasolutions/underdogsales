@@ -41,7 +41,7 @@ export default function Home() {
   const { user, loading, signOut } = useAuth()
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-background">
       {/* Navigation */}
       <nav className="fixed top-0 left-0 right-0 z-50 glass border-b border-border/50">
         <div className="max-w-7xl mx-auto px-6 py-4">
@@ -57,20 +57,23 @@ export default function Home() {
               />
             </Link>
 
-            <div className="hidden md:flex items-center gap-8">
-              <Link href="/coach" className="text-sm font-medium text-navy/70 hover:text-navy transition-colors link-underline">
-                Coach
-              </Link>
-              <Link href="/chat" className="text-sm font-medium text-navy/70 hover:text-navy transition-colors link-underline">
-                Chat
-              </Link>
-              <Link href="/curriculum" className="text-sm font-medium text-navy/70 hover:text-navy transition-colors link-underline">
-                Curriculum
-              </Link>
-              <Link href="#features" className="text-sm font-medium text-navy/70 hover:text-navy transition-colors link-underline">
-                Features
-              </Link>
-            </div>
+            {/* Desktop nav links - only show when logged in */}
+            {user && (
+              <div className="hidden md:flex items-center gap-8">
+                <Link href="/dashboard" className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors link-underline">
+                  Dashboard
+                </Link>
+                <Link href="/practice" className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors link-underline">
+                  Practice
+                </Link>
+                <Link href="/chat" className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors link-underline">
+                  Chat
+                </Link>
+                <Link href="/curriculum" className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors link-underline">
+                  Curriculum
+                </Link>
+              </div>
+            )}
 
             <div className="flex items-center gap-3">
               {/* Auth buttons */}
@@ -79,8 +82,8 @@ export default function Home() {
                   {user ? (
                     <div className="hidden sm:flex items-center gap-3">
                       <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-muted">
-                        <User className="w-4 h-4 text-navy" />
-                        <span className="text-sm font-medium text-navy truncate max-w-[120px]">
+                        <User className="w-4 h-4 text-foreground" />
+                        <span className="text-sm font-medium text-foreground truncate max-w-[120px]">
                           {user.email?.split('@')[0]}
                         </span>
                       </div>
@@ -100,100 +103,97 @@ export default function Home() {
                 </>
               )}
 
-              {/* Mobile menu button */}
-              <button
-                className="md:hidden p-2 rounded-lg hover:bg-muted transition-colors"
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                aria-label="Toggle menu"
-              >
-                {mobileMenuOpen ? (
-                  <X className="w-6 h-6 text-navy" />
-                ) : (
-                  <Menu className="w-6 h-6 text-navy" />
-                )}
-              </button>
+              {/* Mobile menu button - only show when logged in */}
+              {user && (
+                <button
+                  className="md:hidden p-2 rounded-lg hover:bg-muted transition-colors"
+                  onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                  aria-label="Toggle menu"
+                >
+                  {mobileMenuOpen ? (
+                    <X className="w-6 h-6 text-foreground" />
+                  ) : (
+                    <Menu className="w-6 h-6 text-foreground" />
+                  )}
+                </button>
+              )}
+
+              {/* Mobile sign in button when logged out */}
+              {!loading && !user && (
+                <Link href="/login" className="sm:hidden">
+                  <Button variant="primary" size="sm">
+                    <LogIn className="w-4 h-4" />
+                    Sign In
+                  </Button>
+                </Link>
+              )}
             </div>
           </div>
         </div>
 
-        {/* Mobile menu */}
+        {/* Mobile menu - only show when logged in */}
         <AnimatePresence>
-          {mobileMenuOpen && (
+          {mobileMenuOpen && user && (
             <motion.div
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.2 }}
-              className="md:hidden border-t border-border/50 bg-white"
+              className="md:hidden border-t border-border/50 bg-background"
             >
               <div className="px-6 py-4 space-y-3">
                 <Link
-                  href="/coach"
-                  className="block py-2 text-sm font-medium text-navy/70 hover:text-navy transition-colors"
+                  href="/dashboard"
+                  className="block py-2 text-sm font-medium text-foreground/70 hover:text-foreground transition-colors"
                   onClick={() => setMobileMenuOpen(false)}
                 >
-                  Coach
+                  Dashboard
+                </Link>
+                <Link
+                  href="/practice"
+                  className="block py-2 text-sm font-medium text-foreground/70 hover:text-foreground transition-colors"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Practice
                 </Link>
                 <Link
                   href="/chat"
-                  className="block py-2 text-sm font-medium text-navy/70 hover:text-navy transition-colors"
+                  className="block py-2 text-sm font-medium text-foreground/70 hover:text-foreground transition-colors"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   Chat
                 </Link>
                 <Link
                   href="/curriculum"
-                  className="block py-2 text-sm font-medium text-navy/70 hover:text-navy transition-colors"
+                  className="block py-2 text-sm font-medium text-foreground/70 hover:text-foreground transition-colors"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   Curriculum
                 </Link>
-                <Link
-                  href="#features"
-                  className="block py-2 text-sm font-medium text-navy/70 hover:text-navy transition-colors"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Features
-                </Link>
 
                 {/* Mobile auth */}
-                {!loading && (
-                  <div className="pt-3 border-t border-border">
-                    {user ? (
-                      <div className="space-y-3">
-                        <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-muted">
-                          <User className="w-4 h-4 text-navy" />
-                          <span className="text-sm font-medium text-navy">
-                            {user.email}
-                          </span>
-                        </div>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="w-full"
-                          onClick={() => {
-                            signOut()
-                            setMobileMenuOpen(false)
-                          }}
-                        >
-                          <LogOut className="w-4 h-4" />
-                          Sign Out
-                        </Button>
-                      </div>
-                    ) : (
-                      <Link
-                        href="/login"
-                        className="block"
-                        onClick={() => setMobileMenuOpen(false)}
-                      >
-                        <Button variant="primary" size="sm" className="w-full">
-                          <LogIn className="w-4 h-4" />
-                          Sign In
-                        </Button>
-                      </Link>
-                    )}
+                <div className="pt-3 border-t border-border">
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-muted">
+                      <User className="w-4 h-4 text-foreground" />
+                      <span className="text-sm font-medium text-foreground">
+                        {user.email}
+                      </span>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="w-full"
+                      onClick={() => {
+                        signOut()
+                        setMobileMenuOpen(false)
+                      }}
+                    >
+                      <LogOut className="w-4 h-4" />
+                      Sign Out
+                    </Button>
                   </div>
-                )}
+                </div>
               </div>
             </motion.div>
           )}
@@ -212,7 +212,7 @@ export default function Home() {
             {/* Left Content */}
             <div>
               <FadeIn delay={0.1}>
-                <h1 className="text-5xl lg:text-6xl font-black text-navy leading-[1.1] mb-6 font-[family-name:var(--font-maven-pro)]">
+                <h1 className="text-5xl lg:text-6xl font-black text-foreground leading-[1.1] mb-6 font-[family-name:var(--font-maven-pro)]">
                   Master Cold Calling
                   <br />
                   <span className="text-gradient-gold">Like a Pro</span>
@@ -250,14 +250,14 @@ export default function Home() {
                     {[1, 2, 3, 4, 5].map((i) => (
                       <div
                         key={i}
-                        className="w-10 h-10 rounded-full bg-gradient-to-br from-gold/20 to-navy/20 border-2 border-white flex items-center justify-center text-xs font-bold text-navy"
+                        className="w-10 h-10 rounded-full bg-gradient-to-br from-gold/20 to-primary/20 border-2 border-background flex items-center justify-center text-xs font-bold text-foreground"
                       >
                         {String.fromCharCode(64 + i)}
                       </div>
                     ))}
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-navy">
+                    <p className="text-sm font-semibold text-foreground">
                       <Counter value={500} suffix="+" /> sales professionals trained
                     </p>
                     <p className="text-xs text-muted-foreground">Join them today</p>
@@ -285,7 +285,7 @@ export default function Home() {
                           className="w-16 h-16 rounded-2xl border-2 border-gold bg-gradient-to-br from-gold/20 to-gold/5 object-contain"
                         />
                         <div>
-                          <p className="font-bold text-navy">Your AI Coach</p>
+                          <p className="font-bold text-foreground">Your AI Coach</p>
                           <p className="text-sm text-muted-foreground">Ready to practice</p>
                         </div>
                         <Badge variant="success" className="ml-auto" dot pulse>
@@ -377,7 +377,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto">
           <ScrollReveal className="text-center max-w-2xl mx-auto mb-16">
             <Badge variant="gold" className="mb-4">Features</Badge>
-            <h2 className="text-4xl font-bold text-navy mb-4 font-[family-name:var(--font-maven-pro)]">
+            <h2 className="text-4xl font-bold text-foreground mb-4 font-[family-name:var(--font-maven-pro)]">
               Everything You Need to
               <br />
               <span className="text-gradient-gold">Close More Deals</span>
@@ -453,7 +453,7 @@ export default function Home() {
         <div className="relative max-w-3xl mx-auto text-center">
           <ScrollReveal>
             <Badge variant="navy" className="mb-6">Ready to Start?</Badge>
-            <h2 className="text-4xl lg:text-5xl font-bold text-navy mb-6 font-[family-name:var(--font-maven-pro)]">
+            <h2 className="text-4xl lg:text-5xl font-bold text-foreground mb-6 font-[family-name:var(--font-maven-pro)]">
               Join <span className="text-gradient-gold">500+</span> Sales Professionals
             </h2>
             <p className="text-lg text-muted-foreground mb-10">
@@ -498,17 +498,17 @@ export default function Home() {
                 Qualia Solutions
               </a>{' '}
               | Copyright &copy; 2026{' '}
-              <span className="font-semibold text-navy">Underdog Sales</span>. All Rights Reserved.
+              <span className="font-semibold text-foreground">Underdog Sales</span>. All Rights Reserved.
             </p>
 
             <div className="flex items-center gap-6">
-              <Link href="/privacy" className="text-sm text-muted-foreground hover:text-navy transition-colors">
+              <Link href="/privacy" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
                 Privacy
               </Link>
-              <Link href="/terms" className="text-sm text-muted-foreground hover:text-navy transition-colors">
+              <Link href="/terms" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
                 Terms
               </Link>
-              <Link href="/support" className="text-sm text-muted-foreground hover:text-navy transition-colors">
+              <Link href="/support" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
                 Support
               </Link>
             </div>
