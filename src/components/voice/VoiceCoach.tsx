@@ -19,7 +19,6 @@ import {
   User,
   type LucideIcon,
 } from 'lucide-react'
-import Image from 'next/image'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -34,6 +33,28 @@ import { GIULIO_COACH, COACHING_MODES, type CoachingMode } from '@/config/coach'
 import type { TranscriptEntry } from '@/types'
 
 type ConnectionStatus = 'idle' | 'connecting' | 'connected' | 'error'
+
+// Simple coach avatar component using native img
+function CoachAvatar({ size = 'md', className }: { size?: 'sm' | 'md' | 'lg' | 'xl'; className?: string }) {
+  const sizeClasses = {
+    sm: 'w-9 h-9',
+    md: 'w-16 h-16',
+    lg: 'w-20 h-20',
+    xl: 'w-24 h-24',
+  }
+
+  return (
+    <img
+      src="/coach.png"
+      alt={GIULIO_COACH.name}
+      className={cn(
+        sizeClasses[size],
+        'rounded-xl border border-gold/20 bg-gradient-to-br from-gold/30 to-gold/10 object-contain',
+        className
+      )}
+    />
+  )
+}
 
 // Voice visualizer component with gold gradient
 const VoiceVisualizer = memo(({ isActive }: { isActive: boolean }) => {
@@ -112,14 +133,7 @@ const TranscriptMessage = memo(({
         You
       </div>
     ) : (
-      <div className="relative w-9 h-9 flex-shrink-0 rounded-xl overflow-hidden bg-gradient-to-br from-gold/30 to-gold/10 border border-gold/20">
-        <Image
-          src="/coach.png"
-          alt="Giulio"
-          fill
-          className="object-contain"
-        />
-      </div>
+      <CoachAvatar size="sm" className="flex-shrink-0" />
     )}
     <div className={cn(
       'flex-1 py-3 px-4 rounded-2xl text-sm leading-relaxed shadow-sm',
@@ -230,12 +244,10 @@ export function VoiceCoach() {
 
   const isActive = connectionStatus === 'connected'
 
-  // Sync transcript data to ref
   useEffect(() => {
     transcriptDataRef.current = transcript
   }, [transcript])
 
-  // Auto-scroll transcript
   useEffect(() => {
     if (transcriptRef.current) {
       transcriptRef.current.scrollTo({
@@ -261,10 +273,8 @@ export function VoiceCoach() {
     }
   }, [isActive])
 
-  // Cleanup: Stop voice session when navigating away
   useEffect(() => {
     return () => {
-      // Destroy the session on unmount to stop audio
       destroyRetellSession()
     }
   }, [])
@@ -338,10 +348,8 @@ export function VoiceCoach() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-muted/30 via-background to-muted/50">
-      {/* Shared Header with auth */}
       <Header variant="transparent" />
 
-      {/* Connection status indicator */}
       <div className="fixed top-20 right-4 sm:right-8 z-40">
         <ConnectionIndicator status={connectionStatus} />
       </div>
@@ -359,7 +367,6 @@ export function VoiceCoach() {
                 transition={{ duration: 0.3 }}
                 className="space-y-8"
               >
-                {/* Error State */}
                 <AnimatePresence>
                   {error && (
                     <ErrorMessage
@@ -370,7 +377,6 @@ export function VoiceCoach() {
                   )}
                 </AnimatePresence>
 
-                {/* Page Title */}
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -385,7 +391,6 @@ export function VoiceCoach() {
                   </p>
                 </motion.div>
 
-                {/* Coach Card */}
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -394,14 +399,7 @@ export function VoiceCoach() {
                 >
                   <Card variant="elevated" className="p-6">
                     <div className="flex items-center gap-4 mb-6">
-                      <div className="relative w-20 h-20 rounded-2xl overflow-hidden bg-gradient-to-br from-gold/30 to-gold/10 border border-gold/20 shadow-gold">
-                        <Image
-                          src="/coach.png"
-                          alt={GIULIO_COACH.name}
-                          fill
-                          className="object-contain"
-                        />
-                      </div>
+                      <CoachAvatar size="lg" className="shadow-gold" />
                       <div>
                         <h2 className="font-bold text-navy text-xl">{GIULIO_COACH.name}</h2>
                         <p className="text-sm text-muted-foreground">{GIULIO_COACH.title}</p>
@@ -413,7 +411,6 @@ export function VoiceCoach() {
                   </Card>
                 </motion.div>
 
-                {/* Mode Selection */}
                 <section>
                   <h2 className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4 text-center">
                     What would you like to work on?
@@ -456,7 +453,6 @@ export function VoiceCoach() {
                   </div>
                 </section>
 
-                {/* Start Button */}
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -507,13 +503,8 @@ export function VoiceCoach() {
                       animate={{ rotate: 360 }}
                       transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
                     />
-                    <div className="absolute inset-3 rounded-full overflow-hidden bg-gradient-to-br from-gold/30 to-gold/10">
-                      <Image
-                        src="/coach.png"
-                        alt="Giulio"
-                        fill
-                        className="object-contain"
-                      />
+                    <div className="absolute inset-3 flex items-center justify-center">
+                      <CoachAvatar size="lg" className="rounded-full" />
                     </div>
                   </div>
 
@@ -555,25 +546,16 @@ export function VoiceCoach() {
                 exit={{ opacity: 0 }}
                 className="grid grid-cols-1 lg:grid-cols-5 gap-6"
               >
-                {/* Call Panel */}
                 <div className="lg:col-span-2">
                   <Card variant="navy" className="sticky top-24 overflow-hidden">
                     <CardContent className="p-8">
                       <div className="text-center">
-                        {/* Coach Avatar */}
                         <motion.div
                           initial={{ scale: 0.8, opacity: 0 }}
                           animate={{ scale: 1, opacity: 1 }}
                           className="relative w-24 h-24 mx-auto mb-6"
                         >
-                          <div className="relative w-full h-full rounded-2xl overflow-hidden bg-gradient-to-br from-gold/30 to-gold/10 border border-white/10 shadow-gold">
-                            <Image
-                              src="/coach.png"
-                              alt={GIULIO_COACH.name}
-                              fill
-                              className="object-contain"
-                            />
-                          </div>
+                          <CoachAvatar size="xl" className="shadow-gold border-white/10" />
                           <motion.div
                             className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-success border-2 border-navy flex items-center justify-center"
                             animate={{ scale: [1, 1.2, 1] }}
@@ -588,7 +570,6 @@ export function VoiceCoach() {
                         </h2>
                         <p className="text-white/60 text-sm mb-6">{GIULIO_COACH.title}</p>
 
-                        {/* Timer */}
                         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 text-white/90 mb-8">
                           <span className="relative flex h-2 w-2">
                             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-success opacity-75" />
@@ -599,12 +580,10 @@ export function VoiceCoach() {
                           </span>
                         </div>
 
-                        {/* Voice Visualizer */}
                         <div className="mb-10">
                           <VoiceVisualizer isActive={isActive && !isMuted} />
                         </div>
 
-                        {/* Controls */}
                         <div className="flex items-center justify-center gap-4">
                           <motion.button
                             whileHover={{ scale: 1.05 }}
@@ -646,7 +625,6 @@ export function VoiceCoach() {
                   </Card>
                 </div>
 
-                {/* Transcript Panel */}
                 <div className="lg:col-span-3">
                   <Card variant="elevated" className="h-full">
                     <div className="px-6 py-4 border-b border-border flex items-center justify-between">
@@ -700,7 +678,6 @@ export function VoiceCoach() {
             )}
           </AnimatePresence>
 
-          {/* Session ID (debug) */}
           {callId && process.env.NODE_ENV === 'development' && (
             <p className="text-[10px] text-muted-foreground/40 text-center mt-8 font-mono">
               Session: {callId}

@@ -11,7 +11,6 @@ import {
   Search,
   type LucideIcon,
 } from 'lucide-react'
-import Image from 'next/image'
 import { cn } from '@/lib/utils'
 import { Markdown } from '@/lib/markdown'
 import { Button } from '@/components/ui/button'
@@ -30,6 +29,26 @@ const modeIcons: Record<CoachingMode, LucideIcon> = {
   objections: Shield,
   research: Search,
   general: MessageCircle,
+}
+
+// Simple coach avatar component using native img
+function CoachAvatar({ size = 'md' }: { size?: 'sm' | 'md' | 'lg' }) {
+  const sizeClasses = {
+    sm: 'w-9 h-9',
+    md: 'w-16 h-16',
+    lg: 'w-20 h-20',
+  }
+
+  return (
+    <img
+      src="/coach.png"
+      alt={GIULIO_COACH.name}
+      className={cn(
+        sizeClasses[size],
+        'rounded-xl border border-gold/20 bg-gradient-to-br from-gold/30 to-gold/10 object-contain flex-shrink-0'
+      )}
+    />
+  )
 }
 
 export function ChatCoach() {
@@ -61,7 +80,6 @@ export function ChatCoach() {
 
   const handleStart = useCallback(() => {
     setHasStarted(true)
-    // Add Giulio's greeting based on selected mode
     setMessages([{
       role: 'assistant',
       content: getModeGreeting(selectedMode),
@@ -126,7 +144,6 @@ export function ChatCoach() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-muted/30 via-background to-muted/50 flex flex-col">
-      {/* Shared Header with auth */}
       <Header variant="transparent" />
 
       <main className="flex-1 pt-24 pb-4 px-4 sm:px-6 flex flex-col">
@@ -153,14 +170,7 @@ export function ChatCoach() {
                 {/* Coach Card */}
                 <Card variant="elevated" className="p-6 max-w-md w-full">
                   <div className="flex items-center gap-4 mb-6">
-                    <div className="relative w-16 h-16 rounded-2xl overflow-hidden bg-gradient-to-br from-gold/30 to-gold/10 border border-gold/20">
-                      <Image
-                        src="/coach.png"
-                        alt={GIULIO_COACH.name}
-                        fill
-                        className="object-contain"
-                      />
-                    </div>
+                    <CoachAvatar size="md" />
                     <div>
                       <h2 className="font-bold text-navy text-lg">{GIULIO_COACH.name}</h2>
                       <p className="text-sm text-muted-foreground">{GIULIO_COACH.title}</p>
@@ -244,14 +254,7 @@ export function ChatCoach() {
                           You
                         </div>
                       ) : (
-                        <div className="relative w-9 h-9 flex-shrink-0 rounded-xl overflow-hidden bg-gradient-to-br from-gold/30 to-gold/10 border border-gold/20">
-                          <Image
-                            src="/coach.png"
-                            alt={GIULIO_COACH.name}
-                            fill
-                            className="object-contain"
-                          />
-                        </div>
+                        <CoachAvatar size="sm" />
                       )}
                       <div className={cn(
                         'max-w-[80%] py-3 px-4 rounded-2xl text-sm leading-relaxed shadow-sm',
@@ -270,14 +273,7 @@ export function ChatCoach() {
                       animate={{ opacity: 1, y: 0 }}
                       className="flex gap-3"
                     >
-                      <div className="relative w-9 h-9 flex-shrink-0 rounded-xl overflow-hidden bg-gradient-to-br from-gold/30 to-gold/10 border border-gold/20">
-                        <Image
-                          src="/coach.png"
-                          alt={GIULIO_COACH.name}
-                          fill
-                          className="object-contain"
-                        />
-                      </div>
+                      <CoachAvatar size="sm" />
                       <div className="py-3 px-4 rounded-2xl rounded-tl-md bg-white border border-border">
                         <Loader2 className="w-5 h-5 animate-spin text-gold" />
                       </div>

@@ -277,14 +277,13 @@ export default function Home() {
                     <div className="relative">
                       {/* Coach Profile */}
                       <div className="flex items-center gap-4 mb-8">
-                        <div className="relative w-16 h-16 rounded-2xl overflow-hidden border-2 border-gold bg-gradient-to-br from-gold/20 to-gold/5">
-                          <Image
-                            src="/coach.png"
-                            alt="AI Sales Coach"
-                            fill
-                            className="object-contain"
-                          />
-                        </div>
+                        <img
+                          src="/coach.png"
+                          alt="AI Sales Coach"
+                          width={64}
+                          height={64}
+                          className="w-16 h-16 rounded-2xl border-2 border-gold bg-gradient-to-br from-gold/20 to-gold/5 object-contain"
+                        />
                         <div>
                           <p className="font-bold text-navy">Your AI Coach</p>
                           <p className="text-sm text-muted-foreground">Ready to practice</p>
