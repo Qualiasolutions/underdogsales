@@ -1,6 +1,6 @@
 'use client'
 
-import { forwardRef } from 'react'
+import { forwardRef, useState, useRef } from 'react'
 import { motion, type HTMLMotionProps } from 'motion/react'
 import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '@/lib/utils'
@@ -51,31 +51,92 @@ export interface ButtonProps
     VariantProps<typeof buttonVariants> {
   loading?: boolean
   shine?: boolean
+  magnetic?: boolean
+  ripple?: boolean
 }
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, loading, shine, children, disabled, ...props }, ref) => {
+  ({ className, variant, size, loading, shine, magnetic, ripple, children, disabled, ...props }, ref) => {
+    const buttonRef = useRef<HTMLButtonElement>(null)
+    const [magneticOffset, setMagneticOffset] = useState({ x: 0, y: 0 })
+    const [ripples, setRipples] = useState<Array<{ x: number; y: number; id: number }>>([])
+
+    const handleMouseMove = (e: React.MouseEvent<HTMLButtonElement>) => {
+      if (!magnetic || disabled || !buttonRef.current) return
+      const rect = buttonRef.current.getBoundingClientRect()
+      const centerX = rect.left + rect.width / 2
+      const centerY = rect.top + rect.height / 2
+      const deltaX = (e.clientX - centerX) * 0.2
+      const deltaY = (e.clientY - centerY) * 0.2
+      setMagneticOffset({ x: deltaX, y: deltaY })
+    }
+
+    const handleMouseLeave = () => {
+      if (magnetic) {
+        setMagneticOffset({ x: 0, y: 0 })
+      }
+    }
+
+    const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+      if (ripple && buttonRef.current) {
+        const rect = buttonRef.current.getBoundingClientRect()
+        const x = e.clientX - rect.left
+        const y = e.clientY - rect.top
+        const id = Date.now()
+        setRipples((prev) => [...prev, { x, y, id }])
+        setTimeout(() => {
+          setRipples((prev) => prev.filter((r) => r.id !== id))
+        }, 600)
+      }
+      props.onClick?.(e)
+    }
+
     return (
       <motion.button
-        ref={ref}
+        ref={(node) => {
+          // Handle both refs
+          buttonRef.current = node
+          if (typeof ref === 'function') {
+            ref(node)
+          } else if (ref) {
+            ref.current = node
+          }
+        }}
         className={cn(
           buttonVariants({ variant, size }),
           shine && 'shine',
+          ripple && 'overflow-hidden relative',
           className
         )}
         disabled={disabled || loading}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        onClick={handleClick}
+        animate={magnetic ? { x: magneticOffset.x, y: magneticOffset.y } : undefined}
         whileHover={{ scale: disabled ? 1 : 1.02 }}
         whileTap={{ scale: disabled ? 1 : 0.98 }}
         transition={{ type: 'spring', stiffness: 400, damping: 17 }}
         {...props}
       >
+        {/* Ripple effects */}
+        {ripples.length > 0 && ripples.map((r) => (
+          <span
+            key={r.id}
+            className="absolute rounded-full bg-white/30 pointer-events-none animate-ripple"
+            style={{
+              left: r.x,
+              top: r.y,
+              transform: 'translate(-50%, -50%)',
+            }}
+          />
+        ))}
         {loading ? (
           <>
             <LoadingSpinner />
             <span className="opacity-70">Loading...</span>
           </>
         ) : (
-          children
+          children as React.ReactNode
         )}
       </motion.button>
     )

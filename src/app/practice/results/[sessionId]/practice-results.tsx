@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'motion/react'
 import {
@@ -23,6 +23,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Header } from '@/components/ui/header'
 import { Badge } from '@/components/ui/badge'
+import { celebrationBurst } from '@/components/ui/confetti'
 import { getScoreLabel, getScoreColor, SCORING_RUBRIC } from '@/config/rubric'
 import type { TranscriptEntry, ScoreDimension, DimensionScore, CallAnalysis } from '@/types'
 
@@ -369,6 +370,17 @@ export function PracticeResults({ session, personaName, personaRole }: PracticeR
   const [showTranscript, setShowTranscript] = useState(false)
   const scoreLabel = getScoreLabel(session.overall_score)
   const scoreColor = getScoreColor(session.overall_score)
+
+  // Trigger celebration for high scores (7.5+)
+  useEffect(() => {
+    if (session.overall_score >= 7.5) {
+      // Small delay to let the UI render first
+      const timer = setTimeout(() => {
+        celebrationBurst()
+      }, 800)
+      return () => clearTimeout(timer)
+    }
+  }, [session.overall_score])
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-muted/30 via-background to-muted/50">

@@ -3,6 +3,8 @@ import { Geist, Geist_Mono, Maven_Pro } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import { AuthProvider } from '@/components/providers/auth-provider'
+import { ThemeProvider } from '@/components/providers/theme-provider'
+import { ToastProvider } from '@/components/providers/toast-provider'
 import { getUser } from '@/lib/supabase/server'
 import './globals.css'
 
@@ -83,11 +85,15 @@ export default async function RootLayout({
   const user = await getUser()
 
   return (
-    <html lang="en" className="scroll-smooth">
+    <html lang="en" className="scroll-smooth" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${mavenPro.variable} antialiased bg-background text-foreground`}
       >
-        <AuthProvider initialUser={user}>{children}</AuthProvider>
+        <ThemeProvider>
+          <ToastProvider>
+            <AuthProvider initialUser={user}>{children}</AuthProvider>
+          </ToastProvider>
+        </ThemeProvider>
         <Analytics />
         <SpeedInsights />
       </body>

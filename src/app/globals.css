@@ -34,6 +34,10 @@
   --error: #EF4444;
   --error-light: #FEE2E2;
 
+  /* Card Colors */
+  --card: #FFFFFF;
+  --card-foreground: #021945;
+
   /* Typography */
   --font-display: 'Maven Pro', var(--font-geist-sans), system-ui, sans-serif;
   --font-body: var(--font-geist-sans), system-ui, sans-serif;
@@ -61,6 +65,48 @@
   --transition-spring: 400ms cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
+/* Dark Mode */
+.dark {
+  --background: #0A0F1C;
+  --foreground: #F8F9FC;
+  --muted: #1A2235;
+  --muted-foreground: #94A3B8;
+  --border: #2D3A52;
+  --ring: #E7B221;
+
+  --primary: #E7B221;
+  --primary-foreground: #0A0F1C;
+  --secondary: #1A2235;
+  --secondary-foreground: #F8F9FC;
+  --accent: #1A2235;
+  --accent-foreground: #F8F9FC;
+
+  /* Navy inverted for readability */
+  --underdog-navy: #F8F9FC;
+  --underdog-navy-light: #E2E8F0;
+  --underdog-navy-dark: #CBD5E1;
+
+  /* Status Colors - slightly adjusted for dark */
+  --success: #34D399;
+  --success-light: rgba(16, 185, 129, 0.15);
+  --warning: #FBBF24;
+  --warning-light: rgba(245, 158, 11, 0.15);
+  --error: #F87171;
+  --error-light: rgba(239, 68, 68, 0.15);
+
+  /* Card Colors */
+  --card: #111827;
+  --card-foreground: #F8F9FC;
+
+  /* Dark shadows */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.3);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.4), 0 4px 6px -4px rgb(0 0 0 / 0.3);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.5), 0 8px 10px -6px rgb(0 0 0 / 0.4);
+  --shadow-gold: 0 10px 40px -10px rgb(231 178 33 / 0.4);
+  --shadow-navy: 0 10px 40px -10px rgb(0 0 0 / 0.5);
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -74,6 +120,8 @@
   --color-secondary-foreground: var(--secondary-foreground);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
 
   /* Underdog Brand */
   --color-gold: var(--underdog-gold);
@@ -152,7 +200,12 @@ h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-display);
   font-weight: 700;
   letter-spacing: -0.02em;
-  color: var(--underdog-navy);
+  color: var(--foreground);
+}
+
+/* Text Balance for Headings */
+.text-balance {
+  text-wrap: balance;
 }
 
 /* Gradient Text Utility */
@@ -547,4 +600,283 @@ input:focus, textarea:focus, select:focus {
   .skeleton {
     animation: none;
   }
+}
+
+/* =====================================================
+   ENHANCED GRADIENT & BACKGROUND UTILITIES
+   ===================================================== */
+
+/* Multi-point Radial Gradient Mesh - Gold Accent */
+.bg-mesh-gold {
+  background:
+    radial-gradient(ellipse at 10% 20%, rgba(231, 178, 33, 0.15) 0%, transparent 50%),
+    radial-gradient(ellipse at 90% 80%, rgba(231, 178, 33, 0.1) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 50%, rgba(2, 25, 69, 0.03) 0%, transparent 70%);
+}
+
+.dark .bg-mesh-gold {
+  background:
+    radial-gradient(ellipse at 10% 20%, rgba(231, 178, 33, 0.2) 0%, transparent 50%),
+    radial-gradient(ellipse at 90% 80%, rgba(231, 178, 33, 0.15) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 50%, rgba(231, 178, 33, 0.05) 0%, transparent 70%);
+}
+
+/* Radial Gradient Variants */
+.bg-gradient-radial {
+  background: radial-gradient(circle at center, var(--muted) 0%, var(--background) 70%);
+}
+
+.bg-gradient-radial-top {
+  background: radial-gradient(ellipse at top, var(--muted) 0%, var(--background) 70%);
+}
+
+.bg-gradient-radial-bottom {
+  background: radial-gradient(ellipse at bottom, var(--muted) 0%, var(--background) 70%);
+}
+
+/* Aurora Animated Gradient Background */
+@keyframes aurora {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.bg-aurora {
+  background: linear-gradient(
+    -45deg,
+    var(--background),
+    rgba(231, 178, 33, 0.1),
+    var(--background),
+    rgba(2, 25, 69, 0.05)
+  );
+  background-size: 400% 400%;
+  animation: aurora 15s ease infinite;
+}
+
+.dark .bg-aurora {
+  background: linear-gradient(
+    -45deg,
+    var(--background),
+    rgba(231, 178, 33, 0.15),
+    var(--background),
+    rgba(231, 178, 33, 0.08)
+  );
+  background-size: 400% 400%;
+}
+
+/* Enhanced Noise Texture with Better Coverage */
+.texture-noise {
+  position: relative;
+}
+
+.texture-noise::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  opacity: 0.03;
+  pointer-events: none;
+  mix-blend-mode: overlay;
+  border-radius: inherit;
+}
+
+.dark .texture-noise::before {
+  opacity: 0.05;
+}
+
+/* =====================================================
+   DARK MODE SPECIFIC OVERRIDES
+   ===================================================== */
+
+/* Dark mode grid pattern */
+.dark .bg-grid-pattern {
+  background-image:
+    linear-gradient(to right, rgb(255 255 255 / 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(255 255 255 / 0.03) 1px, transparent 1px);
+}
+
+/* Dark mode dot pattern */
+.dark .bg-dot-pattern {
+  background-image: radial-gradient(rgb(255 255 255 / 0.08) 1px, transparent 1px);
+}
+
+/* Dark mode glass effect */
+.dark .glass {
+  background: rgb(17 24 39 / 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgb(255 255 255 / 0.1);
+}
+
+/* Dark mode scrollbar */
+.dark::-webkit-scrollbar-track {
+  background: var(--muted);
+}
+
+.dark::-webkit-scrollbar-thumb {
+  background: rgb(255 255 255 / 0.15);
+}
+
+.dark::-webkit-scrollbar-thumb:hover {
+  background: rgb(255 255 255 / 0.25);
+}
+
+/* Dark mode skeleton shimmer with gold tint */
+.dark .skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--muted) 0%,
+    rgba(231, 178, 33, 0.1) 50%,
+    var(--muted) 100%
+  );
+  background-size: 200% 100%;
+}
+
+/* Gold shimmer skeleton variant */
+.skeleton-gold {
+  background: linear-gradient(
+    90deg,
+    var(--muted) 0%,
+    rgba(231, 178, 33, 0.15) 50%,
+    var(--muted) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* =====================================================
+   DECORATIVE UTILITIES
+   ===================================================== */
+
+/* Corner Accent - Top Right */
+.corner-accent-tr {
+  position: relative;
+}
+
+.corner-accent-tr::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, transparent 50%, rgba(231, 178, 33, 0.1) 50%);
+  pointer-events: none;
+  border-radius: 0 inherit 0 0;
+}
+
+/* Corner Accent - Bottom Left */
+.corner-accent-bl {
+  position: relative;
+}
+
+.corner-accent-bl::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(-45deg, transparent 50%, rgba(2, 25, 69, 0.05) 50%);
+  pointer-events: none;
+  border-radius: 0 0 0 inherit;
+}
+
+.dark .corner-accent-bl::before {
+  background: linear-gradient(-45deg, transparent 50%, rgba(231, 178, 33, 0.05) 50%);
+}
+
+/* Branded Logo Pulse Animation */
+@keyframes logo-pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(0.98);
+  }
+}
+
+.logo-pulse {
+  animation: logo-pulse 2s ease-in-out infinite;
+}
+
+/* Custom Selection Highlight */
+.selection-gold::selection {
+  background-color: rgba(231, 178, 33, 0.3);
+  color: var(--foreground);
+}
+
+.selection-gold::-moz-selection {
+  background-color: rgba(231, 178, 33, 0.3);
+  color: var(--foreground);
+}
+
+/* Gradient Border on Hover with Smooth Transition */
+.hover-gradient-border {
+  position: relative;
+  background: var(--card);
+  z-index: 0;
+  transition: all 0.3s ease;
+}
+
+.hover-gradient-border::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  padding: 1px;
+  background: linear-gradient(135deg, var(--underdog-gold), transparent 60%, var(--underdog-gold));
+  border-radius: inherit;
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.hover-gradient-border:hover::before {
+  opacity: 1;
+}
+
+/* Soft Glow on Focus */
+.focus-glow:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 2px var(--background),
+    0 0 0 4px var(--underdog-gold),
+    0 0 20px rgba(231, 178, 33, 0.25);
+}
+
+/* Interactive Press Effect */
+.press-effect {
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.press-effect:active {
+  transform: scale(0.98);
+}
+
+/* Button Ripple Animation */
+@keyframes ripple {
+  0% {
+    width: 0;
+    height: 0;
+    opacity: 0.5;
+  }
+  100% {
+    width: 200px;
+    height: 200px;
+    opacity: 0;
+  }
+}
+
+.animate-ripple {
+  animation: ripple 0.6s ease-out forwards;
 }

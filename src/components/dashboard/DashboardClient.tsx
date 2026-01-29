@@ -13,6 +13,7 @@ import { getUserCallUploads } from '@/lib/actions/call-analysis'
 import { SessionHistoryCard } from './SessionHistoryCard'
 import { CallHistoryCard } from './CallHistoryCard'
 import { Header } from '@/components/ui/header'
+import { EmptyState } from '@/components/ui/empty-state'
 import { CurriculumProgressCard } from './progress/CurriculumProgressCard'
 import type { CallUpload, ScoreDimension } from '@/types'
 
@@ -198,23 +199,16 @@ export function DashboardClient({
             {activeTab === 'practice' && (
               <div className="space-y-3">
                 {sessions.length === 0 ? (
-                  <div className="text-center py-12">
-                    <div className="w-16 h-16 mx-auto rounded-2xl bg-muted flex items-center justify-center mb-4">
-                      <Mic className="w-8 h-8 text-muted-foreground" />
-                    </div>
-                    <p className="text-muted-foreground font-medium">
-                      No practice sessions yet
-                    </p>
-                    <p className="text-sm text-muted-foreground mt-1">
-                      Start your first practice to build your history
-                    </p>
-                    <Link href="/practice" className="mt-4 inline-block">
-                      <Button variant="primary" size="sm">
-                        <Mic className="w-4 h-4 mr-2" />
-                        Start Practicing
-                      </Button>
-                    </Link>
-                  </div>
+                  <EmptyState
+                    icon={<Mic className="w-8 h-8" />}
+                    title="No practice sessions yet"
+                    description="Start your first practice session to build your history and track your progress over time."
+                    illustration="conversation"
+                    action={{
+                      label: 'Start Practicing',
+                      href: '/practice',
+                    }}
+                  />
                 ) : (
                   <>
                     {sessions.map((session, index) => (
@@ -247,23 +241,16 @@ export function DashboardClient({
             {activeTab === 'calls' && (
               <div className="space-y-3">
                 {calls.length === 0 ? (
-                  <div className="text-center py-12">
-                    <div className="w-16 h-16 mx-auto rounded-2xl bg-muted flex items-center justify-center mb-4">
-                      <FileAudio className="w-8 h-8 text-muted-foreground" />
-                    </div>
-                    <p className="text-muted-foreground font-medium">
-                      No call analyses yet
-                    </p>
-                    <p className="text-sm text-muted-foreground mt-1">
-                      Upload your first call recording to get started
-                    </p>
-                    <Link href="/analyze" className="mt-4 inline-block">
-                      <Button variant="primary" size="sm">
-                        <FileAudio className="w-4 h-4 mr-2" />
-                        Upload a Call
-                      </Button>
-                    </Link>
-                  </div>
+                  <EmptyState
+                    icon={<FileAudio className="w-8 h-8" />}
+                    title="No call analyses yet"
+                    description="Upload your real call recordings to get detailed feedback and track your improvement."
+                    illustration="upload"
+                    action={{
+                      label: 'Upload a Call',
+                      href: '/analyze',
+                    }}
+                  />
                 ) : (
                   <>
                     {calls.map((call, index) => (

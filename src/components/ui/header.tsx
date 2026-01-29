@@ -19,6 +19,7 @@ import {
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from './button'
+import { ThemeToggle } from './theme-toggle'
 import { useAuth } from '@/components/providers/auth-provider'
 
 interface HeaderProps {
@@ -50,8 +51,8 @@ export function Header({ variant = 'default', showNav = true }: HeaderProps) {
       className={cn(
         'fixed top-0 left-0 right-0 z-50 border-b transition-colors',
         variant === 'transparent'
-          ? 'bg-white/80 backdrop-blur-md border-border/50'
-          : 'bg-white border-border'
+          ? 'bg-background/80 backdrop-blur-md border-border/50'
+          : 'bg-background border-border'
       )}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -92,8 +93,11 @@ export function Header({ variant = 'default', showNav = true }: HeaderProps) {
             </nav>
           )}
 
-          {/* Right side - Auth */}
+          {/* Right side - Theme Toggle & Auth */}
           <div className="flex items-center gap-3">
+            {/* Theme Toggle */}
+            <ThemeToggle />
+
             {/* Desktop Auth */}
             {!loading && (
               <div className="hidden sm:block">
@@ -132,7 +136,7 @@ export function Header({ variant = 'default', showNav = true }: HeaderProps) {
                             animate={{ opacity: 1, y: 0, scale: 1 }}
                             exit={{ opacity: 0, y: -10, scale: 0.95 }}
                             transition={{ duration: 0.15 }}
-                            className="absolute right-0 top-full mt-2 w-56 bg-white rounded-xl border border-border shadow-lg z-50 overflow-hidden"
+                            className="absolute right-0 top-full mt-2 w-56 bg-card rounded-xl border border-border shadow-lg z-50 overflow-hidden"
                           >
                             <div className="p-3 border-b border-border">
                               <p className="text-sm font-medium text-navy truncate">
@@ -194,7 +198,7 @@ export function Header({ variant = 'default', showNav = true }: HeaderProps) {
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.2 }}
-            className="md:hidden border-t border-border bg-white"
+            className="md:hidden border-t border-border bg-background"
           >
             <div className="px-4 py-4 space-y-2">
               {/* Navigation links */}

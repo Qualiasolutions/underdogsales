@@ -563,3 +563,193 @@ export const HoverTilt = ({
     </motion.div>
   )
 }
+
+// Magnetic Wrapper - Element follows cursor subtly
+interface MagneticWrapperProps {
+  children: ReactNode
+  className?: string
+  strength?: number
+}
+
+export const MagneticWrapper = ({
+  children,
+  className,
+  strength = 0.3,
+}: MagneticWrapperProps) => {
+  const ref = useRef<HTMLDivElement>(null)
+  const [position, setPosition] = useState({ x: 0, y: 0 })
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!ref.current) return
+    const rect = ref.current.getBoundingClientRect()
+    const centerX = rect.left + rect.width / 2
+    const centerY = rect.top + rect.height / 2
+    const deltaX = (e.clientX - centerX) * strength
+    const deltaY = (e.clientY - centerY) * strength
+    setPosition({ x: deltaX, y: deltaY })
+  }
+
+  const handleMouseLeave = () => {
+    setPosition({ x: 0, y: 0 })
+  }
+
+  return (
+    <motion.div
+      ref={ref}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      animate={{ x: position.x, y: position.y }}
+      transition={{ type: 'spring', stiffness: 300, damping: 20, mass: 0.5 }}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  )
+}
+
+// Ripple Effect - Click ripple animation
+interface RippleEffectProps {
+  children: ReactNode
+  className?: string
+  color?: string
+}
+
+export const RippleEffect = ({
+  children,
+  className,
+  color = 'rgba(255, 255, 255, 0.3)',
+}: RippleEffectProps) => {
+  const [ripples, setRipples] = useState<Array<{ x: number; y: number; id: number }>>([])
+
+  const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect()
+    const x = e.clientX - rect.left
+    const y = e.clientY - rect.top
+    const id = Date.now()
+
+    setRipples((prev) => [...prev, { x, y, id }])
+
+    // Cleanup after animation
+    setTimeout(() => {
+      setRipples((prev) => prev.filter((r) => r.id !== id))
+    }, 600)
+  }
+
+  return (
+    <div
+      onClick={handleClick}
+      className={cn('relative overflow-hidden', className)}
+    >
+      {ripples.map((ripple) => (
+        <motion.span
+          key={ripple.id}
+          className="absolute rounded-full pointer-events-none"
+          style={{
+            left: ripple.x,
+            top: ripple.y,
+            backgroundColor: color,
+            transformOrigin: 'center',
+          }}
+          initial={{ width: 0, height: 0, x: 0, y: 0, opacity: 1 }}
+          animate={{ width: 300, height: 300, x: -150, y: -150, opacity: 0 }}
+          transition={{ duration: 0.6, ease: 'easeOut' }}
+        />
+      ))}
+      {children}
+    </div>
+  )
+}
+
+// Enhanced Skeleton with gold shimmer variant
+interface EnhancedSkeletonProps {
+  className?: string
+  rounded?: 'sm' | 'md' | 'lg' | 'xl' | 'full'
+  variant?: 'default' | 'gold'
+}
+
+export const EnhancedSkeleton = ({
+  className,
+  rounded = 'lg',
+  variant = 'default',
+}: EnhancedSkeletonProps) => {
+  const roundedClasses = {
+    sm: 'rounded-sm',
+    md: 'rounded-md',
+    lg: 'rounded-lg',
+    xl: 'rounded-xl',
+    full: 'rounded-full',
+  }
+
+  return (
+    <div
+      className={cn(
+        variant === 'gold' ? 'skeleton-gold' : 'skeleton',
+        roundedClasses[rounded],
+        className
+      )}
+    />
+  )
+}
+
+// Success Check Animation - For completion states
+interface SuccessCheckProps {
+  size?: number
+  className?: string
+}
+
+export const SuccessCheck = ({ size = 60, className }: SuccessCheckProps) => {
+  return (
+    <div className={cn('relative', className)} style={{ width: size, height: size }}>
+      <motion.svg
+        viewBox="0 0 60 60"
+        width={size}
+        height={size}
+        initial="hidden"
+        animate="visible"
+      >
+        {/* Background circle */}
+        <motion.circle
+          cx="30"
+          cy="30"
+          r="28"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="3"
+          className="text-success/20"
+        />
+        {/* Animated circle */}
+        <motion.circle
+          cx="30"
+          cy="30"
+          r="28"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="3"
+          strokeLinecap="round"
+          className="text-success"
+          variants={{
+            hidden: { pathLength: 0, rotate: -90 },
+            visible: { pathLength: 1, rotate: -90 },
+          }}
+          transition={{ duration: 0.5, ease: 'easeOut' }}
+          style={{ transformOrigin: 'center' }}
+        />
+        {/* Checkmark */}
+        <motion.path
+          d="M18 30 L26 38 L42 22"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="3"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className="text-success"
+          variants={{
+            hidden: { pathLength: 0 },
+            visible: { pathLength: 1 },
+          }}
+          transition={{ duration: 0.3, delay: 0.4, ease: 'easeOut' }}
+        />
+      </motion.svg>
+    </div>
+  )
+}
